@@ -1,0 +1,246 @@
+# Generado por PitStop Management (npm run dev).
+# Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
+# asi que los comentarios que agregues aca se van a perder.
+meta:
+  updated: 2026-08-19
+  notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
+    dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
+    verificados contra el workspace pitstop-austral."
+project:
+  name: PitStop
+  charter: ../../CLAUDE.md
+  prototype: ../../PitStop Prototype/
+  training: ../../capacitacion/
+  prototype_notes: El prototipo es la especificacion de UI del MVP, no su implementacion.
+    Corre sobre Next.js con datos mock; el MVP real se escribe en Vite + TanStack
+    Router. El comportamiento se copia, la implementacion se traduce.
+  repos:
+    monorepo:
+      url: null
+      local_path: null
+      apps:
+        web: apps/web
+        api: apps/api
+    template:
+      url: https://github.com/ManuLosta/pitstop-stack
+      local_path: ../../pitstop-stack
+      notes: El repo del MVP se crea desde este template con `pnpm dlx create-turbo@latest
+        --example <url>`, eligiendo pnpm. Ya trae el workspace de pnpm con Turborepo,
+        apps/web (Vite + React + Tailwind + TanStack Router + TanStack Query), apps/api
+        (NestJS + Jest), Oxlint, Oxfmt y la configuracion de los agentes (.claude,
+        .codex, .agents, .mcp.json con Context7 y CodeGraph). NO trae .github (ni CI ni
+        plantilla de PR), Vitest en web, .env.example, Prisma ni shadcn.
+        PitStop-Austral/changuito es una copia de este template, hoy identica en todo lo
+        que importa.
+  stack:
+    workspace:
+      - pnpm
+      - Turborepo
+    frontend:
+      - Vite
+      - React
+      - TypeScript
+      - Tailwind CSS
+      - TanStack Router
+      - TanStack Query
+      - shadcn/ui
+      - Radix UI
+      - Axios
+      - Zod
+    backend:
+      - NestJS
+      - TypeScript
+      - Prisma
+      - class-validator
+    lint: Oxlint
+    format: Oxfmt
+    database: PostgreSQL (Neon)
+    auth: Firebase Auth (email + password)
+    storage: Firebase Storage
+    hosting: Vercel
+    ci: GitHub Actions
+    tests: Jest en la API, que ya viene en el template. El frontend no lleva tests
+      automatizados.
+  ui_notes: >-
+    Los componentes del frontend parten del componente de shadcn cuando existe y despues
+    se adaptan a la identidad del prototipo (tokens, radios, tipografia). Solo se
+    escribe desde cero lo que shadcn no tiene: la hoja inferior, el odometro, el
+    selector de servicios y las tarjetas de mantenimiento.
+
+    Cada componente se resuelve en su version web y en su version mobile, porque varios
+    cambian de forma: hoja inferior en mobile y modal en desktop, barra inferior y
+    sidebar, tarjetas apiladas y grilla.
+  forbidden_dependencies:
+    - SWR
+    - Zustand
+    - Redux
+    - MUI
+    - Chakra
+    - Bootstrap
+    - ESLint
+    - Prettier
+    - React Router
+  forbidden_notes: "capacitacion/APP-CONTEXT.md tambien prohibe React Query y shadcn, pero
+    eso aplica al proyecto de practica (Changuito), no al MVP: aca estan permitidos.
+    ESLint y Prettier estan prohibidos porque el template usa Oxlint y Oxfmt con la
+    configuracion en la raiz. React Router esta prohibido porque el ruteo lo resuelve
+    TanStack Router, que ya viene en el template."
+linear:
+  mcp_server: 73fb21e2-edf7-4f5a-9087-7c11a7c50efa
+  mcp_notes: Hay dos servidores MCP de Linear conectados. El de PitStop es este, no el default.
+  workspace: pitstop-austral
+  team_key: PIT
+  team_id: 8fe4e600-04cd-4505-8383-07b0500a7fc2
+  default_state: Backlog
+  labels:
+    environment:
+      - Backend
+      - Frontend
+      - Fullstack
+      - Infra
+    type:
+      - Feature
+      - Improvement
+      - Bug
+  default_environment_label: Fullstack
+week:
+  starts_on: thursday
+  length_days: 7
+  notes: "Las semanas del equipo van de jueves a jueves. Los tickets se cargan antes del
+    jueves de arranque y vencen el jueves siguiente: si se crean el lunes 10, los devs
+    arrancan el jueves 13 y la fecha limite es el jueves 20."
+capacity:
+  developers: 3
+  points_per_developer_per_week: 6
+  total_points_per_week: 18
+  buffer_ratio: 0
+  scale: 1 SP = 1 hora estimada con margen
+  allowed_estimates:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+  notes: >-
+    Cada dev de Lab2 trabaja 6 horas semanales (restriccion del charter), o sea 6 SP. La
+    estimacion se hace pensando en un estudiante de 3er año de ingenieria informatica,
+    sin experiencia laboral, que usa Claude Code, y se redondea para arriba: la idea es
+    que esos 6 SP se resuelvan en 4 o 4,5 horas reales y que el resto quede como margen
+    para lo que se complique.
+
+    Calibracion: 1 = configuracion o cambio acotado que Claude Code resuelve casi
+    entero. 2 = una pantalla simple o un endpoint con su modelo, sobre un patron que ya
+    vieron. 3 = vertical completa estandar (modelo, endpoint y pantalla). 4 = vertical
+    con algo nuevo que hay que aprender primero. 5 = lo mas grande permitido: algo nuevo
+    mas varias piezas.
+
+    El margen del sprint no es un porcentaje sino trabajo con nombre: cada sprint tiene
+    su epica de fixes y carry, con un ticket en la ultima semana, para los arreglos que
+    hayan aparecido y para lo que se haya alargado. Por eso `buffer_ratio` esta en 0 y
+    el cronograma planifica los 18 SP completos.
+sprints:
+  - number: 1
+    name: Sprint 1
+    cycle_id: 4d396d13-5dda-4cbe-93ab-3957917de2f7
+    starts: 2026-08-10
+    ends: 2026-09-17
+    weeks: 5
+    theme: Capacitacion + Setup + Auth + Deploy + Gestion de vehiculos
+    linear_projects:
+      - Capacitación
+      - Setup
+      - Auth
+      - Deploy
+      - Vehiculos
+      - Vehiculo activo
+      - Kilometraje
+      - Fixes - S1
+    notes: El cycle en Linear arranca el 2026-08-10. Para que coincida con esta fecha hay
+      que editarlo desde la UI de Linear. Los ocho projects del sprint ya existen en
+      Linear con sus fechas y prioridades.
+  - number: 2
+    name: Sprint 2
+    cycle_id: 2d2db5dd-1ecb-4c00-a3cf-b4739d0e234d
+    starts: 2026-09-18
+    ends: 2026-10-15
+    weeks: 4
+    theme: Mantenimientos + Historial + Recomendados + Calendario + Inicio
+    linear_projects:
+      - Mantenimientos
+      - Ficha tecnica
+      - Foto del vehiculo
+      - Historial
+      - Recomendados
+      - Calendario
+      - Inicio
+      - Alertas
+      - Fixes - S2
+    notes: Los nueve projects de este sprint ya estan creados en Linear, con las fechas del
+      cronograma y la prioridad de cada epica.
+  - number: 3
+    name: Sprint 3
+    cycle_id: 77772c6e-71b6-47bb-b7b1-17ea8306a28a
+    starts: 2026-10-16
+    ends: 2026-11-12
+    weeks: 4
+    theme: Alertas + Perfil + Extras + cierre del MVP
+    linear_projects:
+      - Profile
+      - Compartir vehiculo
+      - Lista de deseos
+      - Recordatorio de km
+      - Fixes - S3
+    notes: El project Profile ya existia en Linear y se movio a este sprint. Los otros
+      cuatro ya estan creados, con las fechas del cronograma y la prioridad de cada
+      epica.
+people:
+  - id: tomas
+    name: Tomas Serra
+    role: PM
+    linear_user_id: b2364f43-e470-4f94-8813-bb8c55d97470
+    takes_tickets: false
+    weekly_points: 0
+  - id: manuel-lostalo
+    name: Manuel Lostalo
+    role: PO
+    linear_user_id: 39d9464e-581f-4dd1-a0fc-2a3257b4c4c3
+    takes_tickets: false
+    weekly_points: 0
+  - id: martin
+    name: Martin Barreiro
+    role: Tech Leader
+    linear_user_id: 94786097-7119-4c9d-a877-36b61d9bb78b
+    takes_tickets: false
+    weekly_points: 0
+  - id: alexander
+    name: Alexander Kottner
+    role: QA
+    linear_user_id: ab4892cc-0c58-4ad6-a279-8d76d8c512f4
+    takes_tickets: false
+    weekly_points: 0
+  - id: ignacio
+    name: Ignacio Siaba
+    role: Developer
+    linear_user_id: 6f82619e-a3a6-4121-9129-7cdeed989b5f
+    takes_tickets: true
+    weekly_points: 6
+  - id: manuel-gioino
+    name: Manuel Gioino
+    role: Developer
+    linear_user_id: 77788716-0c4b-4e1f-9d2b-4c3fc18f7e59
+    takes_tickets: true
+    weekly_points: 6
+  - id: juan-cruz
+    name: Juan Cruz García Ferrer
+    role: Developer
+    linear_user_id: 713f1284-5ee2-4da1-8d40-c00a9ed46bbd
+    takes_tickets: true
+    weekly_points: 6
+definition_of_done:
+  - Existe una rama `feat/PIT-XX-descripcion` con el trabajo.
+  - El PR fue aprobado por un companero y mergeado.
+  - "`npm run build` pasa sin errores de TypeScript."
+  - Lo que agrega o cambia un endpoint tiene sus tests de Jest en el mismo ticket. El
+    frontend no lleva tests automatizados.
+  - La funcionalidad se probo corriendo la app, no solo compilando.
+  - El dev puede explicar que hace el codigo.

@@ -1,0 +1,78 @@
+@import 'tailwindcss';
+
+/* Tokens del design system de PitStop (ver PitStop Prototype/DESIGN_SYSTEM.md). */
+@theme {
+  --color-background: #fafafa;
+  --color-foreground: #0a0a0a;
+  --color-card: #ffffff;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-border: #e5e5e7;
+  --color-brand-50: #ffebea;
+  --color-brand: #e10600;
+  --color-brand-700: #b30500;
+  --color-success: #16a34a;
+  --color-success-soft: #eafaf0;
+  --color-warning: #f59e0b;
+  --color-warning-soft: #fef3c7;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-background);
+  }
+
+  body {
+    margin: 0;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+
+  /* Tailwind v4 saco `cursor: pointer` de los botones en su reset. Se repone acá
+     para todo lo presionable en vez de repetir la clase en cada componente. */
+  button:not(:disabled),
+  [role='button'],
+  label:has(input[type='checkbox']),
+  select,
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled,
+  input:disabled,
+  label:has(input:disabled) {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  .field {
+    @apply w-full rounded-xl border border-border bg-card px-3 py-2 text-sm outline-none transition
+           placeholder:text-muted-foreground focus:border-brand focus:ring-4 focus:ring-brand/10;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-semibold text-muted-foreground;
+  }
+
+  .card {
+    @apply rounded-2xl border border-border bg-card;
+  }
+}

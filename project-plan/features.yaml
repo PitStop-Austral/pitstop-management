@@ -1,0 +1,1286 @@
+# Generado por PitStop Management (npm run dev).
+# Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
+# asi que los comentarios que agregues aca se van a perder.
+meta:
+  charter: ../../CLAUDE.md
+  prototype_root: ../../PitStop Prototype/
+  updated: 2026-08-19
+  notes: >-
+    Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
+    guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
+    explicativo va en los campos `description` y `notes`.
+
+    El ORDEN de los arrays es el orden de prioridad que fijo el PM. La skill
+    `pitstop-create-linear-tickets` lo respeta al elegir que entra en la semana.
+
+    La `description` de cada funcionalidad es el input principal del ticket: describe
+    QUE tiene que pasar. El COMO lo escribe Claude mirando los archivos listados en
+    `prototype`.
+
+    Estados: `todo` (sin ticket) -> `backlog` (ticket ya creado en Linear) ->
+    `in_progress` -> `done`. Tambien existe `blocked`.
+
+    Estimaciones en escala 1 a 5, donde 1 SP es una hora estimada con margen para un
+    estudiante de 3er año usando Claude Code. La calibracion esta en team.yaml, en
+    `capacity.notes`.
+out_of_scope:
+  - App nativa iOS / Android
+  - CarPlay / Android Auto
+  - Sistema de suscripcion de pago
+  - Multi-idioma
+  - Publicidad
+  - Catalogo con todos los vehiculos del mercado
+  - Adjuntar comprobantes o facturas a un mantenimiento
+epics:
+  - id: capacitacion
+    title: Capacitacion del equipo de desarrollo
+    description: "Item 2.5 del WBS. Los tres devs practican el stack real construyendo
+      Changuito, una app de listas de supermercado cuyo dominio es espejo del de
+      PitStop. Ya esta cargada entera en Linear (PIT-5 a PIT-18): la skill NO genera
+      trabajo nuevo para esta epica. Consume aproximadamente la primera semana completa
+      del sprint."
+    sprint: 1
+    linear_project: Capacitación
+    moscow: must
+    status: in_progress
+    features:
+      - id: capacitacion-backend
+        title: Modulo backend de Changuito (Prisma, auth, CRUD, historial)
+        description: Modelo de datos, endpoints de listas, items, cierre de compra, historial y
+          sugerencias. PIT-6 (auth JWT) quedo cancelado.
+        status: in_progress
+        estimate: 5
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-5
+          - PIT-7
+          - PIT-8
+          - PIT-9
+          - PIT-10
+        starts: 2026-08-13
+        ends: 2026-08-20
+      - id: capacitacion-frontend
+        title: Pantallas de Changuito en Vite (base, home, detalle, historial)
+        description: Ruteo, cliente HTTP, layout, listado de listas, detalle con items
+          agrupados, barra de presupuesto e historial. PIT-12 (login/registro) quedo
+          cancelado.
+        status: in_progress
+        estimate: 5
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-11
+          - PIT-13
+          - PIT-14
+          - PIT-15
+          - PIT-16
+          - PIT-17
+        starts: 2026-08-13
+        ends: 2026-08-20
+      - id: capacitacion-entorno
+        title: Repo de practica entregado funcionando y agentes configurados
+        description: "El repo se entrega andando: monorepo armado, Docker con Postgres y Prisma
+          conectado. Los devs solo clonan y levantan."
+        status: done
+        estimate: 5
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-18
+          - PIT-19
+        starts: 2026-08-13
+        ends: 2026-08-20
+  - id: setup
+    title: Entorno del MVP configurado
+    description: "Item 3 del WBS. Dejar el monorepo real listo para que los devs escriban
+      features sin pelearse con la infraestructura: apps/web con Vite y apps/api con
+      NestJS, base de datos, Firebase, design system sobre shadcn y CI. Es lo que
+      desbloquea todo el resto del proyecto, asi que va primero."
+    sprint: 1
+    linear_project: Setup
+    moscow: must
+    status: todo
+    features:
+      - id: setup-monorepo
+        title: Crear el repo del MVP desde el template, con base local
+        description: >-
+          El MVP no se arma desde cero: se parte del template pitstop-stack, el mismo
+          del que salio Changuito en la capacitacion. El template ya trae el monorepo de
+          pnpm con Turborepo, apps/web en Vite y apps/api en NestJS, Tailwind, TanStack
+          Router, TanStack Query, Oxlint, Oxfmt y la configuracion de los agentes. Nada
+          de eso hay que volver a configurarlo.
+
+          Lo que falta es lo que el template no trae: un PostgreSQL local levantado con
+          Docker, igual que en el repo de capacitacion, y el .env.example junto con la
+          seccion de PitStop en el README. Prisma sale de aca y tiene su propio ticket,
+          que arranca apenas este repo este arriba.
+
+          La base de Neon no se toca aca: cada dev desarrolla contra su base local, que
+          puede romper y volver a crear sin molestar a nadie.
+        status: backlog
+        estimate: 3
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-20
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: setup-prisma
+        title: Prisma conectado a la base local, con schema, migracion y seed
+        description: >-
+          Con el repo creado y el Postgres local levantado, falta que la API sepa hablar
+          con esa base. Prisma instalado y configurado en apps/api, el schema inicial
+          con User y Vehicle, la primera migracion versionada en el repo y un seed que
+          se pueda correr dos veces seguidas sin duplicar nada.
+
+          Incluye el PrismaService y el PrismaModule global, el mismo patron que usaron
+          en Changuito, para que despues los modulos de negocio lo inyecten; y un
+          endpoint que lea de la base, con su test de Jest, para demostrar que la cadena
+          API - Prisma - PostgreSQL cierra de punta a punta.
+
+          El schema arranca minimo a proposito: alcanza para probar la conexion, y los
+          campos que faltan los agrega cada epica en su ticket.
+        status: backlog
+        estimate: 2
+        prototype: []
+        depends_on:
+          - setup-monorepo
+        ticket_refs:
+          - PIT-27
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: setup-ci
+        title: Chequeos automaticos en cada pull request
+        description: >-
+          Un workflow de GitHub Actions que en cada pull request corra formato, lint,
+          tipos, los tests de la API y build, y que el resultado se vea en el PR antes
+          de que nadie lo mergee. Si se rompe cualquiera de los cinco, el check queda en
+          rojo.
+
+          Incluye la plantilla de pull request con la checklist de la definicion de
+          terminado. El workflow no tiene que necesitar una base de datos corriendo para
+          pasar. La proteccion de la rama principal ya esta configurada en GitHub y no
+          se toca.
+        status: backlog
+        estimate: 1
+        prototype: []
+        depends_on:
+          - setup-monorepo
+        ticket_refs:
+          - PIT-26
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: setup-tokens
+        title: Configurar Tailwind con los tokens y el sistema de diseno de PitStop
+        description: >-
+          Antes de escribir un solo componente hay que dejar puestos los valores que usa
+          toda la app: los colores de PitStop, las dos tipografias, los radios, las
+          sombras, las animaciones y las utilidades propias, declarados con @theme de
+          Tailwind v4 en apps/web/src/styles.css. Inter para el cuerpo y Space Grotesk
+          para titulos y numeros, cargadas con @import de Google Fonts: apps/web es
+          Vite, asi que no se usa next/font.
+
+          Los nombres importan, porque son los que van a pedir por nombre todos los
+          tickets de frontend que vienen despues. Los hexadecimales tienen que aparecer
+          una sola vez en todo el repo, en styles.css. No se crea tailwind.config.js: en
+          Tailwind v4 todo va en el CSS.
+
+          El detalle de cada token esta en project-plan/design-system.md, que es la
+          fuente de verdad visual del proyecto. Tema light unicamente, no hay modo
+          oscuro.
+        status: backlog
+        estimate: 1
+        prototype:
+          - DESIGN_SYSTEM.md
+          - app/globals.css
+        depends_on:
+          - setup-monorepo
+        ticket_refs:
+          - PIT-25
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: setup-design-system
+        title: Componentes basicos de PitStop
+        description: >-
+          Instalar shadcn en apps/web, sobre los tokens que ya dejo puestos el trabajo
+          anterior, y adaptar los componentes base que despues usan todas las pantallas:
+          boton, input, select, checkbox, dialog, sheet, tabs, badge y toast. Lo que
+          shadcn no tiene se escribe a mano siguiendo el prototipo: el chip de estado,
+          el estado vacio y el odometro.
+
+          Incluye los dos componentes que despues usa toda la app: Text, que pasa a ser
+          la unica forma permitida de escribir texto (se le pasa una variante y un
+          color, nunca clases de Tailwind sueltas), e Icon, que recibe el nombre de un
+          icono de lucide-react con su tamano y su color. La app no vuelve a tener un
+          <p>, un <span> ni un heading suelto: lo controla una regla de lint que ya esta
+          en el template.
+
+          Las variantes tipograficas y el detalle de que colores y que estilo de texto
+          usa cada componente estan en project-plan/design-system.md.
+
+          Cada componente tiene que resolverse en su version web y en su version mobile:
+          en mobile los formularios se abren como hoja inferior y en desktop como modal
+          centrado.
+        status: backlog
+        estimate: 5
+        prototype:
+          - DESIGN_SYSTEM.md
+          - app/globals.css
+          - components/pitstop/primitives.tsx
+          - components/pitstop/form.tsx
+          - components/pitstop/bottom-sheet.tsx
+          - components/pitstop/desktop-modal.tsx
+          - components/pitstop/toast-host.tsx
+        depends_on:
+          - setup-tokens
+        ticket_refs:
+          - PIT-23
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: setup-firebase
+        title: Proyecto de Firebase con Auth y Storage listos para usar
+        description: Crear el proyecto de Firebase, habilitar el proveedor de email y contrasena
+          en Auth y un bucket de Storage para las fotos de vehiculos. Dejar las
+          credenciales configuradas por ambiente y documentado como se consiguen, para
+          que cada dev pueda levantar el suyo.
+        status: backlog
+        estimate: 2
+        prototype: []
+        depends_on:
+          - setup-monorepo
+        ticket_refs:
+          - PIT-22
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: setup-app-shell
+        title: Shell responsive y cliente de datos
+        description: >-
+          El armazon de la app: barra inferior flotante con las cuatro secciones en
+          mobile (Inicio, Garage, Calendario, Perfil), sidebar en desktop, y la barra
+          superior con el vehiculo activo. Las rutas se resuelven con TanStack Router,
+          no con el estado local de tabs que usa el prototipo.
+
+          Incluye la capa de datos: cliente de Axios que agrega el token de Firebase a
+          cada request y normaliza los errores de la API, React Query configurado para
+          los estados de carga y error, y el manejo del 401.
+        status: todo
+        estimate: 5
+        prototype:
+          - components/pitstop/app-shell.tsx
+          - components/pitstop/floating-navbar.tsx
+          - components/pitstop/desktop-sidebar.tsx
+          - components/pitstop/top-bar.tsx
+          - components/pitstop/navigation.ts
+        depends_on:
+          - setup-design-system
+        ticket_refs: []
+        starts: 2026-08-27
+        ends: 2026-09-03
+  - id: auth
+    title: Autenticacion y cuenta de usuario
+    description: "Requerimiento Must del charter. Autenticacion con Firebase Auth por email
+      y contrasena: Firebase maneja las credenciales, el reset y los tokens, y el
+      backend valida el ID token en un guard de Nest. La API mantiene su propia tabla
+      User espejada para poder relacionar vehiculos, mantenimientos y accesos
+      compartidos."
+    sprint: 1
+    linear_project: Auth
+    moscow: must
+    status: todo
+    features:
+      - id: auth-usuario-backend
+        title: Guardar al usuario de Firebase en nuestra base y proteger la API
+        description: Modelo User en Prisma con el uid de Firebase, email y nombre. Un guard de
+          Nest que valida el ID token en cada request protegida y, si es el primer
+          login, crea el usuario en la base. Un endpoint para consultar el usuario
+          autenticado.
+        status: backlog
+        estimate: 4
+        prototype: []
+        depends_on:
+          - setup-prisma
+          - setup-firebase
+        ticket_refs:
+          - PIT-24
+        starts: 2026-08-20
+        ends: 2026-08-27
+      - id: auth-login-registro
+        title: Pantallas de inicio de sesion y de registro
+        description: >-
+          Las dos pantallas comparten layout y campos, asi que se hacen juntas. Registro
+          con nombre, email y contrasena; login con email y contrasena. Validacion en
+          vivo de cada campo, indicador de fuerza de la contrasena y mensajes de error
+          claros cuando el email ya existe o las credenciales no coinciden. Al
+          registrarse o iniciar sesion entra directo a la app.
+
+          En desktop la pantalla se parte en dos con la imagen de marca al costado; en
+          mobile la imagen no se muestra y el formulario ocupa todo.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/auth/login-screen.tsx
+          - components/pitstop/auth/register-screen.tsx
+          - components/pitstop/auth/auth-fields.tsx
+          - components/pitstop/auth/auth-layout.tsx
+          - public/auth-banner.webp
+        depends_on:
+          - auth-usuario-backend
+          - setup-app-shell
+        ticket_refs: []
+        starts: 2026-08-27
+        ends: 2026-09-03
+      - id: auth-recuperar
+        title: Recuperar cuenta por email
+        description: Pantalla para pedir el mail de recuperacion, con confirmacion visible de
+          que se envio. Por seguridad el mensaje es el mismo exista o no la cuenta.
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/auth/forgot-password-screen.tsx
+        depends_on:
+          - auth-login-registro
+        ticket_refs: []
+        starts: 2026-09-03
+        ends: 2026-09-10
+      - id: auth-rutas-protegidas
+        title: Rutas protegidas, sesion persistente y cierre de sesion
+        description: Quien no inicio sesion no puede entrar a ninguna pantalla de la app y se lo
+          manda al login; al entrar vuelve a donde queria ir. La sesion sobrevive a
+          recargar la pagina y a cerrar el navegador, y mientras se resuelve si hay
+          sesion la app muestra un estado de carga en vez de parpadear entre login y
+          contenido. Cerrar sesion limpia todo el estado local y la cache de React
+          Query. Si el token vence, se renueva solo o se lo manda al login.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/auth/auth-gate.tsx
+          - components/pitstop/auth/auth-store.tsx
+        depends_on:
+          - auth-login-registro
+        ticket_refs: []
+        starts: 2026-08-27
+        ends: 2026-09-03
+  - id: deploy
+    title: Aplicacion desplegada y accesible
+    description: Que cualquiera del equipo pueda abrir PitStop desde una URL, y que cada
+      pull request tenga su preview para poder revisarlo sin bajarse la rama.
+    sprint: 1
+    linear_project: Deploy
+    moscow: must
+    status: todo
+    features:
+      - id: deploy-web-api
+        title: Front y API desplegados con entornos separados
+        description: >-
+          apps/web en Vercel con deploy automatico al mergear a la rama principal y un
+          preview por cada pull request cuya URL quede comentada en el PR. apps/api
+          corriendo en un entorno accesible desde el front, conectada a la base de
+          produccion de Neon, con CORS configurado y un endpoint de health.
+
+          Local, preview y produccion con sus propias variables y sus propias
+          credenciales de Firebase y Neon. Ningun secreto commiteado y un .env.example
+          que documente todas las variables.
+
+          Crear el proyecto de Neon y guardar sus dos connection strings, la pooled y la
+          direct, entra en este trabajo: no hay un ticket aparte. La pooled la usa la
+          app y la direct las migraciones.
+        status: todo
+        estimate: 4
+        prototype: []
+        depends_on:
+          - setup-monorepo
+        ticket_refs: []
+        starts: 2026-08-27
+        ends: 2026-09-03
+      - id: deploy-migraciones
+        title: Migraciones de Prisma corriendo automaticamente en el deploy
+        description: Las migraciones se aplican solas al desplegar, antes de que arranque la
+          app. Si una migracion falla, el deploy falla y no queda una version rota
+          corriendo.
+        status: todo
+        estimate: 2
+        prototype: []
+        depends_on:
+          - deploy-web-api
+          - setup-prisma
+        ticket_refs: []
+        starts: 2026-09-03
+        ends: 2026-09-10
+      - id: deploy-pwa
+        title: PWA instalable en mobile y desktop
+        description: Manifest con nombre, colores e iconos de PitStop, service worker registrado
+          y la app instalable desde el navegador en Android, iOS y desktop. Al abrirla
+          instalada tiene que verse sin la barra del navegador.
+        status: todo
+        estimate: 3
+        prototype:
+          - public/icon.svg
+          - public/icon.png
+          - public/apple-icon.png
+        depends_on:
+          - deploy-web-api
+        ticket_refs: []
+        starts: 2026-09-03
+        ends: 2026-09-10
+  - id: vehiculos
+    title: Gestion de vehiculos
+    description: "Requerimiento Must del charter. El usuario registra y administra sus
+      vehiculos; es la base sobre la que se apoya todo lo demas: mantenimientos,
+      frecuencias, deseos y accesos compartidos cuelgan de un vehiculo."
+    sprint: 1
+    linear_project: Vehiculos
+    moscow: must
+    status: todo
+    features:
+      - id: vehiculos-alta-edicion
+        title: Registrar y editar un vehiculo
+        description: >-
+          Un mismo formulario para el alta y la edicion, con marca, modelo, ano,
+          combustible, patente, kilometraje y un apodo opcional. Valida que el ano sea
+          razonable, que la patente tenga formato argentino y que el kilometraje no sea
+          negativo. Al crear uno nuevo, queda como el vehiculo activo. Solo el duenio o
+          un administrador pueden editarlo.
+
+          En mobile el formulario se abre como hoja inferior a pantalla completa con la
+          accion principal siempre visible; en desktop como modal centrado.
+        status: todo
+        estimate: 5
+        prototype:
+          - components/pitstop/sheets/vehicle-form.tsx
+        depends_on:
+          - auth-rutas-protegidas
+          - setup-monorepo
+        ticket_refs: []
+        starts: 2026-09-03
+        ends: 2026-09-10
+      - id: vehiculos-baja
+        title: Eliminar un vehiculo con confirmacion explicita
+        description: Borrar un vehiculo pide confirmacion y avisa que se van a perder sus
+          mantenimientos, frecuencias, deseos y accesos compartidos. Si era el vehiculo
+          activo, la app pasa a otro automaticamente.
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/sheets/delete-vehicle-confirm.tsx
+        depends_on:
+          - vehiculos-alta-edicion
+        ticket_refs: []
+        starts: 2026-09-03
+        ends: 2026-09-10
+      - id: vehiculos-garage
+        title: Pantalla Garage con la ficha del vehiculo y su estado general
+        description: >-
+          La pantalla del vehiculo activo: foto, marca, modelo, ano, combustible,
+          odometro y un chip que resume si esta al dia, proximo o vencido. Menu con
+          editar, compartir y eliminar. Si el usuario no tiene vehiculos, un estado
+          vacio que lo invite a cargar el primero.
+
+          La barra de solapas se construye para cuatro: Informacion, Recomendados,
+          Historial y Deseos. Aca va solo el armazon; el contenido de cada solapa llega
+          con su propia funcionalidad, asi que la barra no se hardcodea a tres.
+
+          En mobile la foto va arriba y el contenido debajo; en desktop la ficha queda
+          fija a la izquierda y las solapas a la derecha.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/screens/garage.tsx
+        depends_on:
+          - vehiculos-alta-edicion
+          - setup-app-shell
+        ticket_refs: []
+        starts: 2026-09-03
+        ends: 2026-09-10
+  - id: vehiculo-activo
+    title: Vehiculo activo global
+    description: "Principio de producto: el vehiculo activo se elige una vez y todas las
+      pantallas operan sobre esa seleccion. Registrar un mantenimiento nunca debe
+      obligar a volver a elegir el vehiculo."
+    sprint: 1
+    linear_project: Vehiculo activo
+    moscow: must
+    status: todo
+    features:
+      - id: vehiculo-activo-selector
+        title: Selector de vehiculo activo con la seleccion persistida
+        description: >-
+          Desde la barra superior se abre una lista con todos los vehiculos del usuario
+          y se cambia el activo. Se ve cual esta seleccionado y hay un acceso directo
+          para agregar uno nuevo.
+
+          La seleccion se guarda en la cuenta, asi que se mantiene al recargar y es la
+          misma si entra desde otro dispositivo. Si el vehiculo guardado ya no existe,
+          cae al primero de la lista.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/sheets/vehicle-picker.tsx
+          - components/pitstop/top-bar.tsx
+        depends_on:
+          - vehiculos-garage
+        ticket_refs: []
+        starts: 2026-09-10
+        ends: 2026-09-17
+  - id: kilometraje
+    title: Kilometraje del vehiculo
+    description: El odometro es el dato que dispara la mitad de las alertas, asi que tiene
+      que ser facil de actualizar y mantenerse coherente con lo que se registra.
+    sprint: 1
+    linear_project: Kilometraje
+    moscow: must
+    status: todo
+    features:
+      - id: kilometraje-actualizar
+        title: Actualizar el kilometraje y mantenerlo coherente
+        description: >-
+          Un acceso directo desde el odometro del garage para poner el kilometraje
+          actual. No deja cargar un valor menor al que ya estaba, porque el odometro no
+          va para atras.
+
+          Ademas, si el usuario registra un mantenimiento con un kilometraje mayor al
+          del vehiculo, el odometro se actualiza solo. Es una regla del backend para que
+          no dependa de que el front se acuerde de hacerlo.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/sheets/update-km-form.tsx
+          - components/pitstop/store.tsx
+        depends_on:
+          - vehiculos-garage
+        ticket_refs: []
+        starts: 2026-09-10
+        ends: 2026-09-17
+  - id: fixes-s1
+    title: Fixes y carry — Sprint 1
+    description: "Margen del Sprint 1. La ultima semana del sprint no se llena con
+      funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
+      alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
+      esa semana, este ticket generico se reemplaza por los tickets reales de lo que
+      haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
+      que sigue."
+    sprint: 1
+    linear_project: Fixes - S1
+    moscow: must
+    status: todo
+    fixes: true
+    features:
+      - id: fixes-s1-carry-1
+        title: Fixes y ajustes del Sprint 1 (1 de 2)
+        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
+          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
+          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
+          pisarse.
+        status: todo
+        estimate: 5
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s1-carry-2
+        title: Fixes y ajustes del Sprint 1 (2 de 2)
+        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
+          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
+          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
+          pisarse.
+        status: todo
+        estimate: 5
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+  - id: mantenimientos
+    title: Registro de mantenimientos
+    description: "Requerimiento Must del charter y el corazon del uso diario: registrar cada
+      service o arreglo que se le hace al vehiculo, con todos los datos que despues
+      sirven para consultarlo. Se adelanto a este sprint porque es lo que le da sentido
+      a tener un vehiculo cargado y porque el historial del Sprint 3 depende de ella."
+    sprint: 2
+    linear_project: Mantenimientos
+    moscow: must
+    status: todo
+    features:
+      - id: mantenimientos-catalogo
+        title: Catalogo de servicios con icono y opcion de servicio libre
+        description: Una lista predefinida de servicios (cambio de aceite, filtros, frenos,
+          neumaticos, bateria, correa de distribucion, bujias, suspension, luces y
+          demas), cada uno con su icono, mas la posibilidad de escribir uno que no este
+          en la lista.
+        status: todo
+        estimate: 2
+        prototype:
+          - lib/pitstop/services.ts
+          - components/pitstop/service-selector.tsx
+          - components/pitstop/service-icon.tsx
+          - public/icons
+        depends_on:
+          - vehiculos-alta-edicion
+        ticket_refs: []
+        starts: 2026-09-17
+        ends: 2026-09-24
+      - id: mantenimientos-registro
+        title: Registrar un mantenimiento
+        description: >-
+          Formulario con tipo de servicio, categoria (mantenimiento preventivo o
+          arreglo), fecha, kilometraje, taller, costo y notas. La categoria importa
+          porque uno de los KPIs del proyecto es que al menos el 60% de lo registrado
+          sea preventivo. Opcionalmente se vincula a una frecuencia existente. Siempre
+          se registra sobre el vehiculo activo, sin volver a elegirlo.
+
+          El boton "Adjuntar comprobante" que se ve en el formulario del prototipo no se
+          construye: los adjuntos quedaron fuera del alcance del MVP.
+        status: todo
+        estimate: 5
+        prototype:
+          - components/pitstop/sheets/maintenance-form.tsx
+        depends_on:
+          - mantenimientos-catalogo
+          - vehiculo-activo-selector
+        ticket_refs: []
+        starts: 2026-09-17
+        ends: 2026-09-24
+      - id: mantenimientos-detalle-edicion
+        title: Ver y editar un mantenimiento registrado
+        description: Todos los datos del service en una vista, incluida la frecuencia a la que
+          pertenece y cuando toca el proximo, con acceso para editarlo. Se puede
+          corregir cualquier dato; si se cambia la fecha o el kilometraje, la frecuencia
+          asociada recalcula su proximo vencimiento.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/sheets/maintenance-detail.tsx
+          - components/pitstop/sheets/maintenance-form.tsx
+        depends_on:
+          - mantenimientos-registro
+        ticket_refs: []
+        starts: 2026-09-24
+        ends: 2026-10-01
+  - id: ficha-tecnica
+    title: Ficha tecnica del vehiculo
+    description: "Requerimiento Must del charter: guardar los datos utiles del vehiculo
+      (tipo de aceite, medidas, repuestos) para no tener que buscarlos cada vez que hay
+      que hacerle un service."
+    sprint: 2
+    linear_project: Ficha tecnica
+    moscow: must
+    status: todo
+    features:
+      - id: ficha-datos
+        title: Carga de la ficha tecnica completa
+        description: >-
+          Todo en el mismo formulario del vehiculo, agrupado por sistema y con todos los
+          campos opcionales:
+
+          Lubricantes y transmision: tipo y cantidad en litros del aceite de motor y del
+          de caja, y tipo de transmision (manual, automatica, CVT, doble embrague u
+          otro).
+
+          Neumaticos: medida (por ejemplo 215/50 R17) y presion recomendada en PSI, por
+          separado para los delanteros y los traseros, porque no siempre coinciden.
+
+          Luces: el modelo de lampara de las altas, las bajas y las antiniebla, para
+          poder comprarlas sin desarmar el faro.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/sheets/vehicle-form.tsx
+        depends_on:
+          - vehiculos-alta-edicion
+        ticket_refs: []
+        starts: 2026-09-17
+        ends: 2026-09-24
+      - id: ficha-vista
+        title: Solapa Informacion del garage con la ficha agrupada por sistema
+        description: >-
+          La ficha se muestra agrupada en tarjetas por sistema (identificacion,
+          lubricantes, transmision, neumaticos, luces), cada una con el icono del
+          servicio correspondiente. Los campos vacios se muestran como "A definir" en
+          vez de esconderse.
+
+          En mobile las tarjetas van apiladas; en desktop en dos columnas.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/screens/garage.tsx
+          - components/pitstop/service-icon.tsx
+        depends_on:
+          - ficha-datos
+        ticket_refs: []
+        starts: 2026-09-17
+        ends: 2026-09-24
+  - id: foto-vehiculo
+    title: Foto del vehiculo
+    description: Poder reconocer cada vehiculo de un vistazo, sobre todo cuando el usuario
+      tiene varios. Las imagenes van a Firebase Storage.
+    sprint: 2
+    linear_project: Foto del vehiculo
+    moscow: should
+    status: todo
+    features:
+      - id: foto-vehiculo-subida
+        title: Subir, reemplazar y optimizar la foto del vehiculo
+        description: >-
+          Desde mobile se puede sacar la foto con la camara o elegirla de la galeria;
+          desde desktop se sube un archivo. Solo imagenes, con un limite de tamano
+          razonable y un mensaje claro si no cumple.
+
+          La imagen se redimensiona antes de subirla para no gastar datos al cargar la
+          app, y cuando el vehiculo no tiene foto se muestra un placeholder que no rompe
+          el layout.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/screens/garage.tsx
+          - components/pitstop/sheets/vehicle-form.tsx
+          - public/placeholder.svg
+        depends_on:
+          - setup-firebase
+          - vehiculos-alta-edicion
+        ticket_refs: []
+        starts: 2026-09-17
+        ends: 2026-09-24
+  - id: historial
+    title: Historial de mantenimientos
+    description: Requerimiento Must del charter. El historial es lo que reemplaza a la
+      libreta y a las notas del telefono, y lo que le sirve al usuario para demostrar
+      como cuido el auto cuando lo vende.
+    sprint: 2
+    linear_project: Historial
+    moscow: must
+    status: todo
+    features:
+      - id: historial-lista
+        title: Historial en vista lista y en linea de tiempo
+        description: >-
+          Todos los mantenimientos del vehiculo activo, ordenados del mas reciente al
+          mas viejo. Cada item muestra tipo, fecha, kilometraje y costo, y abre el
+          detalle al tocarlo. Si no hay ninguno, un estado vacio que invite a registrar
+          el primero.
+
+          La vista vive como cuarta solapa del Garage, "Historial", despues de
+          Informacion y Recomendados y antes de Deseos. Tiene ruta propia
+          (/garage/historial) para que una notificacion pueda abrirla directo. Tambien
+          se llega desde el "Ver todos" del bloque de historial del Inicio: es la misma
+          vista, no una pantalla aparte.
+
+          En mobile la lista va en una columna; en desktop en dos.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/screens/history.tsx
+        depends_on:
+          - mantenimientos-registro
+          - vehiculos-garage
+        ticket_refs: []
+        starts: 2026-09-24
+        ends: 2026-10-01
+      - id: historial-busqueda-filtros
+        title: Buscar, filtrar y ordenar el historial
+        description: Un buscador que filtra por tipo de servicio, taller o texto de las notas;
+          chips para ver todos, solo mantenimientos o solo arreglos; y un selector de
+          orden por fecha, kilometraje o costo. Todo se combina entre si y hay un
+          mensaje claro cuando la busqueda no da resultados.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/screens/history.tsx
+        depends_on:
+          - historial-lista
+        ticket_refs: []
+        starts: 2026-09-24
+        ends: 2026-10-01
+  - id: recomendados
+    title: Mantenimientos recomendados
+    description: >-
+      Lo que diferencia a PitStop de una planilla. Cada vehiculo tiene frecuencias de
+      mantenimiento que vencen por tiempo, por kilometros o por ambos, y la app avisa
+      antes de que se venzan. Regla central: una frecuencia vence por el PRIMER criterio
+      que se alcanza.
+
+      El charter la lista como Should, pero se sube a Must porque las alertas, que si
+      son Must, dependen enteramente de este calculo: sin frecuencias no hay nada que
+      alertar y se cae el KPI del 80%.
+    sprint: 2
+    linear_project: Recomendados
+    moscow: must
+    status: todo
+    features:
+      - id: recomendados-frecuencias
+        title: Definir una frecuencia por meses, por kilometros o por ambos
+        description: "El usuario elige un tipo de servicio y cada cuanto corresponde hacerlo:
+          cada N meses, cada N kilometros o las dos cosas. No puede haber dos
+          frecuencias del mismo tipo para el mismo vehiculo y al menos uno de los dos
+          criterios tiene que estar cargado."
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/sheets/schedule-form.tsx
+        depends_on:
+          - mantenimientos-catalogo
+        ticket_refs: []
+        starts: 2026-09-24
+        ends: 2026-10-01
+      - id: recomendados-calculo
+        title: Calculo de vencimiento y estado al dia, proximo o vencido
+        description: "A partir de la ultima vez que se hizo el service y del intervalo, se
+          calcula cuando y a que kilometraje toca el proximo, y cuanto falta. Vence por
+          el primer criterio alcanzado. El estado es vencido si ya paso, proximo si esta
+          dentro de los umbrales de anticipacion del usuario, y al dia en cualquier otro
+          caso. El calculo vive en el backend para que todas las pantallas y las alertas
+          usen exactamente el mismo resultado. Los umbrales de anticipacion nacen aca:
+          se agregan al modelo User con sus valores por defecto, 30 dias y 1500 km, para
+          que el calculo no dependa de que exista la pantalla de preferencias. Poder
+          editarlos llega despues, con el perfil."
+        status: todo
+        estimate: 4
+        prototype:
+          - lib/pitstop/helpers.ts
+        depends_on:
+          - recomendados-frecuencias
+        ticket_refs: []
+        starts: 2026-10-01
+        ends: 2026-10-08
+      - id: recomendados-defaults-baseline
+        title: Frecuencias por defecto y reinicio al registrar un service
+        description: >-
+          Un vehiculo nuevo arranca con frecuencias razonables ya cargadas (cambio de
+          aceite, filtro de aceite, filtro de aire, alineacion y correa de distribucion)
+          para que el usuario vea valor desde el minuto cero. Las puede editar o borrar.
+
+          Cuando se registra un mantenimiento vinculado a una frecuencia, o del mismo
+          tipo, esa frecuencia toma la fecha y el kilometraje del service como nueva
+          base y vuelve a contar desde ahi.
+        status: todo
+        estimate: 3
+        prototype:
+          - lib/pitstop/services.ts
+          - components/pitstop/store.tsx
+        depends_on:
+          - recomendados-calculo
+          - mantenimientos-registro
+        ticket_refs: []
+        starts: 2026-10-08
+        ends: 2026-10-15
+      - id: recomendados-vista
+        title: Solapa Recomendados del garage con alta, detalle y edicion
+        description: >-
+          La lista de frecuencias del vehiculo con su estado y cuanto falta para cada
+          una, con accesos para crear una nueva, ver el detalle y editarla. Si no hay
+          ninguna, un estado vacio que explique para que sirven.
+
+          En mobile la lista va en una columna; en pantallas anchas en dos.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/screens/garage.tsx
+          - components/pitstop/sheets/schedule-detail.tsx
+          - components/pitstop/cards.tsx
+        depends_on:
+          - recomendados-calculo
+        ticket_refs: []
+        starts: 2026-10-01
+        ends: 2026-10-08
+  - id: calendario
+    title: Calendario de mantenimientos
+    description: "Ver el mantenimiento del vehiculo en el tiempo: lo que ya se hizo y lo que
+      viene, en un calendario mensual."
+    sprint: 2
+    linear_project: Calendario
+    moscow: must
+    status: todo
+    features:
+      - id: calendario-mes
+        title: Vista mensual con completados, proximos y vencidos
+        description: >-
+          Calendario del mes con los dias marcados segun lo que pasa en cada uno:
+          services ya registrados, frecuencias que vencen y frecuencias vencidas, cada
+          estado con su color. Se puede navegar entre meses.
+
+          Las frecuencias que solo vencen por kilometraje no pueden ubicarse en el
+          calendario, asi que se listan en una seccion aparte con cuantos kilometros
+          faltan.
+        status: todo
+        estimate: 5
+        prototype:
+          - components/pitstop/screens/calendar.tsx
+        depends_on:
+          - recomendados-calculo
+          - historial-lista
+        ticket_refs: []
+        starts: 2026-10-01
+        ends: 2026-10-08
+      - id: calendario-dia
+        title: Detalle de los mantenimientos de un dia
+        description: Al tocar un dia con eventos se abren los mantenimientos de esa fecha, con
+          acceso al detalle de cada uno.
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/sheets/day-maintenance-list.tsx
+        depends_on:
+          - calendario-mes
+        ticket_refs: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+  - id: inicio
+    title: Pantalla de inicio
+    description: La primera pantalla que ve el usuario al abrir la app. Tiene que responder
+      en dos segundos que le falta hacer al auto y que le hizo ultimo.
+    sprint: 2
+    linear_project: Inicio
+    moscow: must
+    status: todo
+    features:
+      - id: inicio-dashboard
+        title: Inicio con proximos mantenimientos y ultimos registrados
+        description: >-
+          Arriba, los mantenimientos vencidos primero y despues los proximos, ordenados
+          por cuanto falta, cada uno mostrando de que se trata y por que aparece (por
+          fecha, por kilometros o por ambos). Si no hay ninguno, un mensaje de que esta
+          todo al dia.
+
+          Abajo, los ultimos cinco services del vehiculo activo con un "Ver todos" que
+          lleva a la solapa Historial del Garage. En el prototipo ese boton navega al
+          Calendario: es un error del prototipo, no el comportamiento buscado.
+
+          Los estados vacios tienen que guiar: si el usuario no tiene vehiculos, lo
+          invita a cargar el primero; si tiene vehiculo pero no historial, le explica
+          que el primer service que registre va a aparecer ahi.
+
+          En mobile las dos secciones van apiladas; en desktop lado a lado.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/screens/dashboard.tsx
+          - components/pitstop/primitives.tsx
+        depends_on:
+          - recomendados-calculo
+          - historial-lista
+        ticket_refs: []
+        starts: 2026-10-08
+        ends: 2026-10-15
+  - id: alertas
+    title: Alertas y recordatorios
+    description: "Requerimiento Must del charter y la razon de ser del producto: que el
+      usuario no se olvide. El KPI es que al menos el 80% de las alertas termine en un
+      servicio registrado dentro del plazo."
+    sprint: 2
+    linear_project: Alertas
+    moscow: must
+    status: todo
+    features:
+      - id: alertas-suscripcion
+        title: Pedir permiso de notificaciones y registrar el dispositivo
+        description: >-
+          El permiso de notificaciones se pide en un momento concreto: cuando el usuario
+          termina de registrar su primer mantenimiento. Al cerrarse el formulario con
+          exito aparece una hoja inferior en mobile, o un modal centrado en desktop, que
+          explica para que sirven las alertas, con "Activar" y "Ahora no". No se pide
+          apenas entra a la app.
+
+          Si lo rechaza, la app sigue funcionando igual y no se le vuelve a pedir solo:
+          la unica via para activarlo despues es el toggle del perfil, y la hoja se lo
+          dice antes de cerrarse. Si acepta, se guarda la suscripcion del dispositivo.
+
+          En iOS el permiso solo existe con la app instalada como PWA, asi que ahi esa
+          misma hoja explica como agregarla a la pantalla de inicio en vez de pedir el
+          permiso.
+
+          La preferencia de notificaciones nace aca: se agrega al modelo User con su
+          valor por defecto, para que el envio no dependa de que exista la pantalla de
+          perfil. El toggle para cambiarla llega despues.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/sheets/maintenance-form.tsx
+        depends_on:
+          - deploy-pwa
+          - mantenimientos-registro
+        ticket_refs: []
+        starts: 2026-10-01
+        ends: 2026-10-08
+      - id: alertas-evaluacion-envio
+        title: Deteccion diaria de vencimientos y envio de la notificacion
+        description: >-
+          Una vez por dia se revisan todas las frecuencias de todos los usuarios y se
+          determina cuales entraron en estado proximo o vencido segun los umbrales de
+          cada uno. No se avisa dos veces por lo mismo.
+
+          La notificacion dice de que vehiculo y de que service se trata, y al tocarla
+          se abre directamente ese mantenimiento en la app. Respeta las preferencias del
+          usuario.
+        status: todo
+        estimate: 5
+        prototype: []
+        depends_on:
+          - alertas-suscripcion
+          - recomendados-calculo
+        ticket_refs: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: alertas-metrica
+        title: Medir cuantas alertas terminan en un servicio registrado
+        description: Registrar cada alerta enviada y si dentro del plazo se registro el
+          mantenimiento correspondiente, para poder calcular el KPI del 80% y mostrarlo
+          en el informe final del proyecto.
+        status: todo
+        estimate: 3
+        prototype: []
+        depends_on:
+          - alertas-evaluacion-envio
+          - mantenimientos-registro
+        ticket_refs: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+  - id: fixes-s2
+    title: Fixes y carry — Sprint 2
+    description: "Margen del Sprint 2. La ultima semana del sprint no se llena con
+      funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
+      alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
+      esa semana, este ticket generico se reemplaza por los tickets reales de lo que
+      haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
+      que sigue."
+    sprint: 2
+    linear_project: Fixes - S2
+    moscow: must
+    status: todo
+    fixes: true
+    features:
+      - id: fixes-s2-carry-1
+        title: Fixes y ajustes del Sprint 2 (1 de 2)
+        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
+          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
+          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
+          pisarse.
+        status: todo
+        estimate: 5
+        starts: 2026-10-08
+        ends: 2026-10-15
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s2-carry-2
+        title: Fixes y ajustes del Sprint 2 (2 de 2)
+        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
+          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
+          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
+          pisarse.
+        status: todo
+        estimate: 5
+        starts: 2026-10-08
+        ends: 2026-10-15
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+  - id: perfil
+    title: Perfil y preferencias
+    description: La pantalla donde el usuario ve su cuenta y configura como quiere que la
+      app le avise. Los umbrales de anticipacion que se definen aca son los que despues
+      usa todo el calculo de urgencia de los mantenimientos.
+    sprint: 3
+    linear_project: Profile
+    moscow: must
+    status: todo
+    features:
+      - id: perfil-datos
+        title: Pantalla de perfil con los datos de la cuenta y los contadores
+        description: >-
+          Tarjeta con el nombre, el email y las iniciales del usuario, con la opcion de
+          editar el nombre. El email no se edita en esta version.
+
+          Arriba, tres contadores: cantidad de vehiculos, de servicios registrados y de
+          vehiculos compartidos. Se calculan en el backend, no sumando listas en el
+          front.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/screens/profile.tsx
+        depends_on:
+          - auth-rutas-protegidas
+        ticket_refs: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: perfil-preferencias
+        title: Umbrales de anticipacion por dias y por kilometros
+        description: "La pantalla para editar los umbrales de anticipacion de la cuenta: una
+          cantidad de dias y una de kilometros, globales y con 30 dias y 1500 km como
+          valores de arranque. Los campos y el calculo que los usa ya existen desde
+          recomendados-calculo; lo que agrega este trabajo es poder cambiarlos."
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/sheets/preferences-form.tsx
+        depends_on:
+          - perfil-datos
+          - recomendados-calculo
+        ticket_refs: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: perfil-notificaciones
+        title: Preferencias de notificaciones push
+        description: Un toggle que el usuario prende o apaga y queda guardado en su cuenta. La
+          preferencia ya existe con su valor por defecto desde alertas-suscripcion; este
+          trabajo agrega poder cambiarla desde el perfil.
+        status: todo
+        estimate: 1
+        prototype:
+          - components/pitstop/screens/profile.tsx
+        depends_on:
+          - perfil-datos
+          - alertas-suscripcion
+        ticket_refs: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: perfil-password
+        title: Cambiar contrasena desde la app
+        description: Formulario con la contrasena actual y la nueva. Si la sesion es vieja,
+          Firebase pide reautenticar antes de dejar cambiarla y hay que manejarlo con un
+          mensaje entendible.
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/screens/profile.tsx
+        depends_on:
+          - auth-rutas-protegidas
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+  - id: compartir-vehiculo
+    title: Acceso compartido a un vehiculo
+    description: "Que una familia o una pareja puedan administrar el mismo auto sin
+      compartir la cuenta. El charter lo lista como Could y quedo fuera del MVP: se hace
+      solo si sobra tiempo."
+    sprint: 3
+    linear_project: Compartir vehiculo
+    moscow: could
+    status: todo
+    features:
+      - id: compartir-invitar
+        title: Invitar por email con un rol y controlar los permisos
+        description: >-
+          El duenio invita por email y elige si la persona entra como Administrador o
+          como Colaborador. Si el email no tiene cuenta en PitStop, la invitacion queda
+          pendiente hasta que se registre.
+
+          Un Administrador puede editar el vehiculo y registrar mantenimientos; un
+          Colaborador solo puede registrar mantenimientos y actualizar el kilometraje.
+          Nadie que no sea el duenio puede eliminar el vehiculo. Se valida en el
+          backend, no solo escondiendo botones.
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/sheets/share-form.tsx
+        depends_on:
+          - vehiculos-garage
+          - auth-usuario-backend
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+      - id: compartir-quitar
+        title: Quitar el acceso y ver los vehiculos compartidos desde el perfil
+        description: Desde el perfil se ve con quien esta compartido cada vehiculo y se le puede
+          quitar el acceso. La persona a la que se lo quitan deja de ver el vehiculo
+          inmediatamente.
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/sheets/share-form.tsx
+          - components/pitstop/screens/profile.tsx
+        depends_on:
+          - compartir-invitar
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+  - id: lista-deseos
+    title: Lista de deseos del vehiculo
+    description: "Anotar las mejoras, accesorios y repuestos que el usuario quiere comprarle
+      al vehiculo. El charter lo lista como Should, pero quedo fuera del MVP: se hace
+      solo si sobra tiempo."
+    sprint: 3
+    linear_project: Lista de deseos
+    moscow: could
+    status: todo
+    features:
+      - id: deseos-lista
+        title: Lista de deseos por vehiculo
+        description: Cada deseo pertenece a un vehiculo y tiene nombre, precio estimado
+          opcional, prioridad alta, media o baja, y una nota. Se puede marcar como
+          comprado y eliminar. Los comprados se distinguen de los pendientes y la lista
+          pone primero los pendientes de mayor prioridad.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/sheets/wishlist-form.tsx
+          - components/pitstop/cards.tsx
+        depends_on:
+          - vehiculos-garage
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+  - id: recordatorio-km
+    title: Recordatorio de actualizacion de kilometraje
+    description: Si hace mucho que el usuario no actualiza el odometro de un vehiculo, se le
+      recuerda, porque sin ese dato las alertas por kilometros dejan de servir. El
+      charter lo lista como Could y quedo fuera del MVP.
+    sprint: 3
+    linear_project: Recordatorio de km
+    moscow: could
+    status: todo
+    features:
+      - id: recordatorio-km-push
+        title: Recordatorio periodico para actualizar el kilometraje
+        description: Notificacion que se dispara cuando pasaron demasiados dias desde la ultima
+          actualizacion del odometro, y que al tocarla abre directamente el formulario
+          de actualizar km.
+        status: todo
+        estimate: 2
+        prototype:
+          - components/pitstop/sheets/update-km-form.tsx
+        depends_on:
+          - alertas-evaluacion-envio
+          - kilometraje-actualizar
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+  - id: fixes-s3
+    title: Fixes y carry — Sprint 3
+    description: "Margen del Sprint 3. La ultima semana del sprint no se llena con
+      funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
+      alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
+      esa semana, este ticket generico se reemplaza por los tickets reales de lo que
+      haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
+      que sigue."
+    sprint: 3
+    linear_project: Fixes - S3
+    moscow: must
+    status: todo
+    fixes: true
+    features:
+      - id: fixes-s3-carry-1
+        title: Fixes y ajustes del Sprint 3 (1 de 2)
+        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
+          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
+          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
+          pisarse.
+        status: todo
+        estimate: 5
+        starts: 2026-11-05
+        ends: 2026-11-12
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s3-carry-2
+        title: Fixes y ajustes del Sprint 3 (2 de 2)
+        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
+          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
+          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
+          pisarse.
+        status: todo
+        estimate: 5
+        starts: 2026-11-05
+        ends: 2026-11-12
+        prototype: []
+        depends_on: []
+        ticket_refs: []
