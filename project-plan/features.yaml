@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-08-19
+  updated: 2026-08-23
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -48,7 +48,7 @@ epics:
         title: Modulo backend de Changuito (Prisma, auth, CRUD, historial)
         description: Modelo de datos, endpoints de listas, items, cierre de compra, historial y
           sugerencias. PIT-6 (auth JWT) quedo cancelado.
-        status: in_progress
+        status: done
         estimate: 5
         prototype: []
         depends_on: []
@@ -65,7 +65,7 @@ epics:
         description: Ruteo, cliente HTTP, layout, listado de listas, detalle con items
           agrupados, barra de presupuesto e historial. PIT-12 (login/registro) quedo
           cancelado.
-        status: in_progress
+        status: done
         estimate: 5
         prototype: []
         depends_on: []
@@ -92,7 +92,7 @@ epics:
         starts: 2026-08-13
         ends: 2026-08-20
   - id: setup
-    title: Entorno del MVP configurado
+    title: Setup
     description: "Item 3 del WBS. Dejar el monorepo real listo para que los devs escriban
       features sin pelearse con la infraestructura: apps/web con Vite y apps/api con
       NestJS, base de datos, Firebase, design system sobre shadcn y CI. Es lo que
@@ -118,7 +118,7 @@ epics:
 
           La base de Neon no se toca aca: cada dev desarrolla contra su base local, que
           puede romper y volver a crear sin molestar a nadie.
-        status: backlog
+        status: done
         estimate: 3
         prototype: []
         depends_on: []
@@ -127,7 +127,7 @@ epics:
         starts: 2026-08-20
         ends: 2026-08-27
       - id: setup-prisma
-        title: Prisma conectado a la base local, con schema, migracion y seed
+        title: Prisma conectado a la base local, con schema y migracion
         description: >-
           Con el repo creado y el Postgres local levantado, falta que la API sepa hablar
           con esa base. Prisma instalado y configurado en apps/api, el schema inicial
@@ -141,7 +141,7 @@ epics:
 
           El schema arranca minimo a proposito: alcanza para probar la conexion, y los
           campos que faltan los agrega cada epica en su ticket.
-        status: backlog
+        status: done
         estimate: 2
         prototype: []
         depends_on:
@@ -151,7 +151,7 @@ epics:
         starts: 2026-08-20
         ends: 2026-08-27
       - id: setup-ci
-        title: Chequeos automaticos en cada pull request
+        title: Chequeos automaticos en cada pull request (CI)
         description: >-
           Un workflow de GitHub Actions que en cada pull request corra formato, lint,
           tipos, los tests de la API y build, y que el resultado se vea en el PR antes
@@ -162,7 +162,7 @@ epics:
           terminado. El workflow no tiene que necesitar una base de datos corriendo para
           pasar. La proteccion de la rama principal ya esta configurada en GitHub y no
           se toca.
-        status: backlog
+        status: done
         estimate: 1
         prototype: []
         depends_on:
@@ -189,7 +189,7 @@ epics:
           El detalle de cada token esta en project-plan/design-system.md, que es la
           fuente de verdad visual del proyecto. Tema light unicamente, no hay modo
           oscuro.
-        status: backlog
+        status: done
         estimate: 1
         prototype:
           - DESIGN_SYSTEM.md
@@ -222,7 +222,7 @@ epics:
           Cada componente tiene que resolverse en su version web y en su version mobile:
           en mobile los formularios se abren como hoja inferior y en desktop como modal
           centrado.
-        status: backlog
+        status: done
         estimate: 5
         prototype:
           - DESIGN_SYSTEM.md
@@ -244,7 +244,7 @@ epics:
           en Auth y un bucket de Storage para las fotos de vehiculos. Dejar las
           credenciales configuradas por ambiente y documentado como se consiguen, para
           que cada dev pueda levantar el suyo.
-        status: backlog
+        status: done
         estimate: 2
         prototype: []
         depends_on:
@@ -254,18 +254,14 @@ epics:
         starts: 2026-08-20
         ends: 2026-08-27
       - id: setup-app-shell
-        title: Shell responsive y cliente de datos
-        description: >-
-          El armazon de la app: barra inferior flotante con las cuatro secciones en
-          mobile (Inicio, Garage, Calendario, Perfil), sidebar en desktop, y la barra
-          superior con el vehiculo activo. Las rutas se resuelven con TanStack Router,
-          no con el estado local de tabs que usa el prototipo.
-
-          Incluye la capa de datos: cliente de Axios que agrega el token de Firebase a
-          cada request y normaliza los errores de la API, React Query configurado para
-          los estados de carga y error, y el manejo del 401.
-        status: todo
-        estimate: 5
+        title: "Navegacion de la app: barra inferior en el celular y menu lateral en la compu"
+        description: "El armazon de la app: barra inferior flotante con las cuatro secciones en
+          mobile (Inicio, Garage, Calendario, Perfil), sidebar left en desktop, y la
+          barra superior con el vehiculo activo por ahora no debe estar. Las rutas se
+          resuelven con TanStack Router, no con el estado local de tabs que usa el
+          prototipo."
+        status: backlog
+        estimate: 4
         prototype:
           - components/pitstop/app-shell.tsx
           - components/pitstop/floating-navbar.tsx
@@ -274,9 +270,26 @@ epics:
           - components/pitstop/navigation.ts
         depends_on:
           - setup-design-system
-        ticket_refs: []
+        ticket_refs:
+          - PIT-28
         starts: 2026-08-27
         ends: 2026-09-03
+      - id: setup-nueva
+        title: Cliente de Axios que manda el token de Firebase en cada pedido
+        description: "Capa de datos del frontend: cliente de Axios reutilizable que agrega el
+          token de Firebase a cada request (se debe poder evitar que se agregue el token
+          de Firebase para los casos de enpoints que no requieren autenticacion como
+          login, register y forgot-password, pero por defecto si debe enviar el token de
+          Firebase) y normaliza los errores de la API, React Query configurado para los
+          estados de carga y error, y el manejo del 401 (Hacer logout)"
+        status: backlog
+        estimate: 1
+        starts: 2026-08-27
+        ends: 2026-09-03
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-29
   - id: auth
     title: Autenticacion y cuenta de usuario
     description: "Requerimiento Must del charter. Autenticacion con Firebase Auth por email
@@ -295,7 +308,7 @@ epics:
           Nest que valida el ID token en cada request protegida y, si es el primer
           login, crea el usuario en la base. Un endpoint para consultar el usuario
           autenticado.
-        status: backlog
+        status: done
         estimate: 4
         prototype: []
         depends_on:
@@ -309,15 +322,20 @@ epics:
         title: Pantallas de inicio de sesion y de registro
         description: >-
           Las dos pantallas comparten layout y campos, asi que se hacen juntas. Registro
-          con nombre, email y contrasena; login con email y contrasena. Validacion en
-          vivo de cada campo, indicador de fuerza de la contrasena y mensajes de error
-          claros cuando el email ya existe o las credenciales no coinciden. Al
-          registrarse o iniciar sesion entra directo a la app.
+          con nombre, email y contraseña; login con email y contraseña. Validacion en
+          vivo de cada campo (al registrar unicamente), indicador de fuerza de la
+          contrasena y mensajes de error claros cuando el email ya existe o las
+          credenciales no coinciden. Al registrarse o iniciar sesion entra directo a la
+          app.
 
-          En desktop la pantalla se parte en dos con la imagen de marca al costado; en
-          mobile la imagen no se muestra y el formulario ocupa todo.
-        status: todo
-        estimate: 4
+          En desktop la pantalla se parte en dos con la imagen de marca a la izquierda y
+          el formulario a la derecha; en mobile la imagen se muestra arriba y el
+          formulario abajo.
+
+          Se debe usar la integración de Firebase Auth previamente configurada en el
+          backend.
+        status: backlog
+        estimate: 5
         prototype:
           - components/pitstop/auth/login-screen.tsx
           - components/pitstop/auth/register-screen.tsx
@@ -327,38 +345,44 @@ epics:
         depends_on:
           - auth-usuario-backend
           - setup-app-shell
-        ticket_refs: []
+          - setup-nueva
+        ticket_refs:
+          - PIT-31
         starts: 2026-08-27
         ends: 2026-09-03
       - id: auth-recuperar
-        title: Recuperar cuenta por email
+        title: Recuperar la cuenta por email
         description: Pantalla para pedir el mail de recuperacion, con confirmacion visible de
           que se envio. Por seguridad el mensaje es el mismo exista o no la cuenta.
-        status: todo
+          Usando Firebase Auth
+        status: backlog
         estimate: 2
         prototype:
           - components/pitstop/auth/forgot-password-screen.tsx
         depends_on:
           - auth-login-registro
-        ticket_refs: []
-        starts: 2026-09-03
-        ends: 2026-09-10
+        ticket_refs:
+          - PIT-32
+        starts: 2026-08-27
+        ends: 2026-09-03
       - id: auth-rutas-protegidas
-        title: Rutas protegidas, sesion persistente y cierre de sesion
+        title: Rutas protegidas, sesion que sobrevive a recargar y cierre de sesion
         description: Quien no inicio sesion no puede entrar a ninguna pantalla de la app y se lo
-          manda al login; al entrar vuelve a donde queria ir. La sesion sobrevive a
-          recargar la pagina y a cerrar el navegador, y mientras se resuelve si hay
-          sesion la app muestra un estado de carga en vez de parpadear entre login y
-          contenido. Cerrar sesion limpia todo el estado local y la cache de React
-          Query. Si el token vence, se renueva solo o se lo manda al login.
-        status: todo
+          manda al login; al entrar vuelve a donde queria ir (usando params url). La
+          sesion sobrevive a recargar la pagina y a cerrar el navegador, y mientras se
+          resuelve si hay sesion la app muestra un estado de carga en vez de parpadear
+          entre login y contenido (loader spinner). Cerrar sesion limpia todo el estado
+          local y la cache de React Query. Si el token vence, se renueva solo o se lo
+          manda al login.
+        status: backlog
         estimate: 3
         prototype:
           - components/pitstop/auth/auth-gate.tsx
           - components/pitstop/auth/auth-store.tsx
         depends_on:
           - auth-login-registro
-        ticket_refs: []
+        ticket_refs:
+          - PIT-33
         starts: 2026-08-27
         ends: 2026-09-03
   - id: deploy
@@ -371,26 +395,26 @@ epics:
     status: todo
     features:
       - id: deploy-web-api
-        title: Front y API desplegados con entornos separados
+        title: Front, API y base de datos desplegados con entornos separados
         description: >-
-          apps/web en Vercel con deploy automatico al mergear a la rama principal y un
-          preview por cada pull request cuya URL quede comentada en el PR. apps/api
-          corriendo en un entorno accesible desde el front, conectada a la base de
-          produccion de Neon, con CORS configurado y un endpoint de health.
+          apps/web en Vercel con deploy automatico al mergear a la rama principal.
+          apps/api tambien en Vercel con deploy automatico pero en un proyecto diferente
+          de vercel al del front, conectada a la base de produccion de Neon, con CORS
+          configurado y un endpoint de health.
 
-          Local, preview y produccion con sus propias variables y sus propias
-          credenciales de Firebase y Neon. Ningun secreto commiteado y un .env.example
-          que documente todas las variables.
+          Todas las ENV configuradas correctamente para front y back en vercel. Ningun
+          secreto commiteado y un .env.example que documente todas las variables.
 
           Crear el proyecto de Neon y guardar sus dos connection strings, la pooled y la
           direct, entra en este trabajo: no hay un ticket aparte. La pooled la usa la
           app y la direct las migraciones.
-        status: todo
-        estimate: 4
+        status: backlog
+        estimate: 3
         prototype: []
         depends_on:
           - setup-monorepo
-        ticket_refs: []
+        ticket_refs:
+          - PIT-30
         starts: 2026-08-27
         ends: 2026-09-03
       - id: deploy-migraciones

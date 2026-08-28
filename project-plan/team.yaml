@@ -2,7 +2,7 @@
 # Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
 # asi que los comentarios que agregues aca se van a perder.
 meta:
-  updated: 2026-08-19
+  updated: 2026-08-23
   notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
     dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
     verificados contra el workspace pitstop-austral."
@@ -16,8 +16,8 @@ project:
     Router. El comportamiento se copia, la implementacion se traduce.
   repos:
     monorepo:
-      url: null
-      local_path: null
+      url: https://github.com/PitStop-Austral/pitstop-app
+      local_path: ../pitstop-app
       apps:
         web: apps/web
         api: apps/api

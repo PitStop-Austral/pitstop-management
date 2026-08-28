@@ -150,6 +150,63 @@ actualizar:
   las dos cosas a la vez: si se manda `cycle`, el ticket sale del Backlog. El sprint se
   identifica por el project y por la `dueDate`.
 - Ningun ticket queda sin `project` ni sin `priority`.
+- El cuerpo del ticket tiene **dos bloques separados por una linea horizontal**: arriba
+  lo que el dev necesita para arrancar (contexto, objetivo, que tiene que quedar
+  andando, por donde empezar, glosario), abajo la especificacion tecnica. Si hay que
+  reescribir la `description` porque el alcance se movio, se respeta esa division y no
+  se mezcla: lo que lleva valores exactos —hexadecimales, tokens, endpoints, rutas—
+  va abajo del separador. El formato completo esta en la skill
+  `pitstop-create-linear-tickets`.
+
+### Editar un ticket sin pisar lo que no escribiste vos
+
+**Nunca mandes la `description` completa a un ticket que ya existe.** Ese campo
+reemplaza el cuerpo entero: se lleva puesto todo lo que haya aparecido desde que lo
+escribiste —las capturas que pego el PM, un parrafo que sumo el dev, una correccion
+hecha desde la UI— y **no hay forma de recuperarlo desde el MCP**, que no expone el
+historial de versiones de la descripcion. Ya paso una vez y costo las capturas de un
+ticket.
+
+Para editar se usa `patch`, que aplica cambios puntuales sobre el contenido actual:
+
+```
+save_issue  id=PIT-28
+            patch=[
+              { "op": "replace", "old_string": "<texto exacto de ahora>", "new_string": "<texto nuevo>" },
+              { "op": "insert_after", "anchor": "<texto exacto>", "text": "\n\n<parrafo nuevo>" }
+            ]
+```
+
+Las operaciones son `replace`, `replace_range`, `insert_before`, `insert_after`,
+`prepend` y `append`. Se aplican en orden y de forma atomica: si una falla, no se
+aplica ninguna.
+
+Dos cosas hacen fallar el `patch` si no se tienen en cuenta:
+
+1. **El anchor tiene que coincidir con el texto guardado, que no es el que mandaste.**
+   Linear re-renderiza el markdown: los guiones de las listas pasan a `*`, la negrita
+   pegada a un backtick se reacomoda, y cada `PIT-XX` escrito como texto plano queda
+   convertido en un tag `<issue id="..." href="...">PIT-XX</issue>`. Por eso, **antes
+   de patchear siempre correr `get_issue` y sacar los anchors de ahi**, nunca del texto
+   que escribiste vos en un turno anterior.
+2. Cada anchor tiene que aparecer **exactamente una vez**. Si el texto se repite, hay
+   que tomar un pedazo mas largo que lo haga unico.
+
+Si el alcance se movio tanto que patchear no es practico, ahi si se manda la
+`description` entera, pero **primero se lee la actual con `get_issue` y se reescribe
+sobre ella**, conservando literalmente todo lo que no escribiste vos. Las lineas de
+imagen (`![](https://uploads.linear.app/...)`) son lo primero que se pierde y lo mas
+caro de reponer: se copian tal cual. Y al informar se aclara que se reescribio el
+cuerpo entero.
+
+Lo mismo vale para los otros campos de `save_issue` que **reemplazan en vez de sumar**:
+
+| Campo | Como se comporta | Que hacer |
+|---|---|---|
+| `description` | Reemplaza todo el cuerpo | Usar `patch` |
+| `labels` | Reemplaza el set completo | Mandar tambien las que ya estaban |
+| `blockedBy` / `blocks` / `relatedTo` | Solo agregan, nunca sacan | Para sacar una, usar `removeBlockedBy` y compania |
+| `estimate` / `dueDate` / `project` | `null` borra, omitir no toca | Omitir lo que no se quiere cambiar |
 
 Si al terminar quedaron funcionalidades nuevas sin ticket, no crearlos aca: eso lo hace
 la skill `pitstop-create-linear-tickets`, que sabe repartir la semana y escribir el

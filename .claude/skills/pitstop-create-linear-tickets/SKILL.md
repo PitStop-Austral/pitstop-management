@@ -86,7 +86,9 @@ escribis vos:
 >
 > La `Referencia visual` nombra **la pantalla del prototipo funcionando** y como se
 > llega a ella (por ejemplo "pantalla de Garage, solapa Informacion"). El PM le
-> adjunta la captura al ticket despues.
+> adjunta la captura al ticket despues, y le conviene hacerlo **como adjunto o como
+> comentario del issue, no pegandola adentro de la descripcion**: cualquier edicion
+> posterior del cuerpo se la puede llevar puesta, y Linear no permite recuperarla.
 
 > **El prototipo es Next.js; el MVP es Vite + TanStack Router.** El comportamiento se
 > copia tal cual, la implementacion se traduce: nada de `next/font`, `next/image` ni
@@ -128,6 +130,9 @@ vehiculo" esta incompleto; uno que dice "tarjeta `bg-card` con borde `border`,
 variante `card-title` color `default` y la patente en `caption` color `muted`" esta
 completo.
 
+Todo eso vive en la seccion `## Componentes` del bloque tecnico del ticket, nunca
+arriba del separador: son valores exactos y arriba del separador no van valores.
+
 Dos reglas de codigo que valen para toda la app y que los criterios de aceptacion
 pueden dar por sabidas: **todo texto va dentro de `<Text variant=... color=...>`** y
 **todo icono dentro de `<Icon name=... size=... color=...>`**. No se escriben `<p>`,
@@ -144,7 +149,10 @@ varios componentes cambian de forma:
 - Listas: una columna en mobile, dos o grilla en desktop.
 - La accion principal de un formulario largo queda siempre visible en mobile.
 
-Los criterios de aceptacion tienen que cubrir las dos.
+Las dos resoluciones se cubren en las dos listas de criterios, cada una a su manera:
+en "Que tiene que quedar andando" con una frase en castellano y sin numeros ("el
+formulario abre pegado abajo en el celular y como ventana centrada en la compu"), y en
+"Criterios de aceptacion tecnicos" con el breakpoint exacto y lo que cambia a cada lado.
 
 ## Analisis previo
 
@@ -276,8 +284,8 @@ con "va con...": esos son los que hay que repartir con este criterio.
 
 Las dependencias reales estan en `depends_on`. Una dependencia hacia una
 funcionalidad ya `done` no bloquea nada. Al crear el ticket, las dependencias
-vigentes van en `blockedBy` **y ademas** escritas como `Depende de: PIT-XX` en las
-notas tecnicas.
+vigentes van en `blockedBy` **y ademas** escritas como `Depende de: PIT-XX` en
+`## Datos del ticket`, al principio del bloque tecnico.
 
 ## Asignacion
 
@@ -368,6 +376,24 @@ Los bugs de un sprint van al project `Fixes - SN` con label `Bug`.
 
 ## Cuerpo del ticket
 
+El ticket tiene **dos bloques separados por una linea horizontal**, y cada uno esta
+escrito para un lector distinto.
+
+**Arriba del separador** lee un dev de segundo ano que abre el ticket por primera vez y
+todavia no sabe que es esto. Ahi va que se va a construir, como se ve y por donde
+arranca. **Entra en una pantalla**: si hay que scrollear para llegar al separador, esta
+largo y hay que bajar cosas.
+
+**Abajo del separador** lee ese mismo dev, pero con Claude Code al lado. Es la
+referencia precisa para hacer el trabajo: modelos, endpoints, tokens, hexadecimales,
+breakpoints, comandos, tablas. **Este bloque no tiene tope de largo** y no se resume:
+mientras mas exacto, mejor sale el trabajo.
+
+La regla que decide de que lado va cada cosa: **ningun bullet de arriba del separador
+contiene un hexadecimal, una clase de Tailwind, una ruta de archivo, un comando, un
+endpoint ni un nombre de modelo de Prisma.** Si aparece uno, ese bullet va abajo. La
+unica excepcion es "Por donde empezar", que se explica mas adelante.
+
 Escribir en espanol rioplatense, con esta estructura exacta:
 
 ```markdown
@@ -382,35 +408,87 @@ es lo primero que lee el dev.]
 
 [Resultado esperado, en una frase.]
 
+**Referencia visual:** [la pantalla del prototipo funcionando y como se llega a ella].
+El PM adjunta la captura.
+
+## Que tiene que quedar andando
+
+- [Que puede hacer el usuario, verificable abriendo la app. Sin jerga.]
+- [...]
+
+## Por donde empezar
+
+1. [Primer paso concreto]
+2. [...]
+
+## Palabras que vas a ver
+
+- **[Termino]**: [que es y para que sirve en este ticket, en una linea.]
+
+---
+
+# Especificacion tecnica
+
+> De aca para abajo el ticket es tecnico a proposito. Es la referencia precisa para
+> hacer el trabajo: leelo con Claude Code al lado.
+
+## Datos del ticket
+
+- Estimado: N SP (~N horas)
+- Depende de: PIT-XX
+
 ## Alcance
 
 - [Cambio de modelo de datos / migracion]
 - [Endpoint o servicio del backend]
 - [Pantalla o componente del frontend]
 
-## Criterios de aceptacion
+## Backend
 
-- [Criterio verificable 1]
-- [Criterio verificable 2]
-- [Criterio verificable 3]
+- [Modelo de Prisma, endpoints, validaciones, tests de Jest]
 
-## Notas tecnicas
+## Frontend
 
-- Estimado: N SP (~N horas)
-- Referencia visual: [la pantalla del prototipo funcionando y como se llega]
-- Backend: [modelo de Prisma, endpoints, validaciones]
-- Frontend: [ruta, estado, formulario, query de React Query]
-- Componentes: [los de shadcn que se usan y que hay que adaptarles]
-- Depende de: PIT-XX
+- [Ruta, estado, formulario, query de React Query, comportamiento mobile y desktop]
+
+## Componentes
+
+- [De que componente de shadcn parte cada pieza y que hay que adaptarle, con los
+  tokens de design-system.md y los valores concretos]
+
+## Criterios de aceptacion tecnicos
+
+- [Criterio con valores exactos: tokens, pixeles, breakpoints, endpoints, lint, tests]
+- [...]
 
 ## Fuera de alcance
 
 - [Algo que razonablemente podria interpretarse como parte de la tarea y no lo es.]
-
-## Palabras que vas a ver
-
-- **[Termino]**: [que es y para que sirve en este ticket, en una linea.]
 ```
+
+Las secciones tecnicas se ajustan a lo que el ticket toca de verdad:
+
+- **Sin UI** (backend puro): la `Referencia visual` va como `no aplica (backend)` y
+  `## Frontend` y `## Componentes` se omiten enteras.
+- **Infraestructura** (CI, deploy, configuracion): la `Referencia visual` va como
+  `no aplica (infraestructura)` y `## Backend`, `## Frontend` y `## Componentes` se
+  reemplazan por una sola seccion `## Implementacion` con el detalle tecnico: archivos
+  de configuracion, orden de los pasos, comandos, y las trampas conocidas.
+
+Una seccion vacia, o rellena con "no aplica" en cada bullet, es peor que no tenerla.
+
+### Los topes del bloque de arriba
+
+| Seccion | Tope |
+|---|---|
+| Contexto | 2 parrafos, 6 frases entre los dos |
+| Objetivo | 1 frase, mas la linea de referencia visual |
+| Que tiene que quedar andando | 3 a 6 bullets, 1 linea cada uno |
+| Por donde empezar | 3 a 5 pasos, 1 linea cada uno |
+| Palabras que vas a ver | 3 a 6 terminos, se omite entera si no hay ninguno |
+
+Estos topes no son una sugerencia. Cuando algo no entra, la respuesta nunca es apretar
+mas la letra arriba: es bajarlo al bloque tecnico, que para eso no tiene limite.
 
 ### El contexto es la puerta de entrada del ticket
 
@@ -432,44 +510,103 @@ PWA, safe area, boilerplate, espejar. Si alguno es inevitable, se aclara ahi
 mismo entre parentesis y en cinco palabras.
 
 Nada de hexadecimales, rutas de archivo, nombres de clase ni comandos: eso vive
-en las notas tecnicas. Y no es un resumen del alcance: la lista de tareas ya
-viene abajo y no hay que repetirla.
+en el bloque tecnico. Y no es un resumen del alcance: la lista de tareas ya viene
+abajo y no hay que repetirla.
 
-### Notas tecnicas
+### Objetivo y referencia visual
 
-Obligatorio:
+El objetivo es una frase: que queda andando cuando el ticket cierra.
 
-- **Estimado** en SP y su equivalente en horas.
-- **Referencia visual**: la pantalla del prototipo funcionando y como se llega a
-  ella. Si la funcionalidad no tiene UI, `no aplica (backend)` o
-  `no aplica (infraestructura)`.
-- **Backend y Frontend**: que hay que tocar de cada lado, con nombres concretos de
-  endpoint, modelo y componente **del MVP**. Este es el valor del ticket para un dev
-  junior.
-- **Componentes**: de que componente de shadcn parte cada pieza de UI y que hay que
-  adaptarle, con los valores concretos (hexadecimales, pixeles, breakpoints). Si algo
-  no existe en shadcn, decirlo explicitamente y describir como se comporta.
+Debajo va la `Referencia visual`, que nombra **la pantalla del prototipo funcionando** y
+como se llega a ella ("pantalla de Garage, solapa Informacion"). Va arriba, junto al
+objetivo y no enterrada entre las notas, porque es la forma en que un junior entiende
+que esta construyendo antes de leer una sola linea tecnica.
 
-**Ninguna nota tecnica nombra un archivo del prototipo.** Los `.tsx` y `.css` que
-leiste son tu fuente, no la del dev: el ve el prototipo corriendo, no su codigo. Si
-una nota necesita apoyarse en algo que viste ahi, se escribe el dato, no el archivo
-(`el fondo es #fafafa`, no `los tokens de globals.css`). Los unicos archivos que se
-pueden nombrar son los del repo del MVP, que es donde el dev va a escribir.
+### Que tiene que quedar andando
 
-### Criterios de aceptacion
+Es la lista de criterios de aceptacion del dev y del QA: lo que se verifica **usando la
+app**, sin abrir el codigo.
 
-Los criterios de aceptacion tienen que ser observables corriendo la app y cubrir
-mobile y desktop. Prohibido "funciona correctamente", "queda prolijo" o similares.
+- Se escribe como lo que el usuario puede hacer, o lo que pasa al tocar algo.
+- Cubre mobile y desktop en una frase, en castellano y sin numeros: "el formulario abre
+  pegado abajo en el celular y como ventana centrada en la compu".
+- Nada de valores: sin hexadecimales, sin tokens, sin clases, sin breakpoints, sin
+  nombres de endpoint. Todo eso tiene su lugar abajo.
+- Prohibido "funciona correctamente", "queda prolijo" y cualquier cosa que dos personas
+  puedan dar por cumplida de manera distinta.
+
+### Por donde empezar
+
+Es el orden de ataque, no un resumen del alcance. Un junior que abre el ticket ya sabe
+que hay que hacer; lo que no sabe es que tocar primero.
+
+- 3 a 5 pasos, en el orden en que conviene hacerlos, uno por linea.
+- Sigue la vertical del ticket: modelo y migracion, endpoint, pantalla, probar.
+- **El ultimo paso es siempre probarlo corriendo la app**, en las dos resoluciones si
+  hay UI. Si el ticket toca la API, sus tests de Jest son uno de los pasos.
+- Es la **unica seccion del bloque de arriba que puede nombrar** un modelo, una ruta o
+  un comando: es el puente hacia el bloque tecnico. Aun asi no lleva valores —ni
+  hexadecimales, ni tokens, ni breakpoints— y se queda en una linea por paso.
 
 ### Palabras que vas a ver
 
-Cierra el ticket. De 3 a 6 terminos, **solo los que realmente aparecen en el
-cuerpo** y que un dev de segundo ano probablemente no conoce. Una linea cada uno:
-que es y para que sirve *en este ticket*, no la definicion de manual.
+Cierra el bloque de arriba, y ese lugar es a proposito: el dev se cruza con el glosario
+**antes** de entrar en la especificacion, que es donde los terminos lo esperan.
+
+De 3 a 6 terminos, **solo los que realmente aparecen en el cuerpo** y que un dev de
+segundo ano probablemente no conoce. Una linea cada uno: que es y para que sirve *en
+este ticket*, no la definicion de manual.
 
 Si el ticket no introduce ningun termino nuevo, la seccion se omite entera: no
 inventar entradas de relleno. Tampoco repetir lo que ya quedo explicado en el
 contexto.
+
+### La especificacion tecnica
+
+Todo lo que esta abajo del separador se escribe para que el trabajo se pueda hacer sin
+volver a preguntar nada. Es donde vive el valor del ticket para un dev junior: nombres
+concretos de endpoint, modelo y componente **del MVP**, con sus valores exactos.
+
+- **Datos del ticket**: el estimado en SP con su equivalente en horas, y las
+  dependencias vigentes como `Depende de: PIT-XX` (ademas del `blockedBy` de Linear).
+- **Alcance**: las piezas que se tocan, una por linea.
+- **Backend**: modelo de Prisma, endpoints, validaciones y los tests de Jest, que son
+  parte del ticket y de la definicion de terminado.
+- **Frontend**: ruta, estado, formulario, queries de React Query y que cambia entre
+  mobile y desktop.
+- **Componentes**: de que componente de shadcn parte cada pieza de UI y que hay que
+  adaptarle, con los valores concretos (hexadecimales, pixeles, breakpoints) y los
+  nombres de `design-system.md`. Si algo no existe en shadcn, decirlo explicitamente y
+  describir como se comporta.
+
+Las tablas grandes —variantes de un componente, tokens de color, estados— van aca y
+estan bien: son la parte que hace que el trabajo salga igual al prototipo. Lo que nunca
+hay que hacer es ponerlas antes de que el dev sepa que esta construyendo.
+
+**Ninguna seccion tecnica nombra un archivo del prototipo.** Los `.tsx` y `.css` que
+leiste son tu fuente, no la del dev: el ve el prototipo corriendo, no su codigo. Si una
+nota necesita apoyarse en algo que viste ahi, se escribe el dato, no el archivo
+(`el fondo es #fafafa`, no `los tokens de globals.css`). Los unicos archivos que se
+pueden nombrar son los del repo del MVP, que es donde el dev va a escribir.
+
+### Criterios de aceptacion tecnicos
+
+Es la version exacta de "Que tiene que quedar andando", mas todo lo que no se ve.
+
+- Cada criterio o **precisa uno simple** con sus valores, o **cubre algo invisible**:
+  codigos de respuesta de la API, reglas de lint, tests que tienen que pasar,
+  validaciones del backend, comportamiento del foco.
+- No tiene tope de cantidad.
+- No es copiar la lista de arriba con mas palabras. Si un criterio tecnico no agrega
+  ningun dato nuevo respecto del simple, sobra.
+- Rige la misma prohibicion: nada de "funciona correctamente".
+
+El mismo criterio en los dos registros, para ver la diferencia:
+
+| Lista | Como se escribe |
+|---|---|
+| Que tiene que quedar andando | El boton principal se ve rojo, es comodo de tocar en el celular y se llega a el con la tecla Tab. |
+| Criterios de aceptacion tecnicos | Boton primario `bg-primary`, hover `red-700`, `h-12` y `rounded-full`; el foco muestra el ring rojo de 3px al 50% y es alcanzable con Tab. |
 
 ### El titulo se lee sin abrir el ticket
 
@@ -481,11 +618,6 @@ entenderse desde el tablero, sin abrirlo.
 - Jerga de concepto, no: *guard*, *ID token*, *design system*, *CI*, *espejado*,
   *boilerplate*, *scaffolding*. Si el concepto no se puede evitar, va acompanado
   de lo que hace: "con chequeos automaticos en cada PR", no "con CI".
-
-> Del contexto para abajo el ticket es tecnico a proposito. La explicacion simple
-> es la puerta de entrada, no un techo: las notas tecnicas siguen nombrando
-> clases, endpoints, hexadecimales y comandos, porque el dev lee el ticket con
-> Claude Code al lado y Claude necesita esa precision para hacer el trabajo.
 
 ## Flujo de trabajo
 
