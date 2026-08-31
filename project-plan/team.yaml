@@ -2,7 +2,7 @@
 # Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
 # asi que los comentarios que agregues aca se van a perder.
 meta:
-  updated: 2026-08-23
+  updated: 2026-08-31
   notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
     dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
     verificados contra el workspace pitstop-austral."
@@ -152,12 +152,11 @@ sprints:
       - Auth
       - Deploy
       - Vehiculos
-      - Vehiculo activo
-      - Kilometraje
       - Fixes - S1
     notes: El cycle en Linear arranca el 2026-08-10. Para que coincida con esta fecha hay
-      que editarlo desde la UI de Linear. Los ocho projects del sprint ya existen en
-      Linear con sus fechas y prioridades.
+      que editarlo desde la UI de Linear. Los seis projects del sprint ya existen en
+      Linear con sus fechas y prioridades. Vehiculo activo y Kilometraje se unificaron
+      dentro de Vehiculos el 2026-08-31, tanto en Linear como en el backlog.
   - number: 2
     name: Sprint 2
     cycle_id: 2d2db5dd-1ecb-4c00-a3cf-b4739d0e234d

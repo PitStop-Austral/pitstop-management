@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-08-23
+  updated: 2026-08-31
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -260,7 +260,7 @@ epics:
           barra superior con el vehiculo activo por ahora no debe estar. Las rutas se
           resuelven con TanStack Router, no con el estado local de tabs que usa el
           prototipo."
-        status: backlog
+        status: in_progress
         estimate: 4
         prototype:
           - components/pitstop/app-shell.tsx
@@ -282,7 +282,7 @@ epics:
           login, register y forgot-password, pero por defecto si debe enviar el token de
           Firebase) y normaliza los errores de la API, React Query configurado para los
           estados de carga y error, y el manejo del 401 (Hacer logout)"
-        status: backlog
+        status: in_progress
         estimate: 1
         starts: 2026-08-27
         ends: 2026-09-03
@@ -334,7 +334,7 @@ epics:
 
           Se debe usar la integración de Firebase Auth previamente configurada en el
           backend.
-        status: backlog
+        status: in_progress
         estimate: 5
         prototype:
           - components/pitstop/auth/login-screen.tsx
@@ -355,7 +355,7 @@ epics:
         description: Pantalla para pedir el mail de recuperacion, con confirmacion visible de
           que se envio. Por seguridad el mensaje es el mismo exista o no la cuenta.
           Usando Firebase Auth
-        status: backlog
+        status: in_progress
         estimate: 2
         prototype:
           - components/pitstop/auth/forgot-password-screen.tsx
@@ -374,7 +374,7 @@ epics:
           entre login y contenido (loader spinner). Cerrar sesion limpia todo el estado
           local y la cache de React Query. Si el token vence, se renueva solo o se lo
           manda al login.
-        status: backlog
+        status: in_progress
         estimate: 3
         prototype:
           - components/pitstop/auth/auth-gate.tsx
@@ -408,7 +408,7 @@ epics:
           Crear el proyecto de Neon y guardar sus dos connection strings, la pooled y la
           direct, entra en este trabajo: no hay un ticket aparte. La pooled la usa la
           app y la direct las migraciones.
-        status: backlog
+        status: in_progress
         estimate: 3
         prototype: []
         depends_on:
@@ -417,41 +417,33 @@ epics:
           - PIT-30
         starts: 2026-08-27
         ends: 2026-09-03
-      - id: deploy-migraciones
-        title: Migraciones de Prisma corriendo automaticamente en el deploy
-        description: Las migraciones se aplican solas al desplegar, antes de que arranque la
-          app. Si una migracion falla, el deploy falla y no queda una version rota
-          corriendo.
-        status: todo
-        estimate: 2
-        prototype: []
-        depends_on:
-          - deploy-web-api
-          - setup-prisma
-        ticket_refs: []
-        starts: 2026-09-03
-        ends: 2026-09-10
       - id: deploy-pwa
         title: PWA instalable en mobile y desktop
         description: Manifest con nombre, colores e iconos de PitStop, service worker registrado
           y la app instalable desde el navegador en Android, iOS y desktop. Al abrirla
           instalada tiene que verse sin la barra del navegador.
-        status: todo
-        estimate: 3
+        status: backlog
+        estimate: 2
         prototype:
           - public/icon.svg
           - public/icon.png
           - public/apple-icon.png
         depends_on:
           - deploy-web-api
-        ticket_refs: []
+        ticket_refs:
+          - PIT-36
         starts: 2026-09-03
         ends: 2026-09-10
   - id: vehiculos
     title: Gestion de vehiculos
     description: "Requerimiento Must del charter. El usuario registra y administra sus
       vehiculos; es la base sobre la que se apoya todo lo demas: mantenimientos,
-      frecuencias, deseos y accesos compartidos cuelgan de un vehiculo."
+      frecuencias, deseos y accesos compartidos cuelgan de un vehiculo. Incluye tambien
+      el vehiculo activo, que es un principio de producto: se elige una vez y todas las
+      pantallas operan sobre esa seleccion, asi que registrar un mantenimiento nunca
+      debe obligar a volver a elegir el vehiculo. Y el kilometraje, que es el dato que
+      dispara la mitad de las alertas y por eso tiene que ser facil de actualizar y
+      mantenerse coherente con lo que se registra."
     sprint: 1
     linear_project: Vehiculos
     moscow: must
@@ -461,21 +453,23 @@ epics:
         title: Registrar y editar un vehiculo
         description: >-
           Un mismo formulario para el alta y la edicion, con marca, modelo, ano,
-          combustible, patente, kilometraje y un apodo opcional. Valida que el ano sea
-          razonable, que la patente tenga formato argentino y que el kilometraje no sea
-          negativo. Al crear uno nuevo, queda como el vehiculo activo. Solo el duenio o
-          un administrador pueden editarlo.
+          combustible, patente, kilometraje y un apodo opcional. Valida que el año sea
+          razonable, que la patente tenga formato argentino (tanto patente nueva como
+          vieja) y que el kilometraje no sea negativo. Al crear uno nuevo, queda como el
+          vehiculo activo. Solo el dueño o un administrador pueden editarlo.
 
           En mobile el formulario se abre como hoja inferior a pantalla completa con la
-          accion principal siempre visible; en desktop como modal centrado.
-        status: todo
+          accion principal siempre visible (bottom sheet); en desktop como modal
+          centrado. (modal)
+        status: backlog
         estimate: 5
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
         depends_on:
           - auth-rutas-protegidas
           - setup-monorepo
-        ticket_refs: []
+        ticket_refs:
+          - PIT-34
         starts: 2026-09-03
         ends: 2026-09-10
       - id: vehiculos-baja
@@ -483,22 +477,24 @@ epics:
         description: Borrar un vehiculo pide confirmacion y avisa que se van a perder sus
           mantenimientos, frecuencias, deseos y accesos compartidos. Si era el vehiculo
           activo, la app pasa a otro automaticamente.
-        status: todo
+        status: backlog
         estimate: 2
         prototype:
           - components/pitstop/sheets/delete-vehicle-confirm.tsx
         depends_on:
           - vehiculos-alta-edicion
-        ticket_refs: []
+        ticket_refs:
+          - PIT-37
         starts: 2026-09-03
         ends: 2026-09-10
       - id: vehiculos-garage
         title: Pantalla Garage con la ficha del vehiculo y su estado general
         description: >-
-          La pantalla del vehiculo activo: foto, marca, modelo, ano, combustible,
-          odometro y un chip que resume si esta al dia, proximo o vencido. Menu con
-          editar, compartir y eliminar. Si el usuario no tiene vehiculos, un estado
-          vacio que lo invite a cargar el primero.
+          La pantalla del vehiculo activo: foto (por ahora debe ir una imagen de ejemplo
+          mock hasta que se implemente la funcion de subir imagenes), marca, modelo,
+          año, combustible, odometro y un chip que resume si esta al dia, proximo o
+          vencido. Menu con editar, compartir y eliminar. Si el usuario no tiene
+          vehiculos, un estado vacio que lo invite a cargar el primero.
 
           La barra de solapas se construye para cuatro: Informacion, Recomendados,
           Historial y Deseos. Aca va solo el armazon; el contenido de cada solapa llega
@@ -506,55 +502,40 @@ epics:
 
           En mobile la foto va arriba y el contenido debajo; en desktop la ficha queda
           fija a la izquierda y las solapas a la derecha.
-        status: todo
+        status: backlog
         estimate: 4
         prototype:
           - components/pitstop/screens/garage.tsx
         depends_on:
           - vehiculos-alta-edicion
           - setup-app-shell
-        ticket_refs: []
+        ticket_refs:
+          - PIT-35
         starts: 2026-09-03
         ends: 2026-09-10
-  - id: vehiculo-activo
-    title: Vehiculo activo global
-    description: "Principio de producto: el vehiculo activo se elige una vez y todas las
-      pantallas operan sobre esa seleccion. Registrar un mantenimiento nunca debe
-      obligar a volver a elegir el vehiculo."
-    sprint: 1
-    linear_project: Vehiculo activo
-    moscow: must
-    status: todo
-    features:
       - id: vehiculo-activo-selector
         title: Selector de vehiculo activo con la seleccion persistida
         description: >-
-          Desde la barra superior se abre una lista con todos los vehiculos del usuario
-          y se cambia el activo. Se ve cual esta seleccionado y hay un acceso directo
-          para agregar uno nuevo.
+          Desde la barra superior (header) en mobile y en la sidebar en desktop, debe
+          haber un selector de autos mostrando el auto actual con su foto. Al apretarlo
+          se abre una lista con todos los vehiculos del usuario y se puede cambiar
+          cambia el activo. Se ve cual esta seleccionado y hay un acceso directo para
+          agregar uno nuevo.
 
           La seleccion se guarda en la cuenta, asi que se mantiene al recargar y es la
           misma si entra desde otro dispositivo. Si el vehiculo guardado ya no existe,
           cae al primero de la lista.
-        status: todo
+        status: backlog
         estimate: 3
         prototype:
           - components/pitstop/sheets/vehicle-picker.tsx
           - components/pitstop/top-bar.tsx
         depends_on:
           - vehiculos-garage
-        ticket_refs: []
-        starts: 2026-09-10
-        ends: 2026-09-17
-  - id: kilometraje
-    title: Kilometraje del vehiculo
-    description: El odometro es el dato que dispara la mitad de las alertas, asi que tiene
-      que ser facil de actualizar y mantenerse coherente con lo que se registra.
-    sprint: 1
-    linear_project: Kilometraje
-    moscow: must
-    status: todo
-    features:
+        ticket_refs:
+          - PIT-38
+        starts: 2026-09-03
+        ends: 2026-09-10
       - id: kilometraje-actualizar
         title: Actualizar el kilometraje y mantenerlo coherente
         description: >-
