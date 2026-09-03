@@ -19,7 +19,8 @@ import {
   withScheduledDates,
 } from '../lib/schedule'
 import { epicColors, type EpicColor } from '../lib/epicColor'
-import { Button, cn } from './ui'
+import { epicStats } from '../lib/plan'
+import { Button, ProgressBar, cn } from './ui'
 
 const RAIL = 248
 const ZOOMS = [8, 12, 18] as const
@@ -550,6 +551,7 @@ function EpicRow({
   const dated = row.epic.features.filter((f) => f.starts && f.ends)
   const from = dated.length ? dated.reduce((min, f) => (f.starts! < min ? f.starts! : min), dated[0].starts!) : null
   const to = dated.length ? dated.reduce((max, f) => (f.ends! > max ? f.ends! : max), dated[0].ends!) : null
+  const stats = epicStats(row.epic)
 
   return (
     <RowShell y={row.y}>
@@ -563,10 +565,23 @@ function EpicRow({
           <ChevronDown className={cn('size-4 transition-transform', row.collapsed && '-rotate-90')} />
         </button>
         <span className="size-2.5 shrink-0 rounded-full" style={{ background: row.color.bar }} />
-        <span className="truncate text-xs font-semibold" title={row.epic.title}>
-          {row.epic.title}
-        </span>
-        <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="truncate text-xs font-semibold" title={row.epic.title}>
+            {row.epic.title}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <ProgressBar
+              done={stats.pointsDone}
+              inProgress={stats.pointsInProgress}
+              total={stats.points}
+              className="h-1"
+            />
+            <span className="shrink-0 text-[9px] font-semibold text-muted-foreground">
+              {stats.progress}%
+            </span>
+          </div>
+        </div>
+        <span className="shrink-0 text-[10px] text-muted-foreground">
           {row.epic.features.length}
         </span>
       </Rail>

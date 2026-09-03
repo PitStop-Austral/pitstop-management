@@ -71,6 +71,39 @@ export function Points({ value }: { value: number | null }) {
   )
 }
 
+/**
+ * Barra de progreso basada en story points. `done` y `inProgress` se pintan como
+ * dos segmentos apilados sobre `total`; si no hay SP la barra queda vacia.
+ */
+export function ProgressBar({
+  done,
+  inProgress = 0,
+  total,
+  className,
+}: {
+  done: number
+  inProgress?: number
+  total: number
+  className?: string
+}) {
+  const donePct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0
+  const inProgressPct = total > 0 ? Math.min(100 - donePct, Math.round((inProgress / total) * 100)) : 0
+  return (
+    <div
+      className={cn('h-1.5 w-full overflow-hidden rounded-full bg-muted', className)}
+      role="progressbar"
+      aria-valuenow={donePct}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <div className="flex h-full">
+        <span className="block h-full bg-success" style={{ width: `${donePct}%` }} />
+        <span className="block h-full bg-warning/70" style={{ width: `${inProgressPct}%` }} />
+      </div>
+    </div>
+  )
+}
+
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="block">

@@ -157,13 +157,32 @@ export function emptyEpic(id: string, sprint: number): Epic {
   }
 }
 
-export type EpicStats = { total: number; done: number; points: number; withTickets: number }
+export type EpicStats = {
+  total: number
+  done: number
+  points: number
+  pointsDone: number
+  pointsInProgress: number
+  /** Porcentaje 0-100, calculado sobre story points terminados. */
+  progress: number
+  withTickets: number
+}
 
 export function epicStats(epic: Epic): EpicStats {
+  const points = epic.features.reduce((sum, f) => sum + (f.estimate ?? 0), 0)
+  const pointsDone = epic.features
+    .filter((f) => f.status === 'done')
+    .reduce((sum, f) => sum + (f.estimate ?? 0), 0)
+  const pointsInProgress = epic.features
+    .filter((f) => f.status === 'in_progress')
+    .reduce((sum, f) => sum + (f.estimate ?? 0), 0)
   return {
     total: epic.features.length,
     done: epic.features.filter((f) => f.status === 'done').length,
-    points: epic.features.reduce((sum, f) => sum + (f.estimate ?? 0), 0),
+    points,
+    pointsDone,
+    pointsInProgress,
+    progress: points > 0 ? Math.round((pointsDone / points) * 100) : 0,
     withTickets: epic.features.filter((f) => f.ticket_refs.length > 0).length,
   }
 }

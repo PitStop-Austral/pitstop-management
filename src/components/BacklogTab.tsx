@@ -10,7 +10,7 @@ import {
   uniqueId,
 } from '../lib/plan'
 import { SortableList, SortableRow } from './Sortable'
-import { Button, MoscowBadge, Points, StatusBadge, cn } from './ui'
+import { Button, MoscowBadge, Points, ProgressBar, StatusBadge, cn } from './ui'
 
 type Props = {
   plan: Plan
@@ -229,6 +229,17 @@ function EpicCard({
             </span>
             {stats.withTickets > 0 ? <span>· {stats.withTickets} con ticket</span> : null}
             <code className="text-[10px] opacity-60">{epic.id}</code>
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <ProgressBar
+              done={stats.pointsDone}
+              inProgress={stats.pointsInProgress}
+              total={stats.points}
+              className="max-w-[260px]"
+            />
+            <span className="shrink-0 text-[11px] font-semibold text-muted-foreground">
+              {stats.progress}% · {stats.pointsDone}/{stats.points} SP
+            </span>
           </div>
         </div>
 

@@ -260,7 +260,7 @@ epics:
           barra superior con el vehiculo activo por ahora no debe estar. Las rutas se
           resuelven con TanStack Router, no con el estado local de tabs que usa el
           prototipo."
-        status: in_progress
+        status: done
         estimate: 4
         prototype:
           - components/pitstop/app-shell.tsx
@@ -282,7 +282,7 @@ epics:
           login, register y forgot-password, pero por defecto si debe enviar el token de
           Firebase) y normaliza los errores de la API, React Query configurado para los
           estados de carga y error, y el manejo del 401 (Hacer logout)"
-        status: in_progress
+        status: done
         estimate: 1
         starts: 2026-08-27
         ends: 2026-09-03
@@ -334,7 +334,7 @@ epics:
 
           Se debe usar la integración de Firebase Auth previamente configurada en el
           backend.
-        status: in_progress
+        status: done
         estimate: 5
         prototype:
           - components/pitstop/auth/login-screen.tsx
@@ -408,7 +408,7 @@ epics:
           Crear el proyecto de Neon y guardar sus dos connection strings, la pooled y la
           direct, entra en este trabajo: no hay un ticket aparte. La pooled la usa la
           app y la direct las migraciones.
-        status: in_progress
+        status: done
         estimate: 3
         prototype: []
         depends_on:
