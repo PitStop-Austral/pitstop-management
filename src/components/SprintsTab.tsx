@@ -47,7 +47,9 @@ export function SprintsTab({
                     <input
                       className="field"
                       value={sprint.theme}
-                      onChange={(event) => patchSprint(sprint.number, { theme: event.target.value })}
+                      onChange={(event) =>
+                        patchSprint(sprint.number, { theme: event.target.value })
+                      }
                     />
                   </Field>
                   <Field label="Arranca">
@@ -78,7 +80,9 @@ export function SprintsTab({
                     <CalendarRange className="size-3" />
                     {formatLong(parseISO(sprint.starts))} al {formatLong(parseISO(sprint.ends))}
                   </span>
-                  <span>{sprint.weeks} semanas · {capacity} SP de capacidad</span>
+                  <span>
+                    {sprint.weeks} semanas · {capacity} SP de capacidad
+                  </span>
                   <span className={points > capacity ? 'font-semibold text-brand-700' : undefined}>
                     {epics.length} épicas · {points} SP estimados
                   </span>

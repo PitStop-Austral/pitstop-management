@@ -34,11 +34,11 @@ out_of_scope:
 epics:
   - id: capacitacion
     title: Capacitacion del equipo de desarrollo
-    description: "Item 2.5 del WBS. Los tres devs practican el stack real construyendo
+    description: 'Item 2.5 del WBS. Los tres devs practican el stack real construyendo
       Changuito, una app de listas de supermercado cuyo dominio es espejo del de
       PitStop. Ya esta cargada entera en Linear (PIT-5 a PIT-18): la skill NO genera
       trabajo nuevo para esta epica. Consume aproximadamente la primera semana completa
-      del sprint."
+      del sprint.'
     sprint: 1
     linear_project: Capacitación
     moscow: must
@@ -80,8 +80,8 @@ epics:
         ends: 2026-08-20
       - id: capacitacion-entorno
         title: Repo de practica entregado funcionando y agentes configurados
-        description: "El repo se entrega andando: monorepo armado, Docker con Postgres y Prisma
-          conectado. Los devs solo clonan y levantan."
+        description: 'El repo se entrega andando: monorepo armado, Docker con Postgres y Prisma
+          conectado. Los devs solo clonan y levantan.'
         status: done
         estimate: 5
         prototype: []
@@ -93,10 +93,10 @@ epics:
         ends: 2026-08-20
   - id: setup
     title: Setup
-    description: "Item 3 del WBS. Dejar el monorepo real listo para que los devs escriban
+    description: 'Item 3 del WBS. Dejar el monorepo real listo para que los devs escriban
       features sin pelearse con la infraestructura: apps/web con Vite y apps/api con
       NestJS, base de datos, Firebase, design system sobre shadcn y CI. Es lo que
-      desbloquea todo el resto del proyecto, asi que va primero."
+      desbloquea todo el resto del proyecto, asi que va primero.'
     sprint: 1
     linear_project: Setup
     moscow: must
@@ -254,12 +254,12 @@ epics:
         starts: 2026-08-20
         ends: 2026-08-27
       - id: setup-app-shell
-        title: "Navegacion de la app: barra inferior en el celular y menu lateral en la compu"
-        description: "El armazon de la app: barra inferior flotante con las cuatro secciones en
+        title: 'Navegacion de la app: barra inferior en el celular y menu lateral en la compu'
+        description: 'El armazon de la app: barra inferior flotante con las cuatro secciones en
           mobile (Inicio, Garage, Calendario, Perfil), sidebar left en desktop, y la
           barra superior con el vehiculo activo por ahora no debe estar. Las rutas se
           resuelven con TanStack Router, no con el estado local de tabs que usa el
-          prototipo."
+          prototipo.'
         status: done
         estimate: 4
         prototype:
@@ -276,12 +276,12 @@ epics:
         ends: 2026-09-03
       - id: setup-nueva
         title: Cliente de Axios que manda el token de Firebase en cada pedido
-        description: "Capa de datos del frontend: cliente de Axios reutilizable que agrega el
+        description: 'Capa de datos del frontend: cliente de Axios reutilizable que agrega el
           token de Firebase a cada request (se debe poder evitar que se agregue el token
           de Firebase para los casos de enpoints que no requieren autenticacion como
           login, register y forgot-password, pero por defecto si debe enviar el token de
           Firebase) y normaliza los errores de la API, React Query configurado para los
-          estados de carga y error, y el manejo del 401 (Hacer logout)"
+          estados de carga y error, y el manejo del 401 (Hacer logout)'
         status: done
         estimate: 1
         starts: 2026-08-27
@@ -292,11 +292,11 @@ epics:
           - PIT-29
   - id: auth
     title: Autenticacion y cuenta de usuario
-    description: "Requerimiento Must del charter. Autenticacion con Firebase Auth por email
+    description: 'Requerimiento Must del charter. Autenticacion con Firebase Auth por email
       y contrasena: Firebase maneja las credenciales, el reset y los tokens, y el
       backend valida el ID token en un guard de Nest. La API mantiene su propia tabla
       User espejada para poder relacionar vehiculos, mantenimientos y accesos
-      compartidos."
+      compartidos.'
     sprint: 1
     linear_project: Auth
     moscow: must
@@ -436,14 +436,14 @@ epics:
         ends: 2026-09-10
   - id: vehiculos
     title: Gestion de vehiculos
-    description: "Requerimiento Must del charter. El usuario registra y administra sus
+    description: 'Requerimiento Must del charter. El usuario registra y administra sus
       vehiculos; es la base sobre la que se apoya todo lo demas: mantenimientos,
       frecuencias, deseos y accesos compartidos cuelgan de un vehiculo. Incluye tambien
       el vehiculo activo, que es un principio de producto: se elige una vez y todas las
       pantallas operan sobre esa seleccion, asi que registrar un mantenimiento nunca
       debe obligar a volver a elegir el vehiculo. Y el kilometraje, que es el dato que
       dispara la mitad de las alertas y por eso tiene que ser facil de actualizar y
-      mantenerse coherente con lo que se registra."
+      mantenerse coherente con lo que se registra.'
     sprint: 1
     linear_project: Vehiculos
     moscow: must
@@ -558,12 +558,12 @@ epics:
         ends: 2026-09-17
   - id: fixes-s1
     title: Fixes y carry — Sprint 1
-    description: "Margen del Sprint 1. La ultima semana del sprint no se llena con
+    description: 'Margen del Sprint 1. La ultima semana del sprint no se llena con
       funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
       alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
       esa semana, este ticket generico se reemplaza por los tickets reales de lo que
       haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
-      que sigue."
+      que sigue.'
     sprint: 1
     linear_project: Fixes - S1
     moscow: must
@@ -598,10 +598,10 @@ epics:
         ticket_refs: []
   - id: mantenimientos
     title: Registro de mantenimientos
-    description: "Requerimiento Must del charter y el corazon del uso diario: registrar cada
+    description: 'Requerimiento Must del charter y el corazon del uso diario: registrar cada
       service o arreglo que se le hace al vehiculo, con todos los datos que despues
       sirven para consultarlo. Se adelanto a este sprint porque es lo que le da sentido
-      a tener un vehiculo cargado y porque el historial del Sprint 3 depende de ella."
+      a tener un vehiculo cargado y porque el historial del Sprint 3 depende de ella.'
     sprint: 2
     linear_project: Mantenimientos
     moscow: must
@@ -664,9 +664,9 @@ epics:
         ends: 2026-10-01
   - id: ficha-tecnica
     title: Ficha tecnica del vehiculo
-    description: "Requerimiento Must del charter: guardar los datos utiles del vehiculo
+    description: 'Requerimiento Must del charter: guardar los datos utiles del vehiculo
       (tipo de aceite, medidas, repuestos) para no tener que buscarlos cada vez que hay
-      que hacerle un service."
+      que hacerle un service.'
     sprint: 2
     linear_project: Ficha tecnica
     moscow: must
@@ -814,10 +814,10 @@ epics:
     features:
       - id: recomendados-frecuencias
         title: Definir una frecuencia por meses, por kilometros o por ambos
-        description: "El usuario elige un tipo de servicio y cada cuanto corresponde hacerlo:
+        description: 'El usuario elige un tipo de servicio y cada cuanto corresponde hacerlo:
           cada N meses, cada N kilometros o las dos cosas. No puede haber dos
           frecuencias del mismo tipo para el mismo vehiculo y al menos uno de los dos
-          criterios tiene que estar cargado."
+          criterios tiene que estar cargado.'
         status: todo
         estimate: 4
         prototype:
@@ -829,7 +829,7 @@ epics:
         ends: 2026-10-01
       - id: recomendados-calculo
         title: Calculo de vencimiento y estado al dia, proximo o vencido
-        description: "A partir de la ultima vez que se hizo el service y del intervalo, se
+        description: 'A partir de la ultima vez que se hizo el service y del intervalo, se
           calcula cuando y a que kilometraje toca el proximo, y cuanto falta. Vence por
           el primer criterio alcanzado. El estado es vencido si ya paso, proximo si esta
           dentro de los umbrales de anticipacion del usuario, y al dia en cualquier otro
@@ -837,7 +837,7 @@ epics:
           usen exactamente el mismo resultado. Los umbrales de anticipacion nacen aca:
           se agregan al modelo User con sus valores por defecto, 30 dias y 1500 km, para
           que el calculo no dependa de que exista la pantalla de preferencias. Poder
-          editarlos llega despues, con el perfil."
+          editarlos llega despues, con el perfil.'
         status: todo
         estimate: 4
         prototype:
@@ -889,8 +889,8 @@ epics:
         ends: 2026-10-08
   - id: calendario
     title: Calendario de mantenimientos
-    description: "Ver el mantenimiento del vehiculo en el tiempo: lo que ya se hizo y lo que
-      viene, en un calendario mensual."
+    description: 'Ver el mantenimiento del vehiculo en el tiempo: lo que ya se hizo y lo que
+      viene, en un calendario mensual.'
     sprint: 2
     linear_project: Calendario
     moscow: must
@@ -968,9 +968,9 @@ epics:
         ends: 2026-10-15
   - id: alertas
     title: Alertas y recordatorios
-    description: "Requerimiento Must del charter y la razon de ser del producto: que el
+    description: 'Requerimiento Must del charter y la razon de ser del producto: que el
       usuario no se olvide. El KPI es que al menos el 80% de las alertas termine en un
-      servicio registrado dentro del plazo."
+      servicio registrado dentro del plazo.'
     sprint: 2
     linear_project: Alertas
     moscow: must
@@ -1041,12 +1041,12 @@ epics:
         ends: 2026-10-22
   - id: fixes-s2
     title: Fixes y carry — Sprint 2
-    description: "Margen del Sprint 2. La ultima semana del sprint no se llena con
+    description: 'Margen del Sprint 2. La ultima semana del sprint no se llena con
       funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
       alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
       esa semana, este ticket generico se reemplaza por los tickets reales de lo que
       haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
-      que sigue."
+      que sigue.'
     sprint: 2
     linear_project: Fixes - S2
     moscow: must
@@ -1109,10 +1109,10 @@ epics:
         ends: 2026-10-22
       - id: perfil-preferencias
         title: Umbrales de anticipacion por dias y por kilometros
-        description: "La pantalla para editar los umbrales de anticipacion de la cuenta: una
+        description: 'La pantalla para editar los umbrales de anticipacion de la cuenta: una
           cantidad de dias y una de kilometros, globales y con 30 dias y 1500 km como
           valores de arranque. Los campos y el calculo que los usa ya existen desde
-          recomendados-calculo; lo que agrega este trabajo es poder cambiarlos."
+          recomendados-calculo; lo que agrega este trabajo es poder cambiarlos.'
         status: todo
         estimate: 2
         prototype:
@@ -1154,9 +1154,9 @@ epics:
         ends: 2026-10-29
   - id: compartir-vehiculo
     title: Acceso compartido a un vehiculo
-    description: "Que una familia o una pareja puedan administrar el mismo auto sin
+    description: 'Que una familia o una pareja puedan administrar el mismo auto sin
       compartir la cuenta. El charter lo lista como Could y quedo fuera del MVP: se hace
-      solo si sobra tiempo."
+      solo si sobra tiempo.'
     sprint: 3
     linear_project: Compartir vehiculo
     moscow: could
@@ -1200,9 +1200,9 @@ epics:
         ends: 2026-10-29
   - id: lista-deseos
     title: Lista de deseos del vehiculo
-    description: "Anotar las mejoras, accesorios y repuestos que el usuario quiere comprarle
+    description: 'Anotar las mejoras, accesorios y repuestos que el usuario quiere comprarle
       al vehiculo. El charter lo lista como Should, pero quedo fuera del MVP: se hace
-      solo si sobra tiempo."
+      solo si sobra tiempo.'
     sprint: 3
     linear_project: Lista de deseos
     moscow: could
@@ -1251,12 +1251,12 @@ epics:
         ends: 2026-10-29
   - id: fixes-s3
     title: Fixes y carry — Sprint 3
-    description: "Margen del Sprint 3. La ultima semana del sprint no se llena con
+    description: 'Margen del Sprint 3. La ultima semana del sprint no se llena con
       funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
       alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
       esa semana, este ticket generico se reemplaza por los tickets reales de lo que
       haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
-      que sigue."
+      que sigue.'
     sprint: 3
     linear_project: Fixes - S3
     moscow: must

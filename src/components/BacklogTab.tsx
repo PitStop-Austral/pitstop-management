@@ -1,14 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, FileWarning, Plus, Ticket, Trash2 } from 'lucide-react'
 import type { Epic, Feature, Plan } from '../types'
-import {
-  emptyEpic,
-  emptyFeature,
-  epicStats,
-  moveItem,
-  removeEpic,
-  uniqueId,
-} from '../lib/plan'
+import { emptyEpic, emptyFeature, epicStats, moveItem, removeEpic, uniqueId } from '../lib/plan'
 import { SortableList, SortableRow } from './Sortable'
 import { Button, MoscowBadge, Points, ProgressBar, StatusBadge, cn } from './ui'
 
@@ -38,7 +31,10 @@ export function BacklogTab({ plan, update, selectedId, onSelect }: Props) {
       const all = current.backlog.epics
       const fromIndex = all.findIndex((e) => e.id === visible[from].id)
       const toIndex = all.findIndex((e) => e.id === visible[to].id)
-      return { ...current, backlog: { ...current.backlog, epics: moveItem(all, fromIndex, toIndex) } }
+      return {
+        ...current,
+        backlog: { ...current.backlog, epics: moveItem(all, fromIndex, toIndex) },
+      }
     })
   }
 

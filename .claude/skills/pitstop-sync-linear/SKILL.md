@@ -80,18 +80,18 @@ salir limpio. Si algo sigue apareciendo, es que el arreglo no fue el correcto.
 La pregunta de fondo en cada diferencia es cual de los dos lados tiene razon. No es
 siempre el mismo:
 
-| Campo | Manda | Por que |
-|---|---|---|
-| `status` de la funcionalidad | **Linear** | Refleja lo que el dev realmente hizo. El plan lo copia, nunca al reves |
-| `assignee` | **Linear** | El reparto puede cambiar durante la semana |
-| Existencia del ticket (`ticket_refs`) | **Linear** | Si el ticket no esta, la funcionalidad no esta en backlog |
-| Orden de epicas y funcionalidades | **el plan** | Es la prioridad que fijo el PM desde la app |
-| `moscow`, alcance, `out_of_scope` | **el plan** | Decisiones de producto, no de ejecucion |
-| Que epica agrupa que funcionalidad | **el plan** | Linear solo tiene projects planos |
-| `estimate` | **el ultimo que cambio** | Si no se sabe cual fue, preguntar: reestimar tiene efecto sobre la capacidad de la semana |
-| `title` y `description` | **el ultimo que cambio** | Idem. Un titulo distinto suele significar que el alcance se movio |
-| Fechas (`ends` ↔ `dueDate`) | **Linear** | La `dueDate` es lo que el dev ve; el cronograma se ajusta a eso |
-| Fechas del project | **el plan** | Salen de las fechas de las funcionalidades de la epica |
+| Campo                                 | Manda                    | Por que                                                                                   |
+| ------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------- |
+| `status` de la funcionalidad          | **Linear**               | Refleja lo que el dev realmente hizo. El plan lo copia, nunca al reves                    |
+| `assignee`                            | **Linear**               | El reparto puede cambiar durante la semana                                                |
+| Existencia del ticket (`ticket_refs`) | **Linear**               | Si el ticket no esta, la funcionalidad no esta en backlog                                 |
+| Orden de epicas y funcionalidades     | **el plan**              | Es la prioridad que fijo el PM desde la app                                               |
+| `moscow`, alcance, `out_of_scope`     | **el plan**              | Decisiones de producto, no de ejecucion                                                   |
+| Que epica agrupa que funcionalidad    | **el plan**              | Linear solo tiene projects planos                                                         |
+| `estimate`                            | **el ultimo que cambio** | Si no se sabe cual fue, preguntar: reestimar tiene efecto sobre la capacidad de la semana |
+| `title` y `description`               | **el ultimo que cambio** | Idem. Un titulo distinto suele significar que el alcance se movio                         |
+| Fechas (`ends` ↔ `dueDate`)           | **Linear**               | La `dueDate` es lo que el dev ve; el cronograma se ajusta a eso                           |
+| Fechas del project                    | **el plan**              | Salen de las fechas de las funcionalidades de la epica                                    |
 
 Cuando el usuario dice explicitamente que acaba de cambiar un lado, ese lado manda,
 sin importar la tabla.
@@ -201,12 +201,12 @@ cuerpo entero.
 
 Lo mismo vale para los otros campos de `save_issue` que **reemplazan en vez de sumar**:
 
-| Campo | Como se comporta | Que hacer |
-|---|---|---|
-| `description` | Reemplaza todo el cuerpo | Usar `patch` |
-| `labels` | Reemplaza el set completo | Mandar tambien las que ya estaban |
-| `blockedBy` / `blocks` / `relatedTo` | Solo agregan, nunca sacan | Para sacar una, usar `removeBlockedBy` y compania |
-| `estimate` / `dueDate` / `project` | `null` borra, omitir no toca | Omitir lo que no se quiere cambiar |
+| Campo                                | Como se comporta             | Que hacer                                         |
+| ------------------------------------ | ---------------------------- | ------------------------------------------------- |
+| `description`                        | Reemplaza todo el cuerpo     | Usar `patch`                                      |
+| `labels`                             | Reemplaza el set completo    | Mandar tambien las que ya estaban                 |
+| `blockedBy` / `blocks` / `relatedTo` | Solo agregan, nunca sacan    | Para sacar una, usar `removeBlockedBy` y compania |
+| `estimate` / `dueDate` / `project`   | `null` borra, omitir no toca | Omitir lo que no se quiere cambiar                |
 
 Si al terminar quedaron funcionalidades nuevas sin ticket, no crearlos aca: eso lo hace
 la skill `pitstop-create-linear-tickets`, que sabe repartir la semana y escribir el

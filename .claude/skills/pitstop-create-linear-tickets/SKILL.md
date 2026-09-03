@@ -243,13 +243,13 @@ Claude Code**, y se **redondea para arriba**: la idea es que los 6 SP semanales 
 resuelvan en 4 o 4,5 horas reales y que el resto quede como margen para lo que se
 complique.
 
-| SP | Que es |
-|---|---|
-| 1 | Configuracion o cambio acotado que Claude Code resuelve casi entero y el dev solo verifica |
-| 2 | Una pantalla simple o un endpoint con su modelo, sobre un patron que ya vieron en la capacitacion |
-| 3 | Vertical completa estandar: modelo, endpoint y pantalla, todo con patrones conocidos |
-| 4 | Vertical con algo nuevo que hay que aprender primero (Firebase, Storage, push, un job) |
-| 5 | Lo mas grande permitido: algo nuevo mas varias piezas |
+| SP  | Que es                                                                                            |
+| --- | ------------------------------------------------------------------------------------------------- |
+| 1   | Configuracion o cambio acotado que Claude Code resuelve casi entero y el dev solo verifica        |
+| 2   | Una pantalla simple o un endpoint con su modelo, sobre un patron que ya vieron en la capacitacion |
+| 3   | Vertical completa estandar: modelo, endpoint y pantalla, todo con patrones conocidos              |
+| 4   | Vertical con algo nuevo que hay que aprender primero (Firebase, Storage, push, un job)            |
+| 5   | Lo mas grande permitido: algo nuevo mas varias piezas                                             |
 
 Dos cosas tiran en direcciones opuestas y hay que sopesarlas en cada ticket: Claude
 Code acelera mucho el andamiaje y el codigo repetitivo, pero son juniors y lo que
@@ -301,18 +301,18 @@ vigentes van en `blockedBy` **y ademas** escritas como `Depende de: PIT-XX` en
 
 Al crear un issue con `save_issue`:
 
-| Campo | Valor |
-|---|---|
-| `team` | `PIT` |
-| `title` | En espanol, sin prefijo de area y sin jerga (ver "El titulo se lee sin abrir el ticket") |
-| `state` | **`Backlog` siempre.** No se le asigna cycle (ver abajo) |
-| `project` | **Obligatorio.** El `linear_project` de la epica |
-| `priority` | **Obligatorio.** Es el orden de ejecucion de la semana (ver abajo) |
-| `estimate` | 1, 2, 3, 4 o 5 |
-| `dueDate` | El jueves de cierre de la semana |
-| `labels` | `Fullstack` + una de `Feature` / `Improvement` / `Bug` |
-| `assignee` | El `linear_user_id` del dev, o nada si es `null` |
-| `blockedBy` | Solo dependencias reales que sigan pendientes |
+| Campo       | Valor                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| `team`      | `PIT`                                                                                    |
+| `title`     | En espanol, sin prefijo de area y sin jerga (ver "El titulo se lee sin abrir el ticket") |
+| `state`     | **`Backlog` siempre.** No se le asigna cycle (ver abajo)                                 |
+| `project`   | **Obligatorio.** El `linear_project` de la epica                                         |
+| `priority`  | **Obligatorio.** Es el orden de ejecucion de la semana (ver abajo)                       |
+| `estimate`  | 1, 2, 3, 4 o 5                                                                           |
+| `dueDate`   | El jueves de cierre de la semana                                                         |
+| `labels`    | `Fullstack` + una de `Feature` / `Improvement` / `Bug`                                   |
+| `assignee`  | El `linear_user_id` del dev, o nada si es `null`                                         |
+| `blockedBy` | Solo dependencias reales que sigan pendientes                                            |
 
 **Ningun ticket se crea sin project y sin priority.** El project identifica la epica
 y la priority le dice al dev que agarrar primero. Si la epica tiene
@@ -328,12 +328,12 @@ primero, aunque sea un ticket de infraestructura que nadie considera "importante
 
 Sale sola del grafo de bloqueos que ya se armo para repartir la semana:
 
-| Priority | Cuando | Que le dice al dev |
-|---|---|---|
-| `1` Urgent | Bloqueante raiz: sin el no arranca nadie | Esto va el primer dia, si o si |
-| `2` High | Bloquea a otro ticket de la semana | Apenas se libere el raiz, esto |
-| `3` Medium | No bloquea ni esta bloqueado | Se puede hacer en cualquier momento |
-| `4` Low | Esta bloqueado por otros de la semana | Va al final, cuando lleguen sus dependencias |
+| Priority   | Cuando                                   | Que le dice al dev                           |
+| ---------- | ---------------------------------------- | -------------------------------------------- |
+| `1` Urgent | Bloqueante raiz: sin el no arranca nadie | Esto va el primer dia, si o si               |
+| `2` High   | Bloquea a otro ticket de la semana       | Apenas se libere el raiz, esto               |
+| `3` Medium | No bloquea ni esta bloqueado             | Se puede hacer en cualquier momento          |
+| `4` Low    | Esta bloqueado por otros de la semana    | Va al final, cuando lleguen sus dependencias |
 
 Con esos cuatro niveles el orden de la semana queda determinado por el tablero solo,
 sin que nadie tenga que leer los `blockedBy` para saber por donde empezar. Si dos
@@ -479,13 +479,13 @@ Una seccion vacia, o rellena con "no aplica" en cada bullet, es peor que no tene
 
 ### Los topes del bloque de arriba
 
-| Seccion | Tope |
-|---|---|
-| Contexto | 2 parrafos, 6 frases entre los dos |
-| Objetivo | 1 frase, mas la linea de referencia visual |
-| Que tiene que quedar andando | 3 a 6 bullets, 1 linea cada uno |
-| Por donde empezar | 3 a 5 pasos, 1 linea cada uno |
-| Palabras que vas a ver | 3 a 6 terminos, se omite entera si no hay ninguno |
+| Seccion                      | Tope                                              |
+| ---------------------------- | ------------------------------------------------- |
+| Contexto                     | 2 parrafos, 6 frases entre los dos                |
+| Objetivo                     | 1 frase, mas la linea de referencia visual        |
+| Que tiene que quedar andando | 3 a 6 bullets, 1 linea cada uno                   |
+| Por donde empezar            | 3 a 5 pasos, 1 linea cada uno                     |
+| Palabras que vas a ver       | 3 a 6 terminos, se omite entera si no hay ninguno |
 
 Estos topes no son una sugerencia. Cuando algo no entra, la respuesta nunca es apretar
 mas la letra arriba: es bajarlo al bloque tecnico, que para eso no tiene limite.
@@ -554,8 +554,8 @@ Cierra el bloque de arriba, y ese lugar es a proposito: el dev se cruza con el g
 **antes** de entrar en la especificacion, que es donde los terminos lo esperan.
 
 De 3 a 6 terminos, **solo los que realmente aparecen en el cuerpo** y que un dev de
-segundo ano probablemente no conoce. Una linea cada uno: que es y para que sirve *en
-este ticket*, no la definicion de manual.
+segundo ano probablemente no conoce. Una linea cada uno: que es y para que sirve _en
+este ticket_, no la definicion de manual.
 
 Si el ticket no introduce ningun termino nuevo, la seccion se omite entera: no
 inventar entradas de relleno. Tampoco repetir lo que ya quedo explicado en el
@@ -603,9 +603,9 @@ Es la version exacta de "Que tiene que quedar andando", mas todo lo que no se ve
 
 El mismo criterio en los dos registros, para ver la diferencia:
 
-| Lista | Como se escribe |
-|---|---|
-| Que tiene que quedar andando | El boton principal se ve rojo, es comodo de tocar en el celular y se llega a el con la tecla Tab. |
+| Lista                            | Como se escribe                                                                                                                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Que tiene que quedar andando     | El boton principal se ve rojo, es comodo de tocar en el celular y se llega a el con la tecla Tab.                                          |
 | Criterios de aceptacion tecnicos | Boton primario `bg-primary`, hover `red-700`, `h-12` y `rounded-full`; el foco muestra el ring rojo de 3px al 50% y es alcanzable con Tab. |
 
 ### El titulo se lee sin abrir el ticket
@@ -615,8 +615,8 @@ entenderse desde el tablero, sin abrirlo.
 
 - Nombres propios de herramientas, si: Firebase, Prisma, Neon, shadcn, GitHub
   Actions. Un junior los googlea y entiende que son.
-- Jerga de concepto, no: *guard*, *ID token*, *design system*, *CI*, *espejado*,
-  *boilerplate*, *scaffolding*. Si el concepto no se puede evitar, va acompanado
+- Jerga de concepto, no: _guard_, _ID token_, _design system_, _CI_, _espejado_,
+  _boilerplate_, _scaffolding_. Si el concepto no se puede evitar, va acompanado
   de lo que hace: "con chequeos automaticos en cada PR", no "con CI".
 
 ## Flujo de trabajo

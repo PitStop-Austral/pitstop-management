@@ -87,7 +87,8 @@ export function ProgressBar({
   className?: string
 }) {
   const donePct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0
-  const inProgressPct = total > 0 ? Math.min(100 - donePct, Math.round((inProgress / total) * 100)) : 0
+  const inProgressPct =
+    total > 0 ? Math.min(100 - donePct, Math.round((inProgress / total) * 100)) : 0
   return (
     <div
       className={cn('h-1.5 w-full overflow-hidden rounded-full bg-muted', className)}
@@ -104,7 +105,15 @@ export function ProgressBar({
   )
 }
 
-export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+export function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string
+  hint?: string
+  children: ReactNode
+}) {
   return (
     <label className="block">
       <span className="label">{label}</span>
