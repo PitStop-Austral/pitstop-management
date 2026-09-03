@@ -4,7 +4,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Plus,
-  ShieldAlert,
   Trash2,
   X,
 } from 'lucide-react'
@@ -97,13 +96,7 @@ export function RisksTab({ plan, update }: { plan: Plan; update: (fn: (plan: Pla
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="mb-1 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-700">
-            <ShieldAlert className="size-4" /> Control de exposición
-          </p>
-          <h2 className="font-display text-3xl tracking-tight">Riesgos e incidentes</h2>
-          <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Detectá temprano qué puede desviar el plan y convertí cada incidente en aprendizaje.
-          </p>
+          <h2 className="font-display text-2xl tracking-tight">Riesgos e incidentes</h2>
         </div>
         <Button variant="primary" onClick={createRisk} icon={<Plus className="size-4" />}>Nuevo riesgo</Button>
       </div>
