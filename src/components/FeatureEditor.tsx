@@ -2,7 +2,13 @@ import { useState } from 'react'
 import { Plus, Trash2, X } from 'lucide-react'
 import { ESTIMATES, MOSCOW, STATUSES, type Feature, type Plan } from '../types'
 import { MOSCOW_LABEL, STATUS_LABEL } from '../types'
-import { allFeatures, findFeature, moveFeatureToEpic, removeFeature, updateFeature } from '../lib/plan'
+import {
+  allFeatures,
+  findFeature,
+  moveFeatureToEpic,
+  removeFeature,
+  updateFeature,
+} from '../lib/plan'
 import { Button, Field, cn } from './ui'
 
 type Props = {

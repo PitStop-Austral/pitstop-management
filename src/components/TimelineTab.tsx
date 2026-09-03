@@ -173,7 +173,8 @@ export function TimelineTab({
           <CalendarClock className="size-4" />
           <span>
             {weeks.length} semanas · {plan.team.capacity.total_points_per_week} SP por semana, de
-            los que se planifican {round(capacity)} y {round(plan.team.capacity.total_points_per_week - capacity)} quedan de margen
+            los que se planifican {round(capacity)} y{' '}
+            {round(plan.team.capacity.total_points_per_week - capacity)} quedan de margen
           </span>
         </div>
 
@@ -204,7 +205,11 @@ export function TimelineTab({
               <ZoomIn className="size-4" />
             </IconButton>
           </div>
-          <Button onClick={() => setCollapsed(new Set(collapsed.size ? [] : plan.backlog.epics.map((e) => e.id)))}>
+          <Button
+            onClick={() =>
+              setCollapsed(new Set(collapsed.size ? [] : plan.backlog.epics.map((e) => e.id)))
+            }
+          >
             {collapsed.size ? 'Expandir todo' : 'Colapsar todo'}
           </Button>
           <Button onClick={recalculate} icon={<RotateCcw className="size-4" />}>
@@ -236,7 +241,10 @@ export function TimelineTab({
 
       <div className="card overflow-hidden">
         <Panner ref={scroller}>
-          <div className="relative" style={{ width: RAIL + totalWidth, height: HEADER + totalHeight }}>
+          <div
+            className="relative"
+            style={{ width: RAIL + totalWidth, height: HEADER + totalHeight }}
+          >
             <Header
               weeks={weeks}
               dayPx={dayPx}
@@ -300,7 +308,13 @@ function weekKeyOf(weeks: TimelineWeek[], iso: string): string | null {
 }
 
 /** Contenedor con paneo libre: se arrastra el fondo para moverse. */
-function Panner({ ref, children }: { ref: React.RefObject<HTMLDivElement | null>; children: React.ReactNode }) {
+function Panner({
+  ref,
+  children,
+}: {
+  ref: React.RefObject<HTMLDivElement | null>
+  children: React.ReactNode
+}) {
   const [panning, setPanning] = useState(false)
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -393,9 +407,7 @@ function Header({
             )}
             style={{ left: band.from * weekPx, width: band.span * weekPx, height: SPRINT_BAND }}
           >
-            <span className="truncate">
-              {band.sprint ? band.sprint.name : 'Fuera de sprint'}
-            </span>
+            <span className="truncate">{band.sprint ? band.sprint.name : 'Fuera de sprint'}</span>
             <span className="truncate font-normal text-muted-foreground">
               {band.sprint
                 ? `${band.span} sem · ${band.points}/${round(band.span * capacity)} SP · ${band.sprint.theme}`
@@ -426,7 +438,9 @@ function Header({
                 style={{ height: WEEK_ROW }}
               >
                 <span className="truncate text-[11px] font-semibold">
-                  {week.sprint ? `S${week.sprint.number} · sem ${week.numberInSprint}` : 'Sin sprint'}
+                  {week.sprint
+                    ? `S${week.sprint.number} · sem ${week.numberInSprint}`
+                    : 'Sin sprint'}
                 </span>
                 <span className="truncate text-[10px] text-muted-foreground">
                   {formatShort(week.start)} → {formatShort(week.due)}
@@ -436,7 +450,8 @@ function Header({
               <div
                 className={cn(
                   'flex flex-col justify-center gap-1 border-b border-border px-1.5',
-                  free && 'bg-[repeating-linear-gradient(135deg,#f4f4f5_0_6px,transparent_6px_12px)]',
+                  free &&
+                    'bg-[repeating-linear-gradient(135deg,#f4f4f5_0_6px,transparent_6px_12px)]',
                 )}
                 style={{ height: CAPACITY_ROW }}
               >
@@ -492,7 +507,15 @@ function Rail({ children, className }: { children: React.ReactNode; className?: 
   )
 }
 
-function RowShell({ y, children, className }: { y: number; children: React.ReactNode; className?: string }) {
+function RowShell({
+  y,
+  children,
+  className,
+}: {
+  y: number
+  children: React.ReactNode
+  className?: string
+}) {
   return (
     <div
       className={cn('absolute inset-x-0 flex border-b border-border', className)}
@@ -549,8 +572,12 @@ function EpicRow({
   onToggle: () => void
 }) {
   const dated = row.epic.features.filter((f) => f.starts && f.ends)
-  const from = dated.length ? dated.reduce((min, f) => (f.starts! < min ? f.starts! : min), dated[0].starts!) : null
-  const to = dated.length ? dated.reduce((max, f) => (f.ends! > max ? f.ends! : max), dated[0].ends!) : null
+  const from = dated.length
+    ? dated.reduce((min, f) => (f.starts! < min ? f.starts! : min), dated[0].starts!)
+    : null
+  const to = dated.length
+    ? dated.reduce((max, f) => (f.ends! > max ? f.ends! : max), dated[0].ends!)
+    : null
   const stats = epicStats(row.epic)
 
   return (
@@ -562,7 +589,9 @@ function EpicRow({
           aria-label={row.collapsed ? 'Expandir' : 'Contraer'}
           className="shrink-0 text-muted-foreground transition hover:text-foreground"
         >
-          <ChevronDown className={cn('size-4 transition-transform', row.collapsed && '-rotate-90')} />
+          <ChevronDown
+            className={cn('size-4 transition-transform', row.collapsed && '-rotate-90')}
+          />
         </button>
         <span className="size-2.5 shrink-0 rounded-full" style={{ background: row.color.bar }} />
         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -589,7 +618,11 @@ function EpicRow({
       {from && to ? (
         <div
           className="absolute top-1/2 h-2 -translate-y-1/2 rounded-full opacity-40"
-          style={{ left: RAIL + x(from), width: Math.max(4, x(to) - x(from)), background: row.color.bar }}
+          style={{
+            left: RAIL + x(from),
+            width: Math.max(4, x(to) - x(from)),
+            background: row.color.bar,
+          }}
         />
       ) : null}
     </RowShell>
@@ -613,9 +646,7 @@ function FeatureRow({
   const points = featurePoints(feature.estimate)
   const left = feature.starts ? RAIL + x(feature.starts) : null
   const width =
-    feature.starts && feature.ends
-      ? Math.max(dayPx * 2, x(feature.ends) - x(feature.starts))
-      : 0
+    feature.starts && feature.ends ? Math.max(dayPx * 2, x(feature.ends) - x(feature.starts)) : 0
 
   return (
     <RowShell y={row.y} className={cn(selected && 'bg-brand-50/50')}>

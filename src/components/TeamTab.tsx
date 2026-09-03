@@ -52,8 +52,8 @@ export function TeamTab({ plan, update }: { plan: Plan; update: (fn: (p: Plan) =
             <div className="mt-4 flex items-center justify-between gap-3 rounded-xl bg-warning-soft px-3 py-2">
               <p className="flex items-start gap-2 text-xs text-[#92400e]">
                 <AlertTriangle className="mt-px size-3.5 shrink-0" />
-                El yaml declara {capacity.developers} devs y {capacity.total_points_per_week} SP, pero
-                las personas suman {devs.length} y {totalPoints} SP.
+                El yaml declara {capacity.developers} devs y {capacity.total_points_per_week} SP,
+                pero las personas suman {devs.length} y {totalPoints} SP.
               </p>
               <Button onClick={syncCapacity} icon={<RefreshCw className="size-3.5" />}>
                 Sincronizar

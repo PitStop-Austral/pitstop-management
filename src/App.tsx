@@ -140,7 +140,9 @@ export function App() {
                 onClick={() => setTab(item.id)}
                 className={cn(
                   'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition',
-                  tab === item.id ? 'bg-foreground text-white' : 'text-muted-foreground hover:bg-muted',
+                  tab === item.id
+                    ? 'bg-foreground text-white'
+                    : 'text-muted-foreground hover:bg-muted',
                 )}
               >
                 <item.icon className="size-4" />

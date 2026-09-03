@@ -50,9 +50,7 @@ export type TimelineWeek = {
 
 function sprintOf(sprints: Sprint[], due: Date): Sprint | null {
   return (
-    sprints.find(
-      (sprint) => parseISO(sprint.starts) <= due && due <= parseISO(sprint.ends),
-    ) ?? null
+    sprints.find((sprint) => parseISO(sprint.starts) <= due && due <= parseISO(sprint.ends)) ?? null
   )
 }
 

@@ -3,9 +3,9 @@
 # asi que los comentarios que agregues aca se van a perder.
 meta:
   updated: 2026-08-31
-  notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
+  notes: 'Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
     dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
-    verificados contra el workspace pitstop-austral."
+    verificados contra el workspace pitstop-austral.'
 project:
   name: PitStop
   charter: ../../CLAUDE.md
@@ -80,11 +80,11 @@ project:
     - ESLint
     - Prettier
     - React Router
-  forbidden_notes: "capacitacion/APP-CONTEXT.md tambien prohibe React Query y shadcn, pero
+  forbidden_notes: 'capacitacion/APP-CONTEXT.md tambien prohibe React Query y shadcn, pero
     eso aplica al proyecto de practica (Changuito), no al MVP: aca estan permitidos.
     ESLint y Prettier estan prohibidos porque el template usa Oxlint y Oxfmt con la
     configuracion en la raiz. React Router esta prohibido porque el ruteo lo resuelve
-    TanStack Router, que ya viene en el template."
+    TanStack Router, que ya viene en el template.'
 linear:
   mcp_server: 73fb21e2-edf7-4f5a-9087-7c11a7c50efa
   mcp_notes: Hay dos servidores MCP de Linear conectados. El de PitStop es este, no el default.
@@ -106,9 +106,9 @@ linear:
 week:
   starts_on: thursday
   length_days: 7
-  notes: "Las semanas del equipo van de jueves a jueves. Los tickets se cargan antes del
+  notes: 'Las semanas del equipo van de jueves a jueves. Los tickets se cargan antes del
     jueves de arranque y vencen el jueves siguiente: si se crean el lunes 10, los devs
-    arrancan el jueves 13 y la fecha limite es el jueves 20."
+    arrancan el jueves 13 y la fecha limite es el jueves 20.'
 capacity:
   developers: 3
   points_per_developer_per_week: 6
@@ -238,7 +238,7 @@ people:
 definition_of_done:
   - Existe una rama `feat/PIT-XX-descripcion` con el trabajo.
   - El PR fue aprobado por un companero y mergeado.
-  - "`npm run build` pasa sin errores de TypeScript."
+  - '`npm run build` pasa sin errores de TypeScript.'
   - Lo que agrega o cambia un endpoint tiene sus tests de Jest en el mismo ticket. El
     frontend no lleva tests automatizados.
   - La funcionalidad se probo corriendo la app, no solo compilando.

@@ -18,7 +18,10 @@ const arg = (name, def) => {
 }
 const asJson = argv.includes('--json')
 const escalaVieja = new Set(
-  (arg('--escala-vieja', '') || '').split(',').map((x) => x.trim()).filter(Boolean),
+  (arg('--escala-vieja', '') || '')
+    .split(',')
+    .map((x) => x.trim())
+    .filter(Boolean),
 )
 const planDir = path.resolve(arg('--plan', 'project-plan'))
 const linearPath = arg('--linear')
@@ -72,26 +75,42 @@ for (const { epic, f } of feats) {
   for (const r of refs) {
     const t = byId.get(r)
     if (!t) {
-      add('ref colgante', 'alta', f.id,
+      add(
+        'ref colgante',
+        'alta',
+        f.id,
         `${r} esta en ticket_refs pero no existe en Linear`,
-        `borrarlo de ticket_refs, o volver a crear el ticket si se borro por error`)
+        `borrarlo de ticket_refs, o volver a crear el ticket si se borro por error`,
+      )
       continue
     }
     if (CANCELADO.has(t.status)) {
-      add('ticket cancelado', 'alta', f.id,
+      add(
+        'ticket cancelado',
+        'alta',
+        f.id,
         `${r} esta cancelado en Linear y sigue en ticket_refs`,
-        `sacarlo de ticket_refs; si la funcionalidad queda sin tickets, status vuelve a todo`)
+        `sacarlo de ticket_refs; si la funcionalidad queda sin tickets, status vuelve a todo`,
+      )
     }
     const proyEsperado = epic.linear_project
     if (t.project && proyEsperado && t.project !== proyEsperado) {
-      add('project cruzado', 'media', f.id,
+      add(
+        'project cruzado',
+        'media',
+        f.id,
         `${r} esta en el project "${t.project}" y su epica apunta a "${proyEsperado}"`,
-        `mover el ticket al project de la epica, o corregir linear_project`)
+        `mover el ticket al project de la epica, o corregir linear_project`,
+      )
     }
     if (t.dueDate && f.ends && t.dueDate !== f.ends) {
-      add('fecha', 'media', f.id,
+      add(
+        'fecha',
+        'media',
+        f.id,
         `${r} vence ${t.dueDate} y la funcionalidad termina ${f.ends}`,
-        `alinear ends con la dueDate del ticket (la dueDate es lo que ve el dev)`)
+        `alinear ends con la dueDate del ticket (la dueDate es lo que ve el dev)`,
+      )
     }
   }
 
@@ -100,15 +119,23 @@ for (const { epic, f } of feats) {
   if (vivos.length === 1 && !escalaVieja.has(epic.id)) {
     const e = vivos[0].estimate?.value ?? vivos[0].estimate
     if (e != null && f.estimate != null && e !== f.estimate) {
-      add('estimacion', 'media', f.id,
+      add(
+        'estimacion',
+        'media',
+        f.id,
         `${vivos[0].id} vale ${e} SP en Linear y ${f.estimate} SP en el plan`,
-        `decidir cual es la buena y escribirla en los dos lados`)
+        `decidir cual es la buena y escribirla en los dos lados`,
+      )
     }
     const t = vivos[0]
     if (t.title && f.title && t.title.trim() !== f.title.trim()) {
-      add('titulo', 'baja', f.id,
+      add(
+        'titulo',
+        'baja',
+        f.id,
         `${t.id}: "${t.title}" / plan: "${f.title}"`,
-        `no siempre es un error, pero si el alcance cambio hay que alinear los dos`)
+        `no siempre es un error, pero si el alcance cambio hay que alinear los dos`,
+      )
     }
   }
 
@@ -116,15 +143,23 @@ for (const { epic, f } of feats) {
   if (derivado !== f.status) {
     // blocked lo pone una persona a mano y Linear no lo representa.
     if (f.status !== 'blocked') {
-      add('estado', 'alta', f.id,
+      add(
+        'estado',
+        'alta',
+        f.id,
         `el plan dice ${f.status} y sus tickets en Linear dan ${derivado}`,
-        `poner status: ${derivado}`)
+        `poner status: ${derivado}`,
+      )
     }
   }
   if (refs.length === 0 && f.status === 'backlog') {
-    add('estado', 'alta', f.id,
+    add(
+      'estado',
+      'alta',
+      f.id,
       `esta en backlog pero no tiene ticket_refs`,
-      `crear el ticket, o volver el status a todo`)
+      `crear el ticket, o volver el status a todo`,
+    )
   }
 }
 
@@ -133,33 +168,53 @@ for (const t of issues) {
   if (IGNORAR.has(t.id)) continue
   if (refDe.has(t.id)) continue
   if (CANCELADO.has(t.status)) continue
-  add('ticket huerfano', 'alta', t.id,
+  add(
+    'ticket huerfano',
+    'alta',
+    t.id,
     `"${t.title}" (${t.project ?? 'sin project'}, ${t.status}) no figura en ningun ticket_refs`,
-    `agregarlo a la funcionalidad que le corresponde, o crear esa funcionalidad si falta`)
+    `agregarlo a la funcionalidad que le corresponde, o crear esa funcionalidad si falta`,
+  )
 }
 
 // Epicas y projects.
 const proyPorNombre = new Map(projects.map((p) => [p.name, p]))
 for (const e of plan.epics ?? []) {
   if (!e.linear_project) {
-    add('project', 'alta', e.id, `la epica no tiene linear_project`,
-      `crear el project en Linear y anotar su nombre en la epica`)
+    add(
+      'project',
+      'alta',
+      e.id,
+      `la epica no tiene linear_project`,
+      `crear el project en Linear y anotar su nombre en la epica`,
+    )
     continue
   }
   const p = proyPorNombre.get(e.linear_project)
   if (!p) {
-    add('project', 'alta', e.id,
+    add(
+      'project',
+      'alta',
+      e.id,
       `"${e.linear_project}" no existe en Linear`,
-      `crearlo, o corregir el nombre en la epica (tiene que coincidir exacto)`)
+      `crearlo, o corregir el nombre en la epica (tiene que coincidir exacto)`,
+    )
     continue
   }
-  const fechas = (e.features ?? []).flatMap((f) => [f.starts, f.ends]).filter(Boolean).sort()
+  const fechas = (e.features ?? [])
+    .flatMap((f) => [f.starts, f.ends])
+    .filter(Boolean)
+    .sort()
   if (fechas.length) {
     const [ini, fin] = [fechas[0], fechas[fechas.length - 1]]
     if (p.startDate !== ini || p.targetDate !== fin) {
-      add('fechas del project', 'media', e.id,
+      add(
+        'fechas del project',
+        'media',
+        e.id,
         `Linear: ${p.startDate} → ${p.targetDate} | plan: ${ini} → ${fin}`,
-        `actualizar las fechas del project en Linear`)
+        `actualizar las fechas del project en Linear`,
+      )
     }
   }
 }
@@ -168,9 +223,13 @@ for (const e of plan.epics ?? []) {
 const proyDeEpica = new Set((plan.epics ?? []).map((e) => e.linear_project).filter(Boolean))
 for (const p of projects) {
   if (!proyDeEpica.has(p.name)) {
-    add('project huerfano', 'media', p.name,
+    add(
+      'project huerfano',
+      'media',
+      p.name,
       `existe en Linear y ninguna epica lo referencia`,
-      `asignarlo a una epica, o archivarlo si quedo de una version vieja del plan`)
+      `asignarlo a una epica, o archivarlo si quedo de una version vieja del plan`,
+    )
   }
 }
 
@@ -178,9 +237,13 @@ for (const p of projects) {
 for (const s of team.sprints ?? []) {
   for (const nombre of s.linear_projects ?? []) {
     if (!proyPorNombre.has(nombre)) {
-      add('sprint', 'media', `Sprint ${s.number}`,
+      add(
+        'sprint',
+        'media',
+        `Sprint ${s.number}`,
         `team.yaml lista el project "${nombre}" y no existe en Linear`,
-        `crearlo o corregir el nombre en team.yaml`)
+        `crearlo o corregir el nombre en team.yaml`,
+      )
     }
   }
 }

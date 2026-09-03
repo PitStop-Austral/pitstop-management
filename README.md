@@ -44,19 +44,19 @@ funcionalidad se abre el panel de edicion.
 Cada funcionalidad tiene ademas una **fecha de inicio y una de fin** estimadas, que son
 las que dibuja el Cronograma. La fecha de fin es la fecha limite del ticket.
 
-Lo que mas importa de cada funcionalidad es la **descripcion**: ahi se escribe *que*
-tiene que pasar, en criollo. El *como* lo resuelve Claude leyendo esa descripcion y
+Lo que mas importa de cada funcionalidad es la **descripcion**: ahi se escribe _que_
+tiene que pasar, en criollo. El _como_ lo resuelve Claude leyendo esa descripcion y
 mirando los archivos del prototipo que le indiques en "Referencias del prototipo".
 
 Los estados siguen el mismo flujo que Linear:
 
-| Estado | Que significa |
-|---|---|
+| Estado     | Que significa                                                   |
+| ---------- | --------------------------------------------------------------- |
 | Sin ticket | Todavia no se subio a Linear. Es lo unico que Claude planifica. |
-| En Linear | El ticket ya existe (lo marca Claude al crearlo). |
-| En curso | Alguien lo esta trabajando. |
-| Terminado | Cumple la definicion de terminado. |
-| Bloqueado | No se puede avanzar. |
+| En Linear  | El ticket ya existe (lo marca Claude al crearlo).               |
+| En curso   | Alguien lo esta trabajando.                                     |
+| Terminado  | Cumple la definicion de terminado.                              |
+| Bloqueado  | No se puede avanzar.                                            |
 
 **Cronograma.** La timeline estilo Gantt de todo el proyecto: sprints, epicas y
 tickets sobre semanas de jueves a jueves. Se panea arrastrando el fondo y se hace zoom
@@ -137,11 +137,11 @@ capacidad de cada sprint.
 
 Ojo con no confundir tres cosas distintas:
 
-| | Que es | Stack |
-|---|---|---|
-| `../PitStop Prototype/` | La referencia visual, con datos mock | Next.js |
-| El MVP | Lo que hay que construir | Vite + React Router, NestJS + Prisma, Neon, Firebase, Vercel |
-| Esta app | La herramienta de planificacion | Vite + React |
+|                         | Que es                               | Stack                                                        |
+| ----------------------- | ------------------------------------ | ------------------------------------------------------------ |
+| `../PitStop Prototype/` | La referencia visual, con datos mock | Next.js                                                      |
+| El MVP                  | Lo que hay que construir             | Vite + React Router, NestJS + Prisma, Neon, Firebase, Vercel |
+| Esta app                | La herramienta de planificacion      | Vite + React                                                 |
 
 El prototipo define **el comportamiento**; la implementacion se traduce al stack del
 MVP.

@@ -98,11 +98,7 @@ export function WeekPanel({ plan }: { plan: Plan }) {
             label="Arranca"
           />
           <Cell value={`${capacity} SP`} label="Capacidad (3 devs × 6)" />
-          <Cell
-            value={`${points} SP`}
-            label="Estimado de la selección"
-            warn={points > capacity}
-          />
+          <Cell value={`${points} SP`} label="Estimado de la selección" warn={points > capacity} />
         </div>
       </section>
 
@@ -126,8 +122,9 @@ export function WeekPanel({ plan }: { plan: Plan }) {
         {unassigned.length > 0 ? (
           <p className="mt-2 flex items-start gap-2 rounded-xl bg-warning-soft px-3 py-2 text-xs text-[#92400e]">
             <AlertTriangle className="mt-px size-3.5 shrink-0" />
-            {unassigned.map((p) => p.name).join(', ')} no {unassigned.length === 1 ? 'tiene' : 'tienen'}{' '}
-            linear_user_id: sus tickets van a quedar sin asignar.
+            {unassigned.map((p) => p.name).join(', ')} no{' '}
+            {unassigned.length === 1 ? 'tiene' : 'tienen'} linear_user_id: sus tickets van a quedar
+            sin asignar.
           </p>
         ) : null}
       </section>
