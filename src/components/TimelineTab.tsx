@@ -20,6 +20,7 @@ import {
 } from '../lib/schedule'
 import { epicColors, type EpicColor } from '../lib/epicColor'
 import { epicStats } from '../lib/plan'
+import { isActiveRisk, riskScore } from '../lib/risks'
 import { Button, ProgressBar, cn } from './ui'
 
 const RAIL = 248
@@ -35,7 +36,7 @@ const PAN_THRESHOLD = 4
 type Row =
   | { kind: 'sprint'; key: string; y: number; sprint: Sprint | null; weeks: TimelineWeek[] }
   | { kind: 'epic'; key: string; y: number; epic: Epic; color: EpicColor; collapsed: boolean }
-  | { kind: 'feature'; key: string; y: number; epic: Epic; feature: Feature; color: EpicColor }
+  | { kind: 'feature'; key: string; y: number; epic: Epic; feature: Feature; color: EpicColor; criticalRisk: boolean }
 
 export function TimelineTab({
   plan,
@@ -115,12 +116,15 @@ export function TimelineTab({
 
       if (isCollapsed) continue
       for (const feature of epic.features) {
-        list.push({ kind: 'feature', key: feature.id, y, epic, feature, color })
+        const criticalRisk = plan.riskRegister.risks.some(
+          (risk) => risk.related_feature_ids.includes(feature.id) && isActiveRisk(risk) && riskScore(risk) >= 15,
+        )
+        list.push({ kind: 'feature', key: feature.id, y, epic, feature, color, criticalRisk })
         y += ROW
       }
     }
     return list
-  }, [plan.backlog.epics, colors, collapsed, weeks])
+  }, [plan.backlog.epics, plan.riskRegister.risks, colors, collapsed, weeks])
 
   const totalHeight = (rows.at(-1)?.y ?? 0) + ROW
 
@@ -609,7 +613,7 @@ function FeatureRow({
   selected: boolean
   onSelect: () => void
 }) {
-  const { feature, color, epic } = row
+  const { feature, color, epic, criticalRisk } = row
   const points = featurePoints(feature.estimate)
   const left = feature.starts ? RAIL + x(feature.starts) : null
   const width =
@@ -630,7 +634,8 @@ function FeatureRow({
         >
           {feature.title}
         </button>
-        <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">{points}</span>
+          {criticalRisk ? <AlertTriangle className="size-3 shrink-0 text-brand-700" aria-label="Riesgo crítico" /> : null}
+          <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">{points}</span>
       </Rail>
 
       {left !== null && width > 0 ? (
@@ -642,6 +647,7 @@ function FeatureRow({
             'absolute top-1/2 flex h-6 -translate-y-1/2 items-center gap-1 overflow-hidden rounded-md px-1.5 text-[10px] font-semibold text-white transition',
             'hover:brightness-110',
             selected && 'ring-2 ring-foreground ring-offset-1',
+            criticalRisk && 'ring-2 ring-brand/40 ring-offset-1',
             feature.status === 'done' && 'opacity-55',
           )}
           style={{
@@ -653,6 +659,7 @@ function FeatureRow({
           }}
         >
           {epic.fixes ? <Wrench className="size-3 shrink-0" /> : null}
+          {criticalRisk ? <AlertTriangle className="size-3 shrink-0" /> : null}
           {feature.status === 'done' ? <Check className="size-3 shrink-0" /> : null}
           <span className="truncate">{feature.title}</span>
         </button>

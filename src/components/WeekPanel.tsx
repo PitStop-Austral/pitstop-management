@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { AlertTriangle, ClipboardCheck, Copy, Link2 } from 'lucide-react'
 import type { Epic, Feature, Plan } from '../types'
 import { daysUntil, formatShort, planningWeek, toISO } from '../lib/week'
+import { exposureLevel, EXPOSURE_LABEL, isReviewOverdue, isActiveRisk, riskScore } from '../lib/risks'
 import { Button, Points, SectionTitle, cn } from './ui'
 
 type Candidate = {
@@ -58,6 +59,13 @@ export function WeekPanel({ plan }: { plan: Plan }) {
   const points = candidates.reduce((sum, c) => sum + (c.feature.estimate ?? 3), 0)
   const capacity = plan.team.capacity.total_points_per_week
   const unassigned = plan.team.people.filter((p) => p.takes_tickets && !p.linear_user_id)
+  const attentionRisks = plan.riskRegister.risks.filter(
+    (risk) => risk.related_sprint === week.sprint?.number && isActiveRisk(risk) && riskScore(risk) >= 10,
+  )
+  const overdueRisks = plan.riskRegister.risks.filter((risk) => isReviewOverdue(risk))
+  const openIncidents = plan.riskRegister.incidents.filter(
+    (incident) => incident.status === 'open' || incident.status === 'investigating',
+  )
 
   const prompt = [
     `Armá los tickets de la semana del ${formatShort(week.start)} al ${formatShort(week.due)}`,
@@ -104,6 +112,23 @@ export function WeekPanel({ plan }: { plan: Plan }) {
             warn={points > capacity}
           />
         </div>
+      </section>
+
+      <section>
+        <SectionTitle>
+          <span className="flex items-center gap-2"><AlertTriangle className="size-4 text-brand-700" />Atención esta semana</span>
+        </SectionTitle>
+        {attentionRisks.length === 0 && overdueRisks.length === 0 && openIncidents.length === 0 ? (
+          <div className="card flex items-center gap-3 p-4 text-sm text-muted-foreground">
+            <ClipboardCheck className="size-5 text-success" /> No hay exposiciones ni incidentes que requieran atención inmediata.
+          </div>
+        ) : (
+          <div className="card divide-y divide-border overflow-hidden">
+            {attentionRisks.map((risk) => <AttentionRow key={risk.id} tone={exposureLevel(riskScore(risk)) === 'critical' ? 'critical' : 'warning'} title={risk.title} detail={`${riskScore(risk)} puntos · ${EXPOSURE_LABEL[exposureLevel(riskScore(risk))]} · S${risk.related_sprint}`} />)}
+            {overdueRisks.map((risk) => <AttentionRow key={`overdue-${risk.id}`} tone="warning" title={`Revisión vencida: ${risk.title}`} detail={risk.review_date ? `Debía revisarse el ${formatShort(new Date(`${risk.review_date}T00:00:00`))}` : 'Sin fecha de revisión'} />)}
+            {openIncidents.map((incident) => <AttentionRow key={`incident-${incident.id}`} tone="critical" title={incident.title} detail={`Incidente ${incident.status === 'investigating' ? 'en investigación' : 'abierto'} · ${incident.severity}`} />)}
+          </div>
+        )}
       </section>
 
       <section>
@@ -174,6 +199,10 @@ export function WeekPanel({ plan }: { plan: Plan }) {
       </section>
     </div>
   )
+}
+
+function AttentionRow({ title, detail, tone }: { title: string; detail: string; tone: 'critical' | 'warning' }) {
+  return <div className="flex items-center gap-3 px-4 py-3"><span className={cn('size-2 shrink-0 rounded-full', tone === 'critical' ? 'bg-brand' : 'bg-warning')} /><div className="min-w-0"><p className="truncate text-sm font-semibold">{title}</p><p className="text-[11px] text-muted-foreground">{detail}</p></div></div>
 }
 
 function Cell({ value, label, warn }: { value: string; label: string; warn?: boolean }) {

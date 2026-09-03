@@ -1,0 +1,38 @@
+# Generado por PitStop Management (npm run dev).
+# Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
+# asi que los comentarios que agregues aca se van a perder.
+meta:
+  updated: 2026-09-03
+  notes: Registro de riesgos e incidentes del proyecto.
+risks: []
+incidents:
+  - id: nuevo-incidente
+    title: El QA se ausentó una semana
+    description: ""
+    status: resolved
+    severity: medium
+    occurred_at: 2026-08-31
+    detected_at: 2026-08-31
+    resolved_at: 2026-09-03
+    owner_id: null
+    risk_id: null
+    related_feature_ids: []
+    impact_description: ""
+    resolution: El PO y el Teach Lead cubrieron su tarea de revisar PRs
+    lessons_learned: Avisar con previo aviso si algún integrante va a estar ausente por algun viaje
+  - id: nuevo-incidente-2
+    title: Mala configuración de las envs de prod
+    description: En el deploy de Vercel se configuro incorrectamente la env que indica la
+      URL de la API
+    status: open
+    severity: medium
+    occurred_at: 2026-09-03
+    detected_at: 2026-09-03
+    resolved_at: null
+    owner_id: juan-cruz
+    risk_id: null
+    related_feature_ids:
+      - deploy-web-api
+    impact_description: ""
+    resolution: ""
+    lessons_learned: ""

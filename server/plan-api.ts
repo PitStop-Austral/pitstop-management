@@ -11,6 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FILES = {
   backlog: path.join(root, 'project-plan', 'features.yaml'),
   team: path.join(root, 'project-plan', 'team.yaml'),
+  risks: path.join(root, 'project-plan', 'risks.yaml'),
 }
 
 /** El prototipo vive fuera de este repo; si no esta, el autocompletado queda vacio. */
@@ -37,11 +38,12 @@ async function writeYaml(file: string, data: unknown): Promise<void> {
 }
 
 export async function readPlan(): Promise<Plan> {
-  const [backlog, team] = await Promise.all([
+  const [backlog, team, riskRegister] = await Promise.all([
     readYaml<Plan['backlog']>(FILES.backlog),
     readYaml<Plan['team']>(FILES.team),
+    readYaml<Plan['riskRegister']>(FILES.risks),
   ])
-  return { backlog, team }
+  return { backlog, team, riskRegister }
 }
 
 /**
@@ -53,6 +55,9 @@ function validate(plan: unknown): string | null {
   if (!p || typeof p !== 'object') return 'El cuerpo no es un objeto'
   if (!p.backlog || !Array.isArray(p.backlog.epics)) return 'Falta backlog.epics'
   if (!p.team || !Array.isArray(p.team.people)) return 'Falta team.people'
+  if (!p.riskRegister || !Array.isArray(p.riskRegister.risks) || !Array.isArray(p.riskRegister.incidents)) {
+    return 'Falta riskRegister.risks o riskRegister.incidents'
+  }
   if (p.backlog.epics.length === 0) return 'El backlog no puede quedar sin epicas'
   if (p.team.people.length === 0) return 'El equipo no puede quedar vacio'
 
@@ -68,11 +73,52 @@ function validate(plan: unknown): string | null {
       ids.add(feature.id)
     }
   }
+  const people = new Set(p.team.people.map((person) => person.id))
+  const features = new Set(p.backlog.epics.flatMap((epic) => epic.features.map((feature) => feature.id)))
+  const sprints = new Set((p.team.sprints ?? []).map((sprint) => sprint.number))
+  const riskIds = new Set<string>()
+  const validRiskCategories = new Set(['technical', 'schedule', 'scope', 'people', 'external'])
+  const validRiskStatuses = new Set(['open', 'monitoring', 'mitigated', 'closed', 'materialized'])
+  const validIncidentStatuses = new Set(['open', 'investigating', 'resolved', 'closed'])
+  const validSeverities = new Set(['low', 'medium', 'high', 'critical'])
+  const date = /^\d{4}-\d{2}-\d{2}$/
+
+  for (const risk of p.riskRegister.risks) {
+    if (!risk.id || ids.has(risk.id) || riskIds.has(risk.id)) return `Id de riesgo repetido: ${risk.id}`
+    riskIds.add(risk.id)
+    ids.add(risk.id)
+    if (!validRiskCategories.has(risk.category)) return `Categoría inválida en riesgo ${risk.id}`
+    if (!validRiskStatuses.has(risk.status)) return `Estado inválido en riesgo ${risk.id}`
+    if (!Number.isInteger(risk.probability) || risk.probability < 1 || risk.probability > 5) return `La probabilidad del riesgo ${risk.id} debe ser un entero entre 1 y 5`
+    if (!Number.isInteger(risk.impact) || risk.impact < 1 || risk.impact > 5) return `El impacto del riesgo ${risk.id} debe ser un entero entre 1 y 5`
+    if (risk.probability * risk.impact >= 10 && (!risk.owner_id || !risk.mitigation_plan?.trim() || !risk.review_date)) return `Un riesgo alto o crítico requiere responsable, mitigación y fecha de revisión: ${risk.id}`
+    if (risk.owner_id != null && !people.has(risk.owner_id)) return `Persona inexistente en riesgo ${risk.id}: ${risk.owner_id}`
+    if (!date.test(risk.identified_at) || (risk.review_date != null && !date.test(risk.review_date))) return `Fecha inválida en riesgo ${risk.id}`
+    if (risk.related_sprint != null && !sprints.has(risk.related_sprint)) return `Sprint inexistente en riesgo ${risk.id}`
+    if (!Array.isArray(risk.related_feature_ids) || risk.related_feature_ids.some((id) => !features.has(id))) return `Funcionalidad inexistente en riesgo ${risk.id}`
+  }
+
+  for (const incident of p.riskRegister.incidents) {
+    if (!incident.id || ids.has(incident.id)) return `Id de incidente repetido: ${incident.id}`
+    ids.add(incident.id)
+    ids.add(incident.id)
+    if (!validIncidentStatuses.has(incident.status)) return `Estado inválido en incidente ${incident.id}`
+    if (!validSeverities.has(incident.severity)) return `Severidad inválida en incidente ${incident.id}`
+    if (!date.test(incident.occurred_at) || !date.test(incident.detected_at) || (incident.resolved_at != null && !date.test(incident.resolved_at))) return `Fecha inválida en incidente ${incident.id}`
+    if (incident.owner_id != null && !people.has(incident.owner_id)) return `Persona inexistente en incidente ${incident.id}: ${incident.owner_id}`
+    if (incident.risk_id != null && !riskIds.has(incident.risk_id)) return `Riesgo inexistente en incidente ${incident.id}: ${incident.risk_id}`
+    if (!Array.isArray(incident.related_feature_ids) || incident.related_feature_ids.some((id) => !features.has(id))) return `Funcionalidad inexistente en incidente ${incident.id}`
+    if ((incident.status === 'resolved' || incident.status === 'closed') && (!incident.resolution?.trim() || !incident.lessons_learned?.trim())) return `Un incidente resuelto requiere resolución y lecciones aprendidas: ${incident.id}`
+  }
   return null
 }
 
 export async function writePlan(plan: Plan): Promise<void> {
-  await Promise.all([writeYaml(FILES.backlog, plan.backlog), writeYaml(FILES.team, plan.team)])
+  await Promise.all([
+    writeYaml(FILES.backlog, plan.backlog),
+    writeYaml(FILES.team, plan.team),
+    writeYaml(FILES.risks, plan.riskRegister),
+  ])
 }
 
 /** Rutas del prototipo relativas a su raiz, para el autocompletado del editor. */

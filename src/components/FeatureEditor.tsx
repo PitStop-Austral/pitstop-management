@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Plus, Trash2, X } from 'lucide-react'
+import { AlertTriangle, Plus, Trash2, X } from 'lucide-react'
 import { ESTIMATES, MOSCOW, STATUSES, type Feature, type Plan } from '../types'
 import { MOSCOW_LABEL, STATUS_LABEL } from '../types'
 import { allFeatures, findFeature, moveFeatureToEpic, removeFeature, updateFeature } from '../lib/plan'
+import { isActiveRisk, linkRiskFeature, riskScore } from '../lib/risks'
 import { Button, Field, cn } from './ui'
 
 type Props = {
@@ -212,6 +213,30 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
                     <span className="block truncate text-[10px] text-muted-foreground">
                       S{otherEpic.sprint} · {otherEpic.title}
                     </span>
+                  </span>
+                </label>
+              )
+            })}
+          </div>
+        </div>
+
+        <div>
+          <span className="label">Riesgos asociados</span>
+          <p className="mb-2 text-[11px] text-muted-foreground">
+            Exposiciones que pueden afectar esta funcionalidad. Los críticos aparecen también en el cronograma.
+          </p>
+          <div className="max-h-40 space-y-0.5 overflow-y-auto rounded-xl border border-border p-1.5">
+            {plan.riskRegister.risks.length === 0 ? (
+              <p className="px-2 py-2 text-[11px] text-muted-foreground">No hay riesgos cargados todavía.</p>
+            ) : plan.riskRegister.risks.map((risk) => {
+              const checked = risk.related_feature_ids.includes(featureId)
+              const critical = riskScore(risk) >= 15 && isActiveRisk(risk)
+              return (
+                <label key={risk.id} className={cn('flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-xs transition', checked && 'bg-brand-50')}>
+                  <input type="checkbox" className="mt-0.5 accent-[#e10600]" checked={checked} onChange={(event) => update((current) => linkRiskFeature(current, risk.id, featureId, event.target.checked))} />
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-1 font-medium"><span className="truncate">{risk.title}</span>{critical ? <AlertTriangle className="size-3 shrink-0 text-brand-700" /> : null}</span>
+                    <span className="block text-[10px] text-muted-foreground">{riskScore(risk)} puntos · {risk.status}</span>
                   </span>
                 </label>
               )

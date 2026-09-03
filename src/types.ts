@@ -105,4 +105,86 @@ export type Team = {
   definition_of_done: string[]
 }
 
-export type Plan = { backlog: Backlog; team: Team }
+export type RiskCategory = 'technical' | 'schedule' | 'scope' | 'people' | 'external'
+export type RiskStatus = 'open' | 'monitoring' | 'mitigated' | 'closed' | 'materialized'
+export type IncidentStatus = 'open' | 'investigating' | 'resolved' | 'closed'
+export type IncidentSeverity = 'low' | 'medium' | 'high' | 'critical'
+export type ExposureLevel = 'low' | 'medium' | 'high' | 'critical'
+
+export const RISK_CATEGORIES: RiskCategory[] = ['technical', 'schedule', 'scope', 'people', 'external']
+export const RISK_STATUSES: RiskStatus[] = ['open', 'monitoring', 'mitigated', 'closed', 'materialized']
+export const INCIDENT_STATUSES: IncidentStatus[] = ['open', 'investigating', 'resolved', 'closed']
+export const INCIDENT_SEVERITIES: IncidentSeverity[] = ['low', 'medium', 'high', 'critical']
+
+export const RISK_CATEGORY_LABEL: Record<RiskCategory, string> = {
+  technical: 'Técnico',
+  schedule: 'Cronograma',
+  scope: 'Alcance',
+  people: 'Personas',
+  external: 'Externo',
+}
+
+export const RISK_STATUS_LABEL: Record<RiskStatus, string> = {
+  open: 'Abierto',
+  monitoring: 'En seguimiento',
+  mitigated: 'Mitigado',
+  closed: 'Cerrado',
+  materialized: 'Materializado',
+}
+
+export const INCIDENT_STATUS_LABEL: Record<IncidentStatus, string> = {
+  open: 'Abierto',
+  investigating: 'Investigando',
+  resolved: 'Resuelto',
+  closed: 'Cerrado',
+}
+
+export const INCIDENT_SEVERITY_LABEL: Record<IncidentSeverity, string> = {
+  low: 'Baja',
+  medium: 'Media',
+  high: 'Alta',
+  critical: 'Crítica',
+}
+
+export type Risk = {
+  id: string
+  title: string
+  description: string
+  category: RiskCategory
+  status: RiskStatus
+  probability: number
+  impact: number
+  owner_id: string | null
+  identified_at: string
+  review_date: string | null
+  mitigation_plan: string
+  contingency_plan: string
+  related_feature_ids: string[]
+  related_sprint: number | null
+  notes: string
+}
+
+export type Incident = {
+  id: string
+  title: string
+  description: string
+  status: IncidentStatus
+  severity: IncidentSeverity
+  occurred_at: string
+  detected_at: string
+  resolved_at: string | null
+  owner_id: string | null
+  risk_id: string | null
+  related_feature_ids: string[]
+  impact_description: string
+  resolution: string
+  lessons_learned: string
+}
+
+export type RiskRegister = {
+  meta: Record<string, unknown>
+  risks: Risk[]
+  incidents: Incident[]
+}
+
+export type Plan = { backlog: Backlog; team: Team; riskRegister: RiskRegister }

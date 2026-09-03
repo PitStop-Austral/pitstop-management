@@ -10,6 +10,7 @@ import {
   Loader2,
   RefreshCw,
   Save,
+  ShieldAlert,
   Users,
   type LucideIcon,
 } from 'lucide-react'
@@ -22,9 +23,10 @@ import { TeamTab } from './components/TeamTab'
 import { TimelineTab } from './components/TimelineTab'
 import { WeekDetail } from './components/WeekDetail'
 import { WeekPanel } from './components/WeekPanel'
+import { RisksTab } from './components/RisksTab'
 import { cn } from './components/ui'
 
-type Tab = 'backlog' | 'cronograma' | 'semana' | 'equipo' | 'sprints'
+type Tab = 'backlog' | 'cronograma' | 'semana' | 'equipo' | 'sprints' | 'riesgos'
 type SaveState = 'idle' | 'dirty' | 'saving' | 'saved' | 'error'
 
 const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
@@ -33,6 +35,7 @@ const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: 'semana', label: 'Semana', icon: CalendarDays },
   { id: 'equipo', label: 'Equipo', icon: Users },
   { id: 'sprints', label: 'Sprints', icon: Flag },
+  { id: 'riesgos', label: 'Riesgos', icon: ShieldAlert },
 ]
 
 const SAVE_DEBOUNCE_MS = 800
@@ -110,8 +113,8 @@ export function App() {
         <h1 className="text-xl">No se pudo leer el plan</h1>
         <p className="mt-2 text-sm text-muted-foreground">{error}</p>
         <p className="mt-4 text-xs text-muted-foreground">
-          Revisá que <code>project-plan/features.yaml</code> y <code>project-plan/team.yaml</code>{' '}
-          existan y sean YAML válido.
+          Revisá que <code>project-plan/features.yaml</code>, <code>project-plan/team.yaml</code> y{' '}
+          <code>project-plan/risks.yaml</code> existan y sean YAML válido.
         </p>
       </main>
     )
@@ -238,6 +241,7 @@ export function App() {
         {tab === 'semana' ? <WeekPanel plan={plan} /> : null}
         {tab === 'equipo' ? <TeamTab plan={plan} update={update} /> : null}
         {tab === 'sprints' ? <SprintsTab plan={plan} update={update} /> : null}
+        {tab === 'riesgos' ? <RisksTab plan={plan} update={update} /> : null}
       </main>
     </div>
   )
