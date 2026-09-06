@@ -355,7 +355,7 @@ epics:
         description: Pantalla para pedir el mail de recuperacion, con confirmacion visible de
           que se envio. Por seguridad el mensaje es el mismo exista o no la cuenta.
           Usando Firebase Auth
-        status: in_progress
+        status: done
         estimate: 2
         prototype:
           - components/pitstop/auth/forgot-password-screen.tsx
@@ -374,7 +374,7 @@ epics:
           entre login y contenido (loader spinner). Cerrar sesion limpia todo el estado
           local y la cache de React Query. Si el token vence, se renueva solo o se lo
           manda al login.
-        status: in_progress
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/auth/auth-gate.tsx
@@ -422,7 +422,7 @@ epics:
         description: Manifest con nombre, colores e iconos de PitStop, service worker registrado
           y la app instalable desde el navegador en Android, iOS y desktop. Al abrirla
           instalada tiene que verse sin la barra del navegador.
-        status: backlog
+        status: in_progress
         estimate: 2
         prototype:
           - public/icon.svg
@@ -461,7 +461,7 @@ epics:
           En mobile el formulario se abre como hoja inferior a pantalla completa con la
           accion principal siempre visible (bottom sheet); en desktop como modal
           centrado. (modal)
-        status: backlog
+        status: in_progress
         estimate: 5
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
@@ -477,7 +477,7 @@ epics:
         description: Borrar un vehiculo pide confirmacion y avisa que se van a perder sus
           mantenimientos, frecuencias, deseos y accesos compartidos. Si era el vehiculo
           activo, la app pasa a otro automaticamente.
-        status: backlog
+        status: in_progress
         estimate: 2
         prototype:
           - components/pitstop/sheets/delete-vehicle-confirm.tsx
@@ -502,7 +502,7 @@ epics:
 
           En mobile la foto va arriba y el contenido debajo; en desktop la ficha queda
           fija a la izquierda y las solapas a la derecha.
-        status: backlog
+        status: in_progress
         estimate: 4
         prototype:
           - components/pitstop/screens/garage.tsx
@@ -525,7 +525,7 @@ epics:
           La seleccion se guarda en la cuenta, asi que se mantiene al recargar y es la
           misma si entra desde otro dispositivo. Si el vehiculo guardado ya no existe,
           cae al primero de la lista.
-        status: backlog
+        status: in_progress
         estimate: 3
         prototype:
           - components/pitstop/sheets/vehicle-picker.tsx
@@ -570,27 +570,74 @@ epics:
     status: todo
     fixes: true
     features:
-      - id: fixes-s1-carry-1
-        title: Fixes y ajustes del Sprint 1 (1 de 2)
-        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
-          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
-          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
-          pisarse.
+      - id: fixes-s1-nueva
+        title: Agregar cursor pointer a todos los elementos clickeables
+        description: Todos los elementos que puedan ser clickeables deben tener cursor pointer
+          (botones, selectores, checkbox, etc.) Obviamente si estan desabilitados deben
+          tener el cursor correspondiente, no el pointer.
         status: todo
-        estimate: 5
+        estimate: 1
         starts: 2026-09-10
         ends: 2026-09-17
         prototype: []
         depends_on: []
         ticket_refs: []
-      - id: fixes-s1-carry-2
-        title: Fixes y ajustes del Sprint 1 (2 de 2)
-        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
-          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
-          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
-          pisarse.
+      - id: fixes-s1-nueva-2
+        title: El componente de selector debe abrir un popover custom no el nativo del navegador
+        description: El componente de select debe abrir un popover custom, no el nativo del
+          navegador. Revisa como lo hace shadcn. Esto debe funcionar bien tanto en
+          desktop como en mobile.
         status: todo
-        estimate: 5
+        estimate: 1
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s1-nueva-3
+        title: Active state de los botones
+        description: El componente del boton debe tener de active state que el boton se achique
+          un poco al apretarlo (tanto para desktop como para mobile). Al achicarse no
+          debe romper el layout ni mover los otros elementos. Se debe sentir suave y no
+          de golpe el cambio de tamaño
+        status: todo
+        estimate: 1
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s1-nueva-4
+        title: Los modals y bottom sheets deben bloquear el scroll del contenido que esta detras
+          de ellos
+        description: >-
+          Los modals y bottom sheets deben bloquear el scroll del contenido que esta
+          detras de ellos. Solo se debe poder hacer scroll del contenido dentro del
+          modal o del bottom sheet (si el contenido de estos excede la altura, sino sin
+          scroll).
+
+          Ademas los bottom sheets deben funcionar bien cuando se abre el teclado en
+          mobile (tanto ios como android), sin que se rompa ni el input seleccionado
+          quede tapado por el teclado
+        status: todo
+        estimate: 1
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s1-nueva-5
+        title: Bloquear zoom y gestos para la PWA en el celular
+        description: >-
+          No se debe poder hacer zoom con los dedos ni se deben permitir gestos touch,
+          la idea es que cuando use la plataforma en el celular no pueda hacer zoom ni
+          gestos (lo mas parecido a una app mobile posible).
+
+          Tambien algo que pasa ahora es que al seleccionar un input en un celular, se
+          hace un zoom a ese input (creo que es por el tamaño del texto de los inputs
+          que activa ese zoom automatico), esto no quiero que pase mas
+        status: todo
+        estimate: 1
         starts: 2026-09-10
         ends: 2026-09-17
         prototype: []
@@ -676,17 +723,17 @@ epics:
         title: Carga de la ficha tecnica completa
         description: >-
           Todo en el mismo formulario del vehiculo, agrupado por sistema y con todos los
-          campos opcionales:
+          campos opcionales. Cada seccion debe usar su imagen correspondiente (se
+          adjuntan al ticket):
 
           Lubricantes y transmision: tipo y cantidad en litros del aceite de motor y del
-          de caja, y tipo de transmision (manual, automatica, CVT, doble embrague u
-          otro).
+          de caja, y tipo de transmision (manual, automatica).
 
-          Neumaticos: medida (por ejemplo 215/50 R17) y presion recomendada en PSI, por
+          Neumaticos: medida (ancho, talon y radio) y presion recomendada en PSI, por
           separado para los delanteros y los traseros, porque no siempre coinciden.
 
-          Luces: el modelo de lampara de las altas, las bajas y las antiniebla, para
-          poder comprarlas sin desarmar el faro.
+          Luces: el modelo de lampara de las altas, las bajas y las antiniebla (texto
+          libre)
         status: todo
         estimate: 4
         prototype:
