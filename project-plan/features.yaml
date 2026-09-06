@@ -556,6 +556,59 @@ epics:
         ticket_refs: []
         starts: 2026-09-10
         ends: 2026-09-17
+  - id: ficha-tecnica
+    title: Ficha tecnica del vehiculo
+    description: "Requerimiento Must del charter: guardar los datos utiles del vehiculo
+      (tipo de aceite, medidas, repuestos) para no tener que buscarlos cada vez que hay
+      que hacerle un service."
+    sprint: 1
+    linear_project: Ficha tecnica
+    moscow: must
+    status: todo
+    features:
+      - id: ficha-datos
+        title: Carga de la ficha tecnica completa
+        description: >-
+          Todo en el mismo formulario del vehiculo, agrupado por sistema y con todos los
+          campos opcionales. Cada seccion debe usar su imagen correspondiente (se
+          adjuntan al ticket):
+
+          Lubricantes y transmision: tipo y cantidad en litros del aceite de motor y del
+          de caja, y tipo de transmision (manual, automatica).
+
+          Neumaticos: medida (ancho, talon y radio) y presion recomendada en PSI, por
+          separado para los delanteros y los traseros, porque no siempre coinciden.
+
+          Luces: el modelo de lampara de las altas, las bajas y las antiniebla (texto
+          libre)
+        status: todo
+        estimate: 4
+        prototype:
+          - components/pitstop/sheets/vehicle-form.tsx
+        depends_on:
+          - vehiculos-alta-edicion
+        ticket_refs: []
+        starts: 2026-09-10
+        ends: 2026-09-17
+      - id: ficha-vista
+        title: Solapa Informacion del garage con la ficha agrupada por sistema
+        description: >-
+          La ficha se muestra agrupada en tarjetas por sistema (identificacion,
+          lubricantes, transmision, neumaticos, luces), cada una con el icono del
+          servicio correspondiente. Los campos vacios se muestran como "A definir" en
+          vez de esconderse.
+
+          En mobile las tarjetas van apiladas; en desktop en dos columnas.
+        status: todo
+        estimate: 3
+        prototype:
+          - components/pitstop/screens/garage.tsx
+          - components/pitstop/service-icon.tsx
+        depends_on:
+          - ficha-datos
+        ticket_refs: []
+        starts: 2026-09-10
+        ends: 2026-09-17
   - id: fixes-s1
     title: Fixes y carry — Sprint 1
     description: "Margen del Sprint 1. La ultima semana del sprint no se llena con
@@ -707,59 +760,6 @@ epics:
         depends_on:
           - mantenimientos-registro
         ticket_refs: []
-        starts: 2026-09-24
-        ends: 2026-10-01
-  - id: ficha-tecnica
-    title: Ficha tecnica del vehiculo
-    description: "Requerimiento Must del charter: guardar los datos utiles del vehiculo
-      (tipo de aceite, medidas, repuestos) para no tener que buscarlos cada vez que hay
-      que hacerle un service."
-    sprint: 2
-    linear_project: Ficha tecnica
-    moscow: must
-    status: todo
-    features:
-      - id: ficha-datos
-        title: Carga de la ficha tecnica completa
-        description: >-
-          Todo en el mismo formulario del vehiculo, agrupado por sistema y con todos los
-          campos opcionales. Cada seccion debe usar su imagen correspondiente (se
-          adjuntan al ticket):
-
-          Lubricantes y transmision: tipo y cantidad en litros del aceite de motor y del
-          de caja, y tipo de transmision (manual, automatica).
-
-          Neumaticos: medida (ancho, talon y radio) y presion recomendada en PSI, por
-          separado para los delanteros y los traseros, porque no siempre coinciden.
-
-          Luces: el modelo de lampara de las altas, las bajas y las antiniebla (texto
-          libre)
-        status: todo
-        estimate: 4
-        prototype:
-          - components/pitstop/sheets/vehicle-form.tsx
-        depends_on:
-          - vehiculos-alta-edicion
-        ticket_refs: []
-        starts: 2026-09-17
-        ends: 2026-09-24
-      - id: ficha-vista
-        title: Solapa Informacion del garage con la ficha agrupada por sistema
-        description: >-
-          La ficha se muestra agrupada en tarjetas por sistema (identificacion,
-          lubricantes, transmision, neumaticos, luces), cada una con el icono del
-          servicio correspondiente. Los campos vacios se muestran como "A definir" en
-          vez de esconderse.
-
-          En mobile las tarjetas van apiladas; en desktop en dos columnas.
-        status: todo
-        estimate: 3
-        prototype:
-          - components/pitstop/screens/garage.tsx
-          - components/pitstop/service-icon.tsx
-        depends_on:
-          - ficha-datos
-        ticket_refs: []
         starts: 2026-09-17
         ends: 2026-09-24
   - id: foto-vehiculo
@@ -826,8 +826,8 @@ epics:
           - mantenimientos-registro
           - vehiculos-garage
         ticket_refs: []
-        starts: 2026-09-24
-        ends: 2026-10-01
+        starts: 2026-09-17
+        ends: 2026-09-24
       - id: historial-busqueda-filtros
         title: Buscar, filtrar y ordenar el historial
         description: Un buscador que filtra por tipo de servicio, taller o texto de las notas;

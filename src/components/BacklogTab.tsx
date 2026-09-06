@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, FileWarning, Plus, Ticket, Trash2 } from 'lucide-react'
-import type { Epic, Feature, Plan } from '../types'
+import type { Epic, Feature, Plan, Sprint } from '../types'
 import {
   emptyEpic,
   emptyFeature,
@@ -69,7 +69,8 @@ export function BacklogTab({ plan, update, selectedId, onSelect }: Props) {
   }
 
   function addEpic() {
-    const sprint = sprintFilter === 'todos' ? 1 : sprintFilter
+    const sprint =
+      sprintFilter === 'todos' ? (plan.team.sprints[0]?.number ?? 1) : sprintFilter
     const id = uniqueId(plan.backlog, 'nueva-epica')
     update((current) => ({
       ...current,
@@ -92,7 +93,7 @@ export function BacklogTab({ plan, update, selectedId, onSelect }: Props) {
     })
   }
 
-  const sprints = [...new Set(epics.map((e) => e.sprint))].sort((a, b) => a - b)
+  const sprints = plan.team.sprints
 
   return (
     <div className="space-y-4">
@@ -103,11 +104,11 @@ export function BacklogTab({ plan, update, selectedId, onSelect }: Props) {
           </FilterChip>
           {sprints.map((sprint) => (
             <FilterChip
-              key={sprint}
-              active={sprintFilter === sprint}
-              onClick={() => setSprintFilter(sprint)}
+              key={sprint.number}
+              active={sprintFilter === sprint.number}
+              onClick={() => setSprintFilter(sprint.number)}
             >
-              Sprint {sprint}
+              Sprint {sprint.number}
             </FilterChip>
           ))}
         </div>
@@ -121,6 +122,7 @@ export function BacklogTab({ plan, update, selectedId, onSelect }: Props) {
           <SortableRow key={epic.id} id={epic.id} className="mb-3">
             <EpicCard
               epic={epic}
+              sprints={sprints}
               collapsed={collapsed.has(epic.id)}
               selectedId={selectedId}
               onToggle={() => toggle(epic.id)}
@@ -180,6 +182,7 @@ function FilterChip({
 
 function EpicCard({
   epic,
+  sprints,
   collapsed,
   selectedId,
   onToggle,
@@ -190,6 +193,7 @@ function EpicCard({
   onPatch,
 }: {
   epic: Epic
+  sprints: Sprint[]
   collapsed: boolean
   selectedId: string | null
   onToggle: () => void
@@ -221,7 +225,21 @@ function EpicCard({
                        focus:rounded focus:bg-muted focus:px-1"
           />
           <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-            <span className="rounded bg-muted px-1.5 py-0.5 font-medium">S{epic.sprint}</span>
+            <label className="flex items-center gap-1">
+              <span className="sr-only">Sprint de la épica</span>
+              <select
+                aria-label="Sprint de la épica"
+                className="rounded bg-muted px-1.5 py-0.5 font-medium outline-none transition focus:ring-2 focus:ring-brand/30"
+                value={epic.sprint}
+                onChange={(event) => onPatch({ sprint: Number(event.target.value) })}
+              >
+                {sprints.map((sprint) => (
+                  <option key={sprint.number} value={sprint.number}>
+                    S{sprint.number} · {sprint.name}
+                  </option>
+                ))}
+              </select>
+            </label>
             <MoscowBadge moscow={epic.moscow} />
             <StatusBadge status={epic.status} />
             <span>
