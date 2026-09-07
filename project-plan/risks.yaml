@@ -114,7 +114,8 @@ incidents:
     lessons_learned: Avisar con previo aviso si algún integrante va a estar ausente por algun viaje
   - id: nuevo-incidente-2
     title: Mala configuración de las envs de prod
-    description: En el deploy de Vercel se configuro incorrectamente la env que indica la
+    description:
+      En el deploy de Vercel se configuro incorrectamente la env que indica la
       URL de la API
     status: open
     severity: medium

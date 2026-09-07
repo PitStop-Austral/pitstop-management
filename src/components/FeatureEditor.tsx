@@ -1,45 +1,65 @@
-import { useState } from 'react'
-import { AlertTriangle, Plus, Trash2, X } from 'lucide-react'
-import { ESTIMATES, MOSCOW, STATUSES, type Feature, type Plan } from '../types'
-import { MOSCOW_LABEL, STATUS_LABEL } from '../types'
-import { allFeatures, findFeature, moveFeatureToEpic, removeFeature, updateFeature } from '../lib/plan'
-import { isActiveRisk, linkRiskFeature, riskScore } from '../lib/risks'
-import { Button, Field, cn } from './ui'
+import { useState } from "react";
+import { AlertTriangle, Plus, Trash2, X } from "lucide-react";
+import { ESTIMATES, MOSCOW, STATUSES, type Feature, type Plan } from "../types";
+import { MOSCOW_LABEL, STATUS_LABEL } from "../types";
+import {
+  allFeatures,
+  findFeature,
+  moveFeatureToEpic,
+  removeFeature,
+  updateFeature,
+} from "../lib/plan";
+import { isActiveRisk, linkRiskFeature, riskScore } from "../lib/risks";
+import { Button, Field, cn } from "./ui";
 
 type Props = {
-  plan: Plan
-  featureId: string
-  prototypeFiles: string[]
-  update: (fn: (plan: Plan) => Plan) => void
-  onClose: () => void
-}
+  plan: Plan;
+  featureId: string;
+  prototypeFiles: string[];
+  update: (fn: (plan: Plan) => Plan) => void;
+  onClose: () => void;
+};
 
-export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose }: Props) {
-  const entry = findFeature(plan.backlog, featureId)
-  if (!entry) return null
-  const { epic, feature } = entry
+export function FeatureEditor({
+  plan,
+  featureId,
+  prototypeFiles,
+  update,
+  onClose,
+}: Props) {
+  const entry = findFeature(plan.backlog, featureId);
+  if (!entry) return null;
+  const { epic, feature } = entry;
 
   function patch(changes: Partial<Feature>) {
-    update((current) => updateFeature(current, featureId, changes))
+    update((current) => updateFeature(current, featureId, changes));
   }
 
   function remove() {
-    if (!confirm(`Eliminar la funcionalidad "${feature.title}"?`)) return
-    update((current) => removeFeature(current, featureId))
-    onClose()
+    if (!confirm(`Eliminar la funcionalidad "${feature.title}"?`)) return;
+    update((current) => removeFeature(current, featureId));
+    onClose();
   }
 
-  const others = allFeatures(plan.backlog).filter((item) => item.feature.id !== featureId)
+  const others = allFeatures(plan.backlog).filter(
+    (item) => item.feature.id !== featureId,
+  );
 
   return (
     <aside className="flex h-full flex-col">
       <header className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
         <div className="min-w-0">
           <h2 className="truncate text-sm">Funcionalidad</h2>
-          <code className="text-[11px] text-muted-foreground">{feature.id}</code>
+          <code className="text-[11px] text-muted-foreground">
+            {feature.id}
+          </code>
         </div>
         <div className="flex shrink-0 gap-1">
-          <Button variant="danger" onClick={remove} icon={<Trash2 className="size-3.5" />}>
+          <Button
+            variant="danger"
+            onClick={remove}
+            icon={<Trash2 className="size-3.5" />}
+          >
             Eliminar
           </Button>
           <Button variant="ghost" onClick={onClose} title="Cerrar">
@@ -74,7 +94,9 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
             <select
               className="field"
               value={feature.status}
-              onChange={(event) => patch({ status: event.target.value as Feature['status'] })}
+              onChange={(event) =>
+                patch({ status: event.target.value as Feature["status"] })
+              }
             >
               {STATUSES.map((status) => (
                 <option key={status} value={status}>
@@ -87,9 +109,14 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
           <Field label="Story points" hint="1 SP = 1 hora">
             <select
               className="field"
-              value={feature.estimate ?? ''}
+              value={feature.estimate ?? ""}
               onChange={(event) =>
-                patch({ estimate: event.target.value === '' ? null : Number(event.target.value) })
+                patch({
+                  estimate:
+                    event.target.value === ""
+                      ? null
+                      : Number(event.target.value),
+                })
               }
             >
               <option value="">Sin estimar</option>
@@ -108,23 +135,27 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
               <input
                 className="field"
                 type="date"
-                value={feature.starts ?? ''}
-                onChange={(event) => patch({ starts: event.target.value || null })}
+                value={feature.starts ?? ""}
+                onChange={(event) =>
+                  patch({ starts: event.target.value || null })
+                }
               />
             </Field>
             <Field label="Fin estimado" hint="Es la fecha límite del ticket.">
               <input
                 className="field"
                 type="date"
-                value={feature.ends ?? ''}
-                onChange={(event) => patch({ ends: event.target.value || null })}
+                value={feature.ends ?? ""}
+                onChange={(event) =>
+                  patch({ ends: event.target.value || null })
+                }
               />
             </Field>
           </div>
           {feature.starts && feature.ends && feature.ends < feature.starts ? (
             <p className="mt-1 text-[11px] text-brand-700">
-              El fin cae antes que el inicio: en el cronograma se dibuja igual, pero conviene
-              corregirlo.
+              El fin cae antes que el inicio: en el cronograma se dibuja igual,
+              pero conviene corregirlo.
             </p>
           ) : (
             <p className="mt-1 text-[11px] text-muted-foreground">
@@ -139,7 +170,9 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
               className="field"
               value={epic.id}
               onChange={(event) =>
-                update((current) => moveFeatureToEpic(current, featureId, event.target.value))
+                update((current) =>
+                  moveFeatureToEpic(current, featureId, event.target.value),
+                )
               }
             >
               {plan.backlog.epics.map((option) => (
@@ -153,10 +186,13 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
           <Field label="Prioridad" hint="Vacío = hereda la de la épica">
             <select
               className="field"
-              value={feature.moscow ?? ''}
+              value={feature.moscow ?? ""}
               onChange={(event) =>
                 patch({
-                  moscow: event.target.value === '' ? undefined : (event.target.value as never),
+                  moscow:
+                    event.target.value === ""
+                      ? undefined
+                      : (event.target.value as never),
                 })
               }
             >
@@ -182,18 +218,18 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
         <div>
           <span className="label">Depende de</span>
           <p className="mb-2 text-[11px] text-muted-foreground">
-            Solo lo que realmente no se puede empezar antes. Cuantas menos dependencias, mejor se
-            reparte la semana.
+            Solo lo que realmente no se puede empezar antes. Cuantas menos
+            dependencias, mejor se reparte la semana.
           </p>
           <div className="max-h-48 space-y-0.5 overflow-y-auto rounded-xl border border-border p-1.5">
             {others.map(({ epic: otherEpic, feature: other }) => {
-              const checked = feature.depends_on.includes(other.id)
+              const checked = feature.depends_on.includes(other.id);
               return (
                 <label
                   key={other.id}
                   className={cn(
-                    'flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-xs transition',
-                    checked ? 'bg-brand-50' : 'hover:bg-muted',
+                    "flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-xs transition",
+                    checked ? "bg-brand-50" : "hover:bg-muted",
                   )}
                 >
                   <input
@@ -209,13 +245,15 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
                     }
                   />
                   <span className="min-w-0">
-                    <span className="block truncate font-medium">{other.title}</span>
+                    <span className="block truncate font-medium">
+                      {other.title}
+                    </span>
                     <span className="block truncate text-[10px] text-muted-foreground">
                       S{otherEpic.sprint} · {otherEpic.title}
                     </span>
                   </span>
                 </label>
-              )
+              );
             })}
           </div>
         </div>
@@ -223,24 +261,56 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
         <div>
           <span className="label">Riesgos asociados</span>
           <p className="mb-2 text-[11px] text-muted-foreground">
-            Exposiciones que pueden afectar esta funcionalidad. Los críticos aparecen también en el cronograma.
+            Exposiciones que pueden afectar esta funcionalidad. Los críticos
+            aparecen también en el cronograma.
           </p>
           <div className="max-h-40 space-y-0.5 overflow-y-auto rounded-xl border border-border p-1.5">
             {plan.riskRegister.risks.length === 0 ? (
-              <p className="px-2 py-2 text-[11px] text-muted-foreground">No hay riesgos cargados todavía.</p>
-            ) : plan.riskRegister.risks.map((risk) => {
-              const checked = risk.related_feature_ids.includes(featureId)
-              const critical = riskScore(risk) >= 15 && isActiveRisk(risk)
-              return (
-                <label key={risk.id} className={cn('flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-xs transition', checked && 'bg-brand-50')}>
-                  <input type="checkbox" className="mt-0.5 accent-[#e10600]" checked={checked} onChange={(event) => update((current) => linkRiskFeature(current, risk.id, featureId, event.target.checked))} />
-                  <span className="min-w-0">
-                    <span className="flex items-center gap-1 font-medium"><span className="truncate">{risk.title}</span>{critical ? <AlertTriangle className="size-3 shrink-0 text-brand-700" /> : null}</span>
-                    <span className="block text-[10px] text-muted-foreground">{riskScore(risk)} puntos · {risk.status}</span>
-                  </span>
-                </label>
-              )
-            })}
+              <p className="px-2 py-2 text-[11px] text-muted-foreground">
+                No hay riesgos cargados todavía.
+              </p>
+            ) : (
+              plan.riskRegister.risks.map((risk) => {
+                const checked = risk.related_feature_ids.includes(featureId);
+                const critical = riskScore(risk) >= 15 && isActiveRisk(risk);
+                return (
+                  <label
+                    key={risk.id}
+                    className={cn(
+                      "flex cursor-pointer items-start gap-2 rounded-lg px-2 py-1.5 text-xs transition",
+                      checked && "bg-brand-50",
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 accent-[#e10600]"
+                      checked={checked}
+                      onChange={(event) =>
+                        update((current) =>
+                          linkRiskFeature(
+                            current,
+                            risk.id,
+                            featureId,
+                            event.target.checked,
+                          ),
+                        )
+                      }
+                    />
+                    <span className="min-w-0">
+                      <span className="flex items-center gap-1 font-medium">
+                        <span className="truncate">{risk.title}</span>
+                        {critical ? (
+                          <AlertTriangle className="size-3 shrink-0 text-brand-700" />
+                        ) : null}
+                      </span>
+                      <span className="block text-[10px] text-muted-foreground">
+                        {riskScore(risk)} puntos · {risk.status}
+                      </span>
+                    </span>
+                  </label>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -253,7 +323,7 @@ export function FeatureEditor({ plan, featureId, prototypeFiles, update, onClose
         />
       </div>
     </aside>
-  )
+  );
 }
 
 /** Lista de strings editable como chips, con autocompletado opcional. */
@@ -265,27 +335,31 @@ function TokenList({
   suggestions,
   placeholder,
 }: {
-  label: string
-  hint?: string
-  values: string[]
-  onChange: (values: string[]) => void
-  suggestions?: string[]
-  placeholder?: string
+  label: string;
+  hint?: string;
+  values: string[];
+  onChange: (values: string[]) => void;
+  suggestions?: string[];
+  placeholder?: string;
 }) {
-  const [draft, setDraft] = useState('')
-  const listId = suggestions ? `${label.replace(/\s/g, '-')}-options` : undefined
+  const [draft, setDraft] = useState("");
+  const listId = suggestions
+    ? `${label.replace(/\s/g, "-")}-options`
+    : undefined;
 
   function add() {
-    const value = draft.trim()
-    if (!value || values.includes(value)) return setDraft('')
-    onChange([...values, value])
-    setDraft('')
+    const value = draft.trim();
+    if (!value || values.includes(value)) return setDraft("");
+    onChange([...values, value]);
+    setDraft("");
   }
 
   return (
     <div>
       <span className="label">{label}</span>
-      {hint ? <p className="mb-2 text-[11px] text-muted-foreground">{hint}</p> : null}
+      {hint ? (
+        <p className="mb-2 text-[11px] text-muted-foreground">{hint}</p>
+      ) : null}
 
       {values.length > 0 ? (
         <div className="mb-2 flex flex-wrap gap-1.5">
@@ -299,7 +373,9 @@ function TokenList({
                 type="button"
                 aria-label={`Quitar ${value}`}
                 className="text-muted-foreground hover:text-brand-700"
-                onClick={() => onChange(values.filter((item) => item !== value))}
+                onClick={() =>
+                  onChange(values.filter((item) => item !== value))
+                }
               >
                 <X className="size-3" />
               </button>
@@ -316,13 +392,17 @@ function TokenList({
           placeholder={placeholder}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault()
-              add()
+            if (event.key === "Enter") {
+              event.preventDefault();
+              add();
             }
           }}
         />
-        <Button onClick={add} disabled={!draft.trim()} icon={<Plus className="size-3.5" />}>
+        <Button
+          onClick={add}
+          disabled={!draft.trim()}
+          icon={<Plus className="size-3.5" />}
+        >
           Agregar
         </Button>
       </div>
@@ -335,5 +415,5 @@ function TokenList({
         </datalist>
       ) : null}
     </div>
-  )
+  );
 }
