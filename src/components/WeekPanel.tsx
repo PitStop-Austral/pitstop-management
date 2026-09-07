@@ -1,14 +1,21 @@
-import { useMemo, useState } from 'react'
-import { AlertTriangle, ClipboardCheck, Copy, Link2 } from 'lucide-react'
-import type { Epic, Feature, Plan } from '../types'
-import { daysUntil, formatShort, planningWeek, toISO } from '../lib/week'
-import { Button, Points, SectionTitle, cn } from './ui'
+import { useMemo, useState } from "react";
+import { AlertTriangle, ClipboardCheck, Copy, Link2 } from "lucide-react";
+import type { Epic, Feature, Plan } from "../types";
+import { daysUntil, formatShort, planningWeek, toISO } from "../lib/week";
+import {
+  exposureLevel,
+  EXPOSURE_LABEL,
+  isReviewOverdue,
+  isActiveRisk,
+  riskScore,
+} from "../lib/risks";
+import { Button, Points, SectionTitle, cn } from "./ui";
 
 type Candidate = {
-  epic: Epic
-  feature: Feature
-  blockedBy: string[]
-}
+  epic: Epic;
+  feature: Feature;
+  blockedBy: string[];
+};
 
 /**
  * Anticipa que va a agarrar la skill: recorre las epicas del sprint en orden de
@@ -16,64 +23,90 @@ type Candidate = {
  * Es una previsualizacion, no la decision final: la toma Claude.
  */
 function pickCandidates(plan: Plan, sprintNumber: number | null): Candidate[] {
-  if (sprintNumber == null) return []
+  if (sprintNumber == null) return [];
 
   const doneIds = new Set(
     plan.backlog.epics.flatMap((epic) =>
-      epic.features.filter((f) => f.status === 'done').map((f) => f.id),
+      epic.features.filter((f) => f.status === "done").map((f) => f.id),
     ),
-  )
+  );
 
-  const capacity = plan.team.capacity.total_points_per_week
-  const picked: Candidate[] = []
-  let points = 0
+  const capacity = plan.team.capacity.total_points_per_week;
+  const picked: Candidate[] = [];
+  let points = 0;
 
-  for (const epic of plan.backlog.epics.filter((e) => e.sprint === sprintNumber)) {
+  for (const epic of plan.backlog.epics.filter(
+    (e) => e.sprint === sprintNumber,
+  )) {
     for (const feature of epic.features) {
       // `backlog` o `ticket_refs` significa que el ticket ya se subio a Linear.
-      if (feature.status === 'done' || feature.status === 'backlog') continue
-      if (feature.status === 'in_progress' || feature.ticket_refs.length > 0) continue
-      if (points >= capacity) return picked
+      if (feature.status === "done" || feature.status === "backlog") continue;
+      if (feature.status === "in_progress" || feature.ticket_refs.length > 0)
+        continue;
+      if (points >= capacity) return picked;
 
       picked.push({
         epic,
         feature,
         blockedBy: feature.depends_on.filter((id) => !doneIds.has(id)),
-      })
-      points += feature.estimate ?? 3
+      });
+      points += feature.estimate ?? 3;
     }
   }
 
-  return picked
+  return picked;
 }
 
 export function WeekPanel({ plan }: { plan: Plan }) {
-  const [copied, setCopied] = useState(false)
-  const week = useMemo(() => planningWeek(plan.team.sprints), [plan.team.sprints])
+  const [copied, setCopied] = useState(false);
+  const week = useMemo(
+    () => planningWeek(plan.team.sprints),
+    [plan.team.sprints],
+  );
   const candidates = useMemo(
     () => pickCandidates(plan, week.sprint?.number ?? null),
     [plan, week.sprint],
-  )
+  );
 
-  const points = candidates.reduce((sum, c) => sum + (c.feature.estimate ?? 3), 0)
-  const capacity = plan.team.capacity.total_points_per_week
-  const unassigned = plan.team.people.filter((p) => p.takes_tickets && !p.linear_user_id)
+  const points = candidates.reduce(
+    (sum, c) => sum + (c.feature.estimate ?? 3),
+    0,
+  );
+  const capacity = plan.team.capacity.total_points_per_week;
+  const unassigned = plan.team.people.filter(
+    (p) => p.takes_tickets && !p.linear_user_id,
+  );
+  const attentionRisks = plan.riskRegister.risks.filter(
+    (risk) =>
+      risk.related_sprint === week.sprint?.number &&
+      isActiveRisk(risk) &&
+      riskScore(risk) >= 10,
+  );
+  const overdueRisks = plan.riskRegister.risks.filter((risk) =>
+    isReviewOverdue(risk),
+  );
+  const openIncidents = plan.riskRegister.incidents.filter(
+    (incident) =>
+      incident.status === "open" || incident.status === "investigating",
+  );
 
   const prompt = [
     `Armá los tickets de la semana del ${formatShort(week.start)} al ${formatShort(week.due)}`,
-    week.sprint ? ` (${week.sprint.name}, semana ${week.weekNumber} de ${week.totalWeeks})` : '',
-    '.\n',
+    week.sprint
+      ? ` (${week.sprint.name}, semana ${week.weekNumber} de ${week.totalWeeks})`
+      : "",
+    ".\n",
     `Fecha límite de todos los tickets: ${toISO(week.due)}.\n`,
-    'Usá la skill pitstop-create-linear-tickets.',
-  ].join('')
+    "Usá la skill pitstop-create-linear-tickets.",
+  ].join("");
 
   async function copy() {
-    await navigator.clipboard.writeText(prompt)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    await navigator.clipboard.writeText(prompt);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
-  const days = daysUntil(week.start)
+  const days = daysUntil(week.start);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -88,13 +121,15 @@ export function WeekPanel({ plan }: { plan: Plan }) {
           <p className="mt-1 text-sm text-muted-foreground">
             {week.sprint
               ? `${week.sprint.name} · semana ${week.weekNumber} de ${week.totalWeeks} · ${week.sprint.theme}`
-              : 'Esta semana no cae dentro de ningún sprint cargado.'}
+              : "Esta semana no cae dentro de ningún sprint cargado."}
           </p>
         </div>
 
         <div className="grid grid-cols-3 divide-x divide-border text-center">
           <Cell
-            value={days === 0 ? 'hoy' : days === 1 ? 'mañana' : `en ${days} días`}
+            value={
+              days === 0 ? "hoy" : days === 1 ? "mañana" : `en ${days} días`
+            }
             label="Arranca"
           />
           <Cell value={`${capacity} SP`} label="Capacidad (3 devs × 6)" />
@@ -107,14 +142,72 @@ export function WeekPanel({ plan }: { plan: Plan }) {
       </section>
 
       <section>
+        <SectionTitle>
+          <span className="flex items-center gap-2">
+            <AlertTriangle className="size-4 text-brand-700" />
+            Atención esta semana
+          </span>
+        </SectionTitle>
+        {attentionRisks.length === 0 &&
+        overdueRisks.length === 0 &&
+        openIncidents.length === 0 ? (
+          <div className="card flex items-center gap-3 p-4 text-sm text-muted-foreground">
+            <ClipboardCheck className="size-5 text-success" /> No hay
+            exposiciones ni incidentes que requieran atención inmediata.
+          </div>
+        ) : (
+          <div className="card divide-y divide-border overflow-hidden">
+            {attentionRisks.map((risk) => (
+              <AttentionRow
+                key={risk.id}
+                tone={
+                  exposureLevel(riskScore(risk)) === "critical"
+                    ? "critical"
+                    : "warning"
+                }
+                title={risk.title}
+                detail={`${riskScore(risk)} puntos · ${EXPOSURE_LABEL[exposureLevel(riskScore(risk))]} · S${risk.related_sprint}`}
+              />
+            ))}
+            {overdueRisks.map((risk) => (
+              <AttentionRow
+                key={`overdue-${risk.id}`}
+                tone="warning"
+                title={`Revisión vencida: ${risk.title}`}
+                detail={
+                  risk.review_date
+                    ? `Debía revisarse el ${formatShort(new Date(`${risk.review_date}T00:00:00`))}`
+                    : "Sin fecha de revisión"
+                }
+              />
+            ))}
+            {openIncidents.map((incident) => (
+              <AttentionRow
+                key={`incident-${incident.id}`}
+                tone="critical"
+                title={incident.title}
+                detail={`Incidente ${incident.status === "investigating" ? "en investigación" : "abierto"} · ${incident.severity}`}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section>
         <SectionTitle
           action={
             <Button
               variant="primary"
               onClick={copy}
-              icon={copied ? <ClipboardCheck className="size-4" /> : <Copy className="size-4" />}
+              icon={
+                copied ? (
+                  <ClipboardCheck className="size-4" />
+                ) : (
+                  <Copy className="size-4" />
+                )
+              }
             >
-              {copied ? 'Copiado' : 'Copiar prompt'}
+              {copied ? "Copiado" : "Copiar prompt"}
             </Button>
           }
         >
@@ -126,8 +219,9 @@ export function WeekPanel({ plan }: { plan: Plan }) {
         {unassigned.length > 0 ? (
           <p className="mt-2 flex items-start gap-2 rounded-xl bg-warning-soft px-3 py-2 text-xs text-[#92400e]">
             <AlertTriangle className="mt-px size-3.5 shrink-0" />
-            {unassigned.map((p) => p.name).join(', ')} no {unassigned.length === 1 ? 'tiene' : 'tienen'}{' '}
-            linear_user_id: sus tickets van a quedar sin asignar.
+            {unassigned.map((p) => p.name).join(", ")} no{" "}
+            {unassigned.length === 1 ? "tiene" : "tienen"} linear_user_id: sus
+            tickets van a quedar sin asignar.
           </p>
         ) : null}
       </section>
@@ -135,8 +229,8 @@ export function WeekPanel({ plan }: { plan: Plan }) {
       <section>
         <SectionTitle>Lo próximo en la fila</SectionTitle>
         <p className="mb-3 text-xs text-muted-foreground">
-          Las primeras funcionalidades pendientes del sprint según tu orden de prioridad. Claude
-          decide el corte final.
+          Las primeras funcionalidades pendientes del sprint según tu orden de
+          prioridad. Claude decide el corte final.
         </p>
 
         {candidates.length === 0 ? (
@@ -151,12 +245,16 @@ export function WeekPanel({ plan }: { plan: Plan }) {
                   {index + 1}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{feature.title}</p>
-                  <p className="truncate text-[11px] text-muted-foreground">{epic.title}</p>
+                  <p className="truncate text-sm font-medium">
+                    {feature.title}
+                  </p>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {epic.title}
+                  </p>
                   {blockedBy.length > 0 ? (
                     <p className="mt-1 flex items-center gap-1 text-[11px] text-brand-700">
                       <Link2 className="size-3 shrink-0" />
-                      Depende de: {blockedBy.join(', ')}
+                      Depende de: {blockedBy.join(", ")}
                     </p>
                   ) : null}
                   {!feature.description ? (
@@ -173,14 +271,54 @@ export function WeekPanel({ plan }: { plan: Plan }) {
         )}
       </section>
     </div>
-  )
+  );
 }
 
-function Cell({ value, label, warn }: { value: string; label: string; warn?: boolean }) {
+function AttentionRow({
+  title,
+  detail,
+  tone,
+}: {
+  title: string;
+  detail: string;
+  tone: "critical" | "warning";
+}) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-3">
+      <span
+        className={cn(
+          "size-2 shrink-0 rounded-full",
+          tone === "critical" ? "bg-brand" : "bg-warning",
+        )}
+      />
+      <div className="min-w-0">
+        <p className="truncate text-sm font-semibold">{title}</p>
+        <p className="text-[11px] text-muted-foreground">{detail}</p>
+      </div>
+    </div>
+  );
+}
+
+function Cell({
+  value,
+  label,
+  warn,
+}: {
+  value: string;
+  label: string;
+  warn?: boolean;
+}) {
   return (
     <div className="px-3 py-4">
-      <p className={cn('font-display text-xl font-bold', warn && 'text-brand-700')}>{value}</p>
+      <p
+        className={cn(
+          "font-display text-xl font-bold",
+          warn && "text-brand-700",
+        )}
+      >
+        {value}
+      </p>
       <p className="mt-0.5 text-[11px] text-muted-foreground">{label}</p>
     </div>
-  )
+  );
 }
