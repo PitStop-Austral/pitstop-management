@@ -2,7 +2,7 @@
 # Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
 # asi que los comentarios que agregues aca se van a perder.
 meta:
-  updated: 2026-08-31
+  updated: 2026-09-08
   notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
     dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
     verificados contra el workspace pitstop-austral."
@@ -43,8 +43,7 @@ project:
       - Tailwind CSS
       - TanStack Router
       - TanStack Query
-      - shadcn/ui
-      - Radix UI
+      - "@base-ui/react"
       - Axios
       - Zod
     backend:
@@ -62,10 +61,11 @@ project:
     tests: Jest en la API, que ya viene en el template. El frontend no lleva tests
       automatizados.
   ui_notes: >-
-    Los componentes del frontend parten del componente de shadcn cuando existe y despues
-    se adaptan a la identidad del prototipo (tokens, radios, tipografia). Solo se
-    escribe desde cero lo que shadcn no tiene: la hoja inferior, el odometro, el
-    selector de servicios y las tarjetas de mantenimiento.
+    Los componentes del frontend parten del primitivo de @base-ui/react cuando existe y
+    despues se adaptan a la identidad del prototipo (tokens, radios, tipografia). Asi
+    estan hechos el menu desplegable y el selector. Solo se escribe desde cero lo que
+    Base UI no trae: la hoja inferior, el odometro, el selector de servicios y las
+    tarjetas de mantenimiento.
 
     Cada componente se resuelve en su version web y en su version mobile, porque varios
     cambian de forma: hoja inferior en mobile y modal en desktop, barra inferior y
@@ -80,11 +80,13 @@ project:
     - ESLint
     - Prettier
     - React Router
-  forbidden_notes: "capacitacion/APP-CONTEXT.md tambien prohibe React Query y shadcn, pero
-    eso aplica al proyecto de practica (Changuito), no al MVP: aca estan permitidos.
-    ESLint y Prettier estan prohibidos porque el template usa Oxlint y Oxfmt con la
-    configuracion en la raiz. React Router esta prohibido porque el ruteo lo resuelve
-    TanStack Router, que ya viene en el template."
+  forbidden_notes: "capacitacion/APP-CONTEXT.md tambien prohibe React Query, pero eso aplica
+    al proyecto de practica (Changuito), no al MVP: aca esta permitido. La libreria de
+    componentes del MVP es @base-ui/react, no shadcn ni Radix: se verifico el 2026-09-08
+    contra apps/web/package.json y ninguna de las dos esta instalada. ESLint y Prettier
+    estan prohibidos porque el template usa Oxlint y Oxfmt con la configuracion en la
+    raiz. React Router esta prohibido porque el ruteo lo resuelve TanStack Router, que ya
+    viene en el template."
 linear:
   mcp_server: 73fb21e2-edf7-4f5a-9087-7c11a7c50efa
   mcp_notes: Hay dos servidores MCP de Linear conectados. El de PitStop es este, no el default.

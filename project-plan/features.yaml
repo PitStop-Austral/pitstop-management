@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-08-31
+  updated: 2026-09-08
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -461,7 +461,7 @@ epics:
           En mobile el formulario se abre como hoja inferior a pantalla completa con la
           accion principal siempre visible (bottom sheet); en desktop como modal
           centrado. (modal)
-        status: in_progress
+        status: done
         estimate: 5
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
@@ -537,7 +537,7 @@ epics:
         starts: 2026-09-03
         ends: 2026-09-10
       - id: kilometraje-actualizar
-        title: Actualizar el kilometraje y mantenerlo coherente
+        title: Actualizar el kilometraje desde el odometro del Garage
         description: >-
           Un acceso directo desde el odometro del garage para poner el kilometraje
           actual. No deja cargar un valor menor al que ya estaba, porque el odometro no
@@ -546,14 +546,15 @@ epics:
           Ademas, si el usuario registra un mantenimiento con un kilometraje mayor al
           del vehiculo, el odometro se actualiza solo. Es una regla del backend para que
           no dependa de que el front se acuerde de hacerlo.
-        status: todo
+        status: backlog
         estimate: 3
         prototype:
           - components/pitstop/sheets/update-km-form.tsx
           - components/pitstop/store.tsx
         depends_on:
           - vehiculos-garage
-        ticket_refs: []
+        ticket_refs:
+          - PIT-42
         starts: 2026-09-10
         ends: 2026-09-17
   - id: ficha-tecnica
@@ -567,11 +568,12 @@ epics:
     status: todo
     features:
       - id: ficha-datos
-        title: Carga de la ficha tecnica completa
+        title: "Cargar la ficha tecnica del vehiculo: aceites, transmision, neumaticos y
+          luces"
         description: >-
-          Todo en el mismo formulario del vehiculo, agrupado por sistema y con todos los
-          campos opcionales. Cada seccion debe usar su imagen correspondiente (se
-          adjuntan al ticket):
+          Todo en el mismo formulario de creacion y edicion del vehiculo, agrupado por
+          tipo y con todos los campos opcionales. Cada seccion debe usar su imagen
+          correspondiente (se adjuntan en el ticket):
 
           Lubricantes y transmision: tipo y cantidad en litros del aceite de motor y del
           de caja, y tipo de transmision (manual, automatica).
@@ -581,32 +583,34 @@ epics:
 
           Luces: el modelo de lampara de las altas, las bajas y las antiniebla (texto
           libre)
-        status: todo
+        status: backlog
         estimate: 4
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
         depends_on:
           - vehiculos-alta-edicion
-        ticket_refs: []
+        ticket_refs:
+          - PIT-40
         starts: 2026-09-10
         ends: 2026-09-17
       - id: ficha-vista
-        title: Solapa Informacion del garage con la ficha agrupada por sistema
+        title: Solapa Informacion del Garage con la ficha tecnica agrupada por tipo
         description: >-
-          La ficha se muestra agrupada en tarjetas por sistema (identificacion,
+          La ficha se muestra agrupada en tarjetas por tipo (identificacion,
           lubricantes, transmision, neumaticos, luces), cada una con el icono del
           servicio correspondiente. Los campos vacios se muestran como "A definir" en
           vez de esconderse.
 
           En mobile las tarjetas van apiladas; en desktop en dos columnas.
-        status: todo
+        status: backlog
         estimate: 3
         prototype:
           - components/pitstop/screens/garage.tsx
           - components/pitstop/service-icon.tsx
         depends_on:
           - ficha-datos
-        ticket_refs: []
+        ticket_refs:
+          - PIT-41
         starts: 2026-09-10
         ends: 2026-09-17
   - id: fixes-s1
@@ -624,78 +628,81 @@ epics:
     fixes: true
     features:
       - id: fixes-s1-nueva
-        title: Agregar cursor pointer a todos los elementos clickeables
-        description: Todos los elementos que puedan ser clickeables deben tener cursor pointer
-          (botones, selectores, checkbox, etc.) Obviamente si estan desabilitados deben
-          tener el cursor correspondiente, no el pointer.
-        status: todo
-        estimate: 1
+        title: Cursor de mano y animacion al apretar en todos los controles
+        description: >-
+          Todos los elementos que puedan ser clickeables deben tener cursor pointer
+          (botones, selectores, checkbox, solapas, items de menu). Si estan
+          deshabilitados deben tener el cursor correspondiente, no el pointer.
+
+          Ademas el boton debe achicarse un poco al apretarlo, tanto en desktop como en
+          mobile. Al achicarse no debe romper el layout ni mover los otros elementos, y
+          el cambio de tamano se tiene que sentir suave y no de golpe.
+        status: backlog
+        estimate: 2
         starts: 2026-09-10
         ends: 2026-09-17
         prototype: []
         depends_on: []
-        ticket_refs: []
+        ticket_refs:
+          - PIT-43
       - id: fixes-s1-nueva-2
-        title: El componente de selector debe abrir un popover custom no el nativo del navegador
+        title: El selector de opciones abre su propia lista en vez de la del navegador
         description: El componente de select debe abrir un popover custom, no el nativo del
-          navegador. Revisa como lo hace shadcn. Esto debe funcionar bien tanto en
-          desktop como en mobile.
-        status: todo
+          navegador. Esto debe funcionar bien tanto en desktop como en mobile.
+        status: backlog
         estimate: 1
         starts: 2026-09-10
         ends: 2026-09-17
         prototype: []
         depends_on: []
-        ticket_refs: []
-      - id: fixes-s1-nueva-3
-        title: Active state de los botones
-        description: El componente del boton debe tener de active state que el boton se achique
-          un poco al apretarlo (tanto para desktop como para mobile). Al achicarse no
-          debe romper el layout ni mover los otros elementos. Se debe sentir suave y no
-          de golpe el cambio de tamaño
-        status: todo
-        estimate: 1
-        starts: 2026-09-10
-        ends: 2026-09-17
-        prototype: []
-        depends_on: []
-        ticket_refs: []
+        ticket_refs:
+          - PIT-39
       - id: fixes-s1-nueva-4
-        title: Los modals y bottom sheets deben bloquear el scroll del contenido que esta detras
-          de ellos
+        title: En el celular no se hace zoom al escribir ni se scrollea el fondo de los
+          formularios
         description: >-
           Los modals y bottom sheets deben bloquear el scroll del contenido que esta
           detras de ellos. Solo se debe poder hacer scroll del contenido dentro del
-          modal o del bottom sheet (si el contenido de estos excede la altura, sino sin
-          scroll).
+          modal o del bottom sheet, y solo si ese contenido excede la altura.
 
           Ademas los bottom sheets deben funcionar bien cuando se abre el teclado en
           mobile (tanto ios como android), sin que se rompa ni el input seleccionado
-          quede tapado por el teclado
-        status: todo
-        estimate: 1
-        starts: 2026-09-10
-        ends: 2026-09-17
-        prototype: []
-        depends_on: []
-        ticket_refs: []
-      - id: fixes-s1-nueva-5
-        title: Bloquear zoom y gestos para la PWA en el celular
-        description: >-
-          No se debe poder hacer zoom con los dedos ni se deben permitir gestos touch,
-          la idea es que cuando use la plataforma en el celular no pueda hacer zoom ni
-          gestos (lo mas parecido a una app mobile posible).
+          quede tapado por el teclado.
 
-          Tambien algo que pasa ahora es que al seleccionar un input en un celular, se
-          hace un zoom a ese input (creo que es por el tamaño del texto de los inputs
-          que activa ese zoom automatico), esto no quiero que pase mas
-        status: todo
+          Tampoco se debe poder hacer zoom con los dedos ni se deben permitir gestos
+          touch: la idea es que usar la plataforma en el celular se parezca lo mas
+          posible a una app mobile. Hoy ademas, al seleccionar un input en un celular se
+          hace zoom a ese input, por el tamano del texto de los inputs, y eso no tiene
+          que pasar mas.
+        status: backlog
+        estimate: 2
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-44
+      - id: fixes-s1-nueva-6
+        title: Estados vacios en Inicio, Calendario y Perfil, con el mismo margen que Garage
+        description: >-
+          Las pantallas de Inicio, Calendario y Perfil tienen que mostrar un estado
+          vacio que explique que va a haber ahi cuando este hecho, reutilizando el
+          mismo componente que ya se usa en Garage. En estos tres casos el estado vacio
+          NO lleva boton ni llamado a la accion, porque todavia no hay nada que el
+          usuario pueda hacer en esas pantallas.
+
+          Ademas cada pantalla tiene que quedar con el mismo padding que la de Garage,
+          que es la que ya esta implementada y queda como referencia. Hoy Inicio y
+          Calendario no tienen ninguno y Perfil usa uno distinto, asi que al pasar de
+          una seccion a otra el contenido salta de lugar.
+        status: backlog
         estimate: 1
         starts: 2026-09-10
         ends: 2026-09-17
         prototype: []
         depends_on: []
-        ticket_refs: []
+        ticket_refs:
+          - PIT-46
   - id: mantenimientos
     title: Registro de mantenimientos
     description: "Requerimiento Must del charter y el corazon del uso diario: registrar cada
