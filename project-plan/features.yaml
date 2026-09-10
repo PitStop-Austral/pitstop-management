@@ -422,7 +422,7 @@ epics:
         description: Manifest con nombre, colores e iconos de PitStop, service worker registrado
           y la app instalable desde el navegador en Android, iOS y desktop. Al abrirla
           instalada tiene que verse sin la barra del navegador.
-        status: in_progress
+        status: done
         estimate: 2
         prototype:
           - public/icon.svg
@@ -477,7 +477,7 @@ epics:
         description: Borrar un vehiculo pide confirmacion y avisa que se van a perder sus
           mantenimientos, frecuencias, deseos y accesos compartidos. Si era el vehiculo
           activo, la app pasa a otro automaticamente.
-        status: in_progress
+        status: done
         estimate: 2
         prototype:
           - components/pitstop/sheets/delete-vehicle-confirm.tsx
@@ -502,7 +502,7 @@ epics:
 
           En mobile la foto va arriba y el contenido debajo; en desktop la ficha queda
           fija a la izquierda y las solapas a la derecha.
-        status: in_progress
+        status: done
         estimate: 4
         prototype:
           - components/pitstop/screens/garage.tsx
@@ -525,7 +525,7 @@ epics:
           La seleccion se guarda en la cuenta, asi que se mantiene al recargar y es la
           misma si entra desde otro dispositivo. Si el vehiculo guardado ya no existe,
           cae al primero de la lista.
-        status: in_progress
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/sheets/vehicle-picker.tsx
@@ -568,8 +568,7 @@ epics:
     status: todo
     features:
       - id: ficha-datos
-        title: "Cargar la ficha tecnica del vehiculo: aceites, transmision, neumaticos y
-          luces"
+        title: "Cargar la ficha tecnica del vehiculo: aceites, transmision, neumaticos y luces"
         description: >-
           Todo en el mismo formulario de creacion y edicion del vehiculo, agrupado por
           tipo y con todos los campos opcionales. Cada seccion debe usar su imagen
@@ -686,10 +685,10 @@ epics:
         title: Estados vacios en Inicio, Calendario y Perfil, con el mismo margen que Garage
         description: >-
           Las pantallas de Inicio, Calendario y Perfil tienen que mostrar un estado
-          vacio que explique que va a haber ahi cuando este hecho, reutilizando el
-          mismo componente que ya se usa en Garage. En estos tres casos el estado vacio
-          NO lleva boton ni llamado a la accion, porque todavia no hay nada que el
-          usuario pueda hacer en esas pantallas.
+          vacio que explique que va a haber ahi cuando este hecho, reutilizando el mismo
+          componente que ya se usa en Garage. En estos tres casos el estado vacio NO
+          lleva boton ni llamado a la accion, porque todavia no hay nada que el usuario
+          pueda hacer en esas pantallas.
 
           Ademas cada pantalla tiene que quedar con el mismo padding que la de Garage,
           que es la que ya esta implementada y queda como referencia. Hoy Inicio y

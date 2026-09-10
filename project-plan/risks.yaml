@@ -7,7 +7,8 @@ meta:
 risks:
   - id: deuda-tecnica-inexperiencia
     title: Alta cantidad de bugs o deuda técnica por inexperiencia del equipo de desarrollo
-    description: La falta de experiencia puede introducir defectos y deuda técnica que retrasen las entregas.
+    description: La falta de experiencia puede introducir defectos y deuda técnica que
+      retrasen las entregas.
     category: technical
     status: open
     probability: 3
@@ -15,14 +16,17 @@ risks:
     owner_id: martin
     identified_at: 2026-09-03
     review_date: 2026-09-10
-    mitigation_plan: Definir criterios de aceptación, code reviews, testing básico y QA al cierre de cada sprint.
+    mitigation_plan: Definir criterios de aceptación, code reviews, testing básico y QA al
+      cierre de cada sprint.
     contingency_plan: Congelar nuevas features y dedicar un sprint de estabilización y corrección.
     related_feature_ids: []
     related_sprint: 1
     notes: Probabilidad original 60%; impacto estimado $1500; VME $900.
   - id: complejidad-mvp-subestimada
-    title: Subestimación de la complejidad del MVP frente al tiempo disponible del cuatrimestre
-    description: El alcance técnico puede requerir más esfuerzo que el disponible durante el cuatrimestre.
+    title: Subestimación de la complejidad del MVP frente al tiempo disponible del
+      cuatrimestre
+    description: El alcance técnico puede requerir más esfuerzo que el disponible durante el
+      cuatrimestre.
     category: schedule
     status: open
     probability: 2
@@ -30,14 +34,16 @@ risks:
     owner_id: tomas
     identified_at: 2026-09-03
     review_date: 2026-09-10
-    mitigation_plan: Priorizar estrictamente Must, validar complejidad técnica temprano y mantener backlog acotado.
+    mitigation_plan: Priorizar estrictamente Must, validar complejidad técnica temprano y
+      mantener backlog acotado.
     contingency_plan: Recortar Should/Could y entregar una versión mínima funcional.
     related_feature_ids: []
     related_sprint: 1
     notes: Probabilidad original 40%; impacto estimado $1800; VME $720.
   - id: validacion-usuarios-insuficiente
     title: Baja adopción o validación insuficiente por parte de usuarios reales
-    description: La falta de feedback representativo puede llevar a flujos que no respondan a necesidades reales.
+    description: La falta de feedback representativo puede llevar a flujos que no respondan
+      a necesidades reales.
     category: external
     status: open
     probability: 2
@@ -45,14 +51,16 @@ risks:
     owner_id: manuel-lostalo
     identified_at: 2026-09-03
     review_date: 2026-09-10
-    mitigation_plan: Realizar entrevistas y pruebas tempranas con dueños de vehículos, y ajustar los flujos principales.
+    mitigation_plan: Realizar entrevistas y pruebas tempranas con dueños de vehículos, y
+      ajustar los flujos principales.
     contingency_plan: Reorientar funcionalidades según feedback y validar con escenarios representativos.
     related_feature_ids: []
     related_sprint: 1
     notes: Probabilidad original 40%; impacto estimado $1000; VME $400.
   - id: baja-integrante-clave
     title: Abandono, rotación o baja de algún integrante clave durante el cuatrimestre
-    description: La pérdida temporal o definitiva de una persona puede concentrar conocimiento y afectar entregas críticas.
+    description: La pérdida temporal o definitiva de una persona puede concentrar
+      conocimiento y afectar entregas críticas.
     category: people
     status: open
     probability: 1
@@ -60,14 +68,17 @@ risks:
     owner_id: tomas
     identified_at: 2026-09-03
     review_date: 2026-09-17
-    mitigation_plan: Documentar decisiones técnicas, distribuir conocimiento y evitar dependencias de una sola persona.
+    mitigation_plan: Documentar decisiones técnicas, distribuir conocimiento y evitar
+      dependencias de una sola persona.
     contingency_plan: Reasignar tareas, reducir alcance y priorizar módulos críticos.
     related_feature_ids: []
     related_sprint: null
     notes: Probabilidad original 20%; impacto estimado $1600; VME $320.
   - id: descoordinacion-lab4-lab2
-    title: Falta de integración efectiva entre planificación de Lab 4 y ejecución técnica de Lab 2
-    description: Planificación y ejecución pueden divergir, generando bloqueos o trabajo fuera de prioridad.
+    title: Falta de integración efectiva entre planificación de Lab 4 y ejecución técnica de
+      Lab 2
+    description: Planificación y ejecución pueden divergir, generando bloqueos o trabajo
+      fuera de prioridad.
     category: schedule
     status: open
     probability: 2
@@ -75,14 +86,17 @@ risks:
     owner_id: tomas
     identified_at: 2026-09-03
     review_date: 2026-09-10
-    mitigation_plan: Reuniones semanales, responsables claros, tablero compartido y definición común de entregables.
+    mitigation_plan: Reuniones semanales, responsables claros, tablero compartido y
+      definición común de entregables.
     contingency_plan: Escalar bloqueos a profesores o sponsors y replantear prioridades del sprint.
     related_feature_ids: []
     related_sprint: 1
     notes: Probabilidad original 40%; impacto estimado $1200; VME $480.
   - id: acceso-infraestructura-concentrado
     title: Acceso a infraestructura concentrado en una sola cuenta
-    description: Una sola cuenta tiene acceso a Vercel, Neon y Firebase, lo que puede bloquear deploys, migraciones, configuración de variables de entorno y recuperación ante incidentes.
+    description: Una sola cuenta tiene acceso a Vercel, Neon y Firebase, lo que puede
+      bloquear deploys, migraciones, configuración de variables de entorno y
+      recuperación ante incidentes.
     category: technical
     status: open
     probability: 2
@@ -90,8 +104,11 @@ risks:
     owner_id: martin
     identified_at: 2026-09-03
     review_date: 2026-09-10
-    mitigation_plan: Otorgar acceso administrativo a al menos una segunda persona por plataforma y documentar responsables, procedimiento de handover y rotación de credenciales.
-    contingency_plan: Solicitar recuperación de acceso por los canales oficiales de cada proveedor y priorizar el restablecimiento de los servicios críticos.
+    mitigation_plan: Otorgar acceso administrativo a al menos una segunda persona por
+      plataforma y documentar responsables, procedimiento de handover y rotación de
+      credenciales.
+    contingency_plan: Solicitar recuperación de acceso por los canales oficiales de cada
+      proveedor y priorizar el restablecimiento de los servicios críticos.
     related_feature_ids:
       - setup-firebase
       - deploy-web-api
@@ -114,8 +131,7 @@ incidents:
     lessons_learned: Avisar con previo aviso si algún integrante va a estar ausente por algun viaje
   - id: nuevo-incidente-2
     title: Mala configuración de las envs de prod
-    description:
-      En el deploy de Vercel se configuro incorrectamente la env que indica la
+    description: En el deploy de Vercel se configuro incorrectamente la env que indica la
       URL de la API
     status: open
     severity: medium

@@ -80,13 +80,13 @@ project:
     - ESLint
     - Prettier
     - React Router
-  forbidden_notes: "capacitacion/APP-CONTEXT.md tambien prohibe React Query, pero eso aplica
-    al proyecto de practica (Changuito), no al MVP: aca esta permitido. La libreria de
-    componentes del MVP es @base-ui/react, no shadcn ni Radix: se verifico el 2026-09-08
-    contra apps/web/package.json y ninguna de las dos esta instalada. ESLint y Prettier
-    estan prohibidos porque el template usa Oxlint y Oxfmt con la configuracion en la
-    raiz. React Router esta prohibido porque el ruteo lo resuelve TanStack Router, que ya
-    viene en el template."
+  forbidden_notes: "capacitacion/APP-CONTEXT.md tambien prohibe React Query, pero eso
+    aplica al proyecto de practica (Changuito), no al MVP: aca esta permitido. La
+    libreria de componentes del MVP es @base-ui/react, no shadcn ni Radix: se verifico
+    el 2026-09-08 contra apps/web/package.json y ninguna de las dos esta instalada.
+    ESLint y Prettier estan prohibidos porque el template usa Oxlint y Oxfmt con la
+    configuracion en la raiz. React Router esta prohibido porque el ruteo lo resuelve
+    TanStack Router, que ya viene en el template."
 linear:
   mcp_server: 73fb21e2-edf7-4f5a-9087-7c11a7c50efa
   mcp_notes: Hay dos servidores MCP de Linear conectados. El de PitStop es este, no el default.
