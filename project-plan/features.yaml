@@ -583,7 +583,7 @@ epics:
           Luces: el modelo de lampara de las altas, las bajas y las antiniebla (texto
           libre)
         status: backlog
-        estimate: 4
+        estimate: 3
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
         depends_on:
