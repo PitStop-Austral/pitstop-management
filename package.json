@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "check:earned-value": "node --experimental-strip-types scripts/check-earned-value.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
@@ -14,6 +15,8 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@tanstack/charts": "^0.18.0",
+    "d3-shape": "^3.2.0",
     "lucide-react": "^1.31.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

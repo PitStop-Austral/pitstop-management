@@ -218,3 +218,14 @@ export type RiskRegister = {
 };
 
 export type Plan = { backlog: Backlog; team: Team; riskRegister: RiskRegister };
+
+export type EarnedValueWeek = {
+  week_start: string;
+  pv: number;
+  ac: number;
+  ev: number;
+};
+
+export type EarnedValueDocument = {
+  weeks: EarnedValueWeek[];
+};
