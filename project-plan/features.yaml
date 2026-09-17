@@ -546,7 +546,7 @@ epics:
           Ademas, si el usuario registra un mantenimiento con un kilometraje mayor al
           del vehiculo, el odometro se actualiza solo. Es una regla del backend para que
           no dependa de que el front se acuerde de hacerlo.
-        status: backlog
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/sheets/update-km-form.tsx
@@ -582,7 +582,7 @@ epics:
 
           Luces: el modelo de lampara de las altas, las bajas y las antiniebla (texto
           libre)
-        status: backlog
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
@@ -601,7 +601,7 @@ epics:
           vez de esconderse.
 
           En mobile las tarjetas van apiladas; en desktop en dos columnas.
-        status: backlog
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/screens/garage.tsx
@@ -636,7 +636,7 @@ epics:
           Ademas el boton debe achicarse un poco al apretarlo, tanto en desktop como en
           mobile. Al achicarse no debe romper el layout ni mover los otros elementos, y
           el cambio de tamano se tiene que sentir suave y no de golpe.
-        status: backlog
+        status: done
         estimate: 2
         starts: 2026-09-10
         ends: 2026-09-17
@@ -648,7 +648,7 @@ epics:
         title: El selector de opciones abre su propia lista en vez de la del navegador
         description: El componente de select debe abrir un popover custom, no el nativo del
           navegador. Esto debe funcionar bien tanto en desktop como en mobile.
-        status: backlog
+        status: done
         estimate: 1
         starts: 2026-09-10
         ends: 2026-09-17
@@ -673,7 +673,7 @@ epics:
           posible a una app mobile. Hoy ademas, al seleccionar un input en un celular se
           hace zoom a ese input, por el tamano del texto de los inputs, y eso no tiene
           que pasar mas.
-        status: backlog
+        status: in_progress
         estimate: 2
         starts: 2026-09-10
         ends: 2026-09-17
@@ -694,7 +694,7 @@ epics:
           que es la que ya esta implementada y queda como referencia. Hoy Inicio y
           Calendario no tienen ninguno y Perfil usa uno distinto, asi que al pasar de
           una seccion a otra el contenido salta de lugar.
-        status: backlog
+        status: done
         estimate: 1
         starts: 2026-09-10
         ends: 2026-09-17
@@ -718,8 +718,8 @@ epics:
         description: Una lista predefinida de servicios (cambio de aceite, filtros, frenos,
           neumaticos, bateria, correa de distribucion, bujias, suspension, luces y
           demas), cada uno con su icono, mas la posibilidad de escribir uno que no este
-          en la lista.
-        status: todo
+          en la lista si se elige "Otro"
+        status: backlog
         estimate: 2
         prototype:
           - lib/pitstop/services.ts
@@ -728,7 +728,8 @@ epics:
           - public/icons
         depends_on:
           - vehiculos-alta-edicion
-        ticket_refs: []
+        ticket_refs:
+          - PIT-47
         starts: 2026-09-17
         ends: 2026-09-24
       - id: mantenimientos-registro
@@ -737,35 +738,40 @@ epics:
           Formulario con tipo de servicio, categoria (mantenimiento preventivo o
           arreglo), fecha, kilometraje, taller, costo y notas. La categoria importa
           porque uno de los KPIs del proyecto es que al menos el 60% de lo registrado
-          sea preventivo. Opcionalmente se vincula a una frecuencia existente. Siempre
-          se registra sobre el vehiculo activo, sin volver a elegirlo.
+          sea preventivo. Siempre se registra sobre el vehiculo activo, sin volver a
+          elegirlo.
 
           El boton "Adjuntar comprobante" que se ve en el formulario del prototipo no se
           construye: los adjuntos quedaron fuera del alcance del MVP.
-        status: todo
+
+          Vincularlo a una frecuencia no entra aca: las frecuencias todavia no existen
+          y eso se hace en recomendados-defaults-baseline.
+        status: backlog
         estimate: 5
         prototype:
           - components/pitstop/sheets/maintenance-form.tsx
         depends_on:
           - mantenimientos-catalogo
           - vehiculo-activo-selector
-        ticket_refs: []
+        ticket_refs:
+          - PIT-49
         starts: 2026-09-17
         ends: 2026-09-24
       - id: mantenimientos-detalle-edicion
         title: Ver y editar un mantenimiento registrado
-        description: Todos los datos del service en una vista, incluida la frecuencia a la que
-          pertenece y cuando toca el proximo, con acceso para editarlo. Se puede
-          corregir cualquier dato; si se cambia la fecha o el kilometraje, la frecuencia
-          asociada recalcula su proximo vencimiento.
-        status: todo
+        description: Todos los datos del service en una vista, con acceso para editarlo. Se
+          puede corregir cualquier dato. Mostrar la frecuencia a la que pertenece,
+          cuando toca el proximo y recalcularlo al cambiar la fecha o el kilometraje se
+          hace en recomendados-defaults-baseline, cuando existan las frecuencias.
+        status: backlog
         estimate: 3
         prototype:
           - components/pitstop/sheets/maintenance-detail.tsx
           - components/pitstop/sheets/maintenance-form.tsx
         depends_on:
           - mantenimientos-registro
-        ticket_refs: []
+        ticket_refs:
+          - PIT-51
         starts: 2026-09-17
         ends: 2026-09-24
   - id: foto-vehiculo
@@ -782,12 +788,19 @@ epics:
         description: >-
           Desde mobile se puede sacar la foto con la camara o elegirla de la galeria;
           desde desktop se sube un archivo. Solo imagenes, con un limite de tamano
-          razonable y un mensaje claro si no cumple.
+          razonable y un mensaje claro si no cumple el formato o tamaño.
 
           La imagen se redimensiona antes de subirla para no gastar datos al cargar la
           app, y cuando el vehiculo no tiene foto se muestra un placeholder que no rompe
           el layout.
-        status: todo
+
+          Debe tener un buen loader para que el usuario sepa que se esta subiendo, y un
+          buen manejo de errores para que el usuario se entere que paso
+
+          La foto se sube desde el formulario de alta y edicion del vehiculo, en la
+          seccion Identificacion, y se muestra en la ficha del Garage y en el selector
+          de vehiculo activo.
+        status: backlog
         estimate: 4
         prototype:
           - components/pitstop/screens/garage.tsx
@@ -796,7 +809,8 @@ epics:
         depends_on:
           - setup-firebase
           - vehiculos-alta-edicion
-        ticket_refs: []
+        ticket_refs:
+          - PIT-48
         starts: 2026-09-17
         ends: 2026-09-24
   - id: historial
@@ -810,28 +824,31 @@ epics:
     status: todo
     features:
       - id: historial-lista
-        title: Historial en vista lista y en linea de tiempo
+        title: Historial de mantenimientos
         description: >-
           Todos los mantenimientos del vehiculo activo, ordenados del mas reciente al
-          mas viejo. Cada item muestra tipo, fecha, kilometraje y costo, y abre el
-          detalle al tocarlo. Si no hay ninguno, un estado vacio que invite a registrar
-          el primero.
+          mas viejo. Cada item muestra tipo, fecha y kilometraje de proximo y ultimo
+          realizado, y abre el detalle al tocarlo. Si no hay ninguno, un estado vacio
+          que invite a registrar el primero. Mientras no existan las frecuencias, el
+          proximo se muestra como "Sin frecuencia definida".
 
-          La vista vive como cuarta solapa del Garage, "Historial", despues de
-          Informacion y Recomendados y antes de Deseos. Tiene ruta propia
-          (/garage/historial) para que una notificacion pueda abrirla directo. Tambien
-          se llega desde el "Ver todos" del bloque de historial del Inicio: es la misma
-          vista, no una pantalla aparte.
+          La lista vive en la pagina de "Calendario", por ahora no va a tener el
+          calendario, solo la lista. La busqueda, los filtros y el ordenar por llegan
+          con historial-busqueda-filtros.
 
           En mobile la lista va en una columna; en desktop en dos.
-        status: todo
-        estimate: 4
+
+          Debe ser igual que en el prototipo, tanto los datos a mostrar como el layout
+          (no incluir el switch entre vista como lista y como timeline).
+        status: backlog
+        estimate: 3
         prototype:
-          - components/pitstop/screens/history.tsx
+          - components/pitstop/screens/calendar.tsx
         depends_on:
           - mantenimientos-registro
           - vehiculos-garage
-        ticket_refs: []
+        ticket_refs:
+          - PIT-50
         starts: 2026-09-17
         ends: 2026-09-24
       - id: historial-busqueda-filtros
@@ -898,8 +915,8 @@ epics:
         depends_on:
           - recomendados-frecuencias
         ticket_refs: []
-        starts: 2026-10-01
-        ends: 2026-10-08
+        starts: 2026-09-24
+        ends: 2026-10-01
       - id: recomendados-defaults-baseline
         title: Frecuencias por defecto y reinicio al registrar un service
         description: >-
@@ -910,6 +927,12 @@ epics:
           Cuando se registra un mantenimiento vinculado a una frecuencia, o del mismo
           tipo, esa frecuencia toma la fecha y el kilometraje del service como nueva
           base y vuelve a contar desde ahi.
+
+          Incluye lo que quedo afuera de los tickets de mantenimientos del Sprint 2
+          semana 1: vincular un mantenimiento a su frecuencia al registrarlo o editarlo,
+          mostrar en el detalle del mantenimiento la frecuencia a la que pertenece y
+          cuando toca el proximo, y recalcular el proximo vencimiento cuando se edita la
+          fecha o el kilometraje de un mantenimiento.
         status: todo
         estimate: 3
         prototype:
@@ -919,8 +942,8 @@ epics:
           - recomendados-calculo
           - mantenimientos-registro
         ticket_refs: []
-        starts: 2026-10-08
-        ends: 2026-10-15
+        starts: 2026-09-24
+        ends: 2026-10-01
       - id: recomendados-vista
         title: Solapa Recomendados del garage con alta, detalle y edicion
         description: >-
@@ -938,8 +961,8 @@ epics:
         depends_on:
           - recomendados-calculo
         ticket_refs: []
-        starts: 2026-10-01
-        ends: 2026-10-08
+        starts: 2026-09-24
+        ends: 2026-10-01
   - id: calendario
     title: Calendario de mantenimientos
     description: "Ver el mantenimiento del vehiculo en el tiempo: lo que ya se hizo y lo que
@@ -980,8 +1003,8 @@ epics:
         depends_on:
           - calendario-mes
         ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
+        starts: 2026-10-01
+        ends: 2026-10-08
   - id: inicio
     title: Pantalla de inicio
     description: La primera pantalla que ve el usuario al abrir la app. Tiene que responder
@@ -1017,8 +1040,8 @@ epics:
           - recomendados-calculo
           - historial-lista
         ticket_refs: []
-        starts: 2026-10-08
-        ends: 2026-10-15
+        starts: 2026-10-01
+        ends: 2026-10-08
   - id: alertas
     title: Alertas y recordatorios
     description: "Requerimiento Must del charter y la razon de ser del producto: que el
@@ -1076,8 +1099,8 @@ epics:
           - alertas-suscripcion
           - recomendados-calculo
         ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
+        starts: 2026-10-08
+        ends: 2026-10-15
       - id: alertas-metrica
         title: Medir cuantas alertas terminan en un servicio registrado
         description: Registrar cada alerta enviada y si dentro del plazo se registro el
@@ -1090,8 +1113,8 @@ epics:
           - alertas-evaluacion-envio
           - mantenimientos-registro
         ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
+        starts: 2026-10-08
+        ends: 2026-10-15
   - id: fixes-s2
     title: Fixes y carry — Sprint 2
     description: "Margen del Sprint 2. La ultima semana del sprint no se llena con
@@ -1203,8 +1226,8 @@ epics:
         depends_on:
           - auth-rutas-protegidas
         ticket_refs: []
-        starts: 2026-10-22
-        ends: 2026-10-29
+        starts: 2026-10-15
+        ends: 2026-10-22
   - id: compartir-vehiculo
     title: Acceso compartido a un vehiculo
     description: "Que una familia o una pareja puedan administrar el mismo auto sin
