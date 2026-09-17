@@ -6,7 +6,7 @@ import { scaleLinear } from '@tanstack/charts/scales/linear'
 import { curveMonotoneX } from 'd3-shape'
 import type { EarnedValueDocument, EarnedValueWeek } from '../types'
 import { calculateEarnedValue } from '../lib/earnedValue'
-import { addDays, formatShort, nextThursday, parseISO } from '../lib/week'
+import { addDays, formatShort, parseISO } from '../lib/week'
 import { Button, Field, SectionTitle } from './ui'
 import { saveEarnedValue } from '../api'
 
@@ -20,7 +20,6 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
   const [error, setError] = useState<string | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
   const points = useMemo(() => calculateEarnedValue(weeks), [weeks])
-  const latest = points.at(-1)
   useEffect(() => setWeeks(data.weeks), [data.weeks])
 
   function updateWeek(week_start: string, field: 'pv' | 'ac' | 'ev', value: number) {
@@ -64,9 +63,9 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
       sourceWidth,
       sourceHeight,
       metrics: [
-        ['PV acumulado', `${number(latest?.pvAccumulated ?? 0)} h`],
-        ['EV acumulado', `${number(latest?.evAccumulated ?? 0)} h`],
-        ['AC acumulado', `${number(latest?.acAccumulated ?? 0)} h`],
+        ['PV', `${number(latest?.pvAccumulated ?? 0)} h`],
+        ['EV', `${number(latest?.evAccumulated ?? 0)} h`],
+        ['AC', `${number(latest?.acAccumulated ?? 0)} h`],
         ['SV', `${number(latest?.sv ?? 0)} h`],
         ['CV', `${number(latest?.cv ?? 0)} h`],
         ['SPI', number(latest?.spi ?? null)],
@@ -89,16 +88,16 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
     image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(exportDocument.source)}`
   }
 
-  const max = Math.max(...points.flatMap((point) => [point.pvAccumulated, point.evAccumulated, point.acAccumulated]), 1)
   const height = 440
   const today = new Date()
   const todayAtMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate())
   const chartDate = (week_start: string) => addDays(parseISO(week_start), 7)
   const chartStart = points[0] ? chartDate(points[0].week_start) : null
   const chartEnd = points.at(-1) ? chartDate(points.at(-1)!.week_start) : null
-  const currentWeekEnd = nextThursday(todayAtMidnight)
-  const todayIsWithinChart = Boolean(chartStart && chartEnd && chartStart < chartEnd && currentWeekEnd >= chartStart && currentWeekEnd <= chartEnd)
-  const visiblePoints = points.filter((point) => parseISO(point.week_start) <= todayAtMidnight)
+  const visiblePoints = points.filter((point) => chartDate(point.week_start) <= todayAtMidnight)
+  const latest = visiblePoints.at(-1)
+  const max = Math.max(...points.flatMap((point) => [point.pvAccumulated, point.evAccumulated, point.acAccumulated]), 1)
+  const todayIsWithinChart = Boolean(chartStart && chartEnd && chartStart < chartEnd && todayAtMidnight >= chartStart && todayAtMidnight <= chartEnd)
   const series = (key: 'pvAccumulated' | 'evAccumulated' | 'acAccumulated', data: typeof points) =>
     data.map((point) => ({ date: chartDate(point.week_start).getTime(), value: point[key] }))
   const chartDefinition = useMemo(() => defineChart({
@@ -107,8 +106,8 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
       lineY(series('evAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#e10600', strokeWidth: 2, curve: d3Curve(curveMonotoneX) }),
       lineY(series('acAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#f59e0b', strokeWidth: 2, curve: d3Curve(curveMonotoneX) }),
       ...(todayIsWithinChart ? [
-        ruleX([currentWeekEnd.getTime()], { stroke: '#e10600', strokeWidth: 2 }),
-        text([{ date: currentWeekEnd.getTime(), value: max, label: 'Hoy' }], { x: 'date', y: 'value', text: 'label', fill: '#e10600', fontSize: 11, fontWeight: 700, anchor: 'start', dx: 8, dy: 14 }),
+        ruleX([todayAtMidnight.getTime()], { stroke: '#e10600', strokeWidth: 2 }),
+        text([{ date: todayAtMidnight.getTime(), value: max, label: 'Hoy' }], { x: 'date', y: 'value', text: 'label', fill: '#e10600', fontSize: 11, fontWeight: 700, anchor: 'end', dx: -8, dy: 14 }),
       ] : []),
     ],
     scales: {
@@ -117,7 +116,7 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
     },
     clip: true,
     theme: { grid: '#e5e5e7', foreground: '#71717a' },
-  }), [points, visiblePoints, currentWeekEnd, todayIsWithinChart, max])
+  }), [points, visiblePoints, chartStart, chartEnd, todayAtMidnight, todayIsWithinChart, max])
 
   return (
     <div className="space-y-6">
@@ -135,9 +134,9 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
       {error ? <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-semibold text-brand-700">{error}</p> : null}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <Metric label="PV acumulado" value={`${number(latest?.pvAccumulated ?? 0)} h`} />
-        <Metric label="EV acumulado" value={`${number(latest?.evAccumulated ?? 0)} h`} />
-        <Metric label="AC acumulado" value={`${number(latest?.acAccumulated ?? 0)} h`} />
+        <Metric label="PV" value={`${number(latest?.pvAccumulated ?? 0)} h`} />
+        <Metric label="EV" value={`${number(latest?.evAccumulated ?? 0)} h`} />
+        <Metric label="AC" value={`${number(latest?.acAccumulated ?? 0)} h`} />
         <Metric label="SV" value={`${number(latest?.sv ?? 0)} h`} />
         <Metric label="CV" value={`${number(latest?.cv ?? 0)} h`} />
         <Metric label="SPI" value={number(latest?.spi ?? null)} />

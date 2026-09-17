@@ -4,50 +4,50 @@
 weeks:
   - week_start: 2026-08-13
     pv: 15
-    ac: 14
+    ac: 15
     ev: 15
   - week_start: 2026-08-20
     pv: 18
-    ac: 19
-    ev: 14
+    ac: 18
+    ev: 18
   - week_start: 2026-08-27
     pv: 18
-    ac: 18
-    ev: 22
+    ac: 20
+    ev: 15
   - week_start: 2026-09-03
     pv: 16
-    ac: 19
-    ev: 16
+    ac: 18
+    ev: 19
   - week_start: 2026-09-10
     pv: 15
     ac: 15
-    ev: 15
+    ev: 18
   - week_start: 2026-09-17
     pv: 18
     ac: 0
     ev: 0
   - week_start: 2026-09-24
-    pv: 7
+    pv: 15
     ac: 0
     ev: 0
   - week_start: 2026-10-01
-    pv: 17
+    pv: 18
     ac: 0
     ev: 0
   - week_start: 2026-10-08
-    pv: 17
+    pv: 15
     ac: 0
     ev: 0
   - week_start: 2026-10-15
-    pv: 16
+    pv: 18
     ac: 0
     ev: 0
   - week_start: 2026-10-22
-    pv: 13
+    pv: 15
     ac: 0
     ev: 0
   - week_start: 2026-10-29
-    pv: 0
+    pv: 15
     ac: 0
     ev: 0
   - week_start: 2026-11-05
