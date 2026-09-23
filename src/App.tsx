@@ -11,11 +11,12 @@ import {
   RefreshCw,
   Save,
   ShieldAlert,
+  TrendingUp,
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { fetchPlan, fetchPrototypeFiles, savePlan } from "./api";
-import type { Plan } from "./types";
+import { fetchEarnedValue, fetchPlan, fetchPrototypeFiles, savePlan } from "./api";
+import type { EarnedValueDocument, Plan } from "./types";
 import { BacklogTab } from "./components/BacklogTab";
 import { FeatureEditor } from "./components/FeatureEditor";
 import { SprintsTab } from "./components/SprintsTab";
@@ -25,9 +26,10 @@ import { WeekDetail } from "./components/WeekDetail";
 import { WeekPanel } from "./components/WeekPanel";
 import { RisksTab } from "./components/RisksTab";
 import { cn } from "./components/ui";
+import { EarnedValueTab } from "./components/EarnedValueTab";
 
 type Tab =
-  "backlog" | "cronograma" | "semana" | "equipo" | "sprints" | "riesgos";
+  "backlog" | "cronograma" | "semana" | "equipo" | "sprints" | "riesgos" | "earned-value";
 type SaveState = "idle" | "dirty" | "saving" | "saved" | "error";
 
 const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
@@ -37,6 +39,7 @@ const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: "equipo", label: "Equipo", icon: Users },
   { id: "sprints", label: "Sprints", icon: Flag },
   { id: "riesgos", label: "Riesgos", icon: ShieldAlert },
+  { id: "earned-value", label: "Earned Value", icon: TrendingUp },
 ];
 
 const SAVE_DEBOUNCE_MS = 800;
@@ -44,6 +47,8 @@ const SAVE_DEBOUNCE_MS = 800;
 export function App() {
   const [plan, setPlan] = useState<Plan | null>(null);
   const [prototypeFiles, setPrototypeFiles] = useState<string[]>([]);
+  const [earnedValue, setEarnedValue] = useState<EarnedValueDocument | null>(null);
+  const [earnedValueError, setEarnedValueError] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("backlog");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   /** Semana abierta en el panel del cronograma: el jueves de arranque, en ISO. */
@@ -58,6 +63,9 @@ export function App() {
     fetchPrototypeFiles()
       .then(setPrototypeFiles)
       .catch(() => setPrototypeFiles([]));
+    fetchEarnedValue()
+      .then(setEarnedValue)
+      .catch((cause: Error) => setEarnedValueError(cause.message));
   }, []);
 
   const update = useCallback((fn: (plan: Plan) => Plan) => {
@@ -89,7 +97,10 @@ export function App() {
     )
       return;
     try {
-      setPlan(await fetchPlan());
+      const [nextPlan, nextEarnedValue] = await Promise.all([fetchPlan(), fetchEarnedValue()]);
+      setPlan(nextPlan);
+      setEarnedValue(nextEarnedValue);
+      setEarnedValueError(null);
       setSaveState("idle");
       setError(null);
     } catch (cause) {
@@ -268,6 +279,10 @@ export function App() {
         {tab === "equipo" ? <TeamTab plan={plan} update={update} /> : null}
         {tab === "sprints" ? <SprintsTab plan={plan} update={update} /> : null}
         {tab === "riesgos" ? <RisksTab plan={plan} update={update} /> : null}
+        {tab === "earned-value" ? (
+          earnedValue ? <EarnedValueTab document={earnedValue} /> :
+            <p className="rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-700">{earnedValueError ?? "Cargando Earned Value…"}</p>
+        ) : null}
       </main>
     </div>
   );

@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { parse, stringify } from "yaml";
-import type { Plan } from "../src/types";
+import type { EarnedValueDocument, EarnedValueWeek, Plan } from "../src/types";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -12,6 +12,7 @@ const FILES = {
   backlog: path.join(root, "project-plan", "features.yaml"),
   team: path.join(root, "project-plan", "team.yaml"),
   risks: path.join(root, "project-plan", "risks.yaml"),
+  earnedValue: path.join(root, "project-plan", "earned-value.yaml"),
 };
 
 /** El prototipo vive fuera de este repo; si no esta, el autocompletado queda vacio. */
@@ -44,6 +45,41 @@ export async function readPlan(): Promise<Plan> {
     readYaml<Plan["riskRegister"]>(FILES.risks),
   ]);
   return { backlog, team, riskRegister };
+}
+
+export async function readEarnedValue(): Promise<EarnedValueDocument> {
+  return readYaml<EarnedValueDocument>(FILES.earnedValue);
+}
+
+function validateEarnedValueWeeks(value: unknown): string | null {
+  if (!value || typeof value !== "object" || !Array.isArray((value as { weeks?: unknown }).weeks))
+    return "Faltan semanas de Earned Value";
+  const weeks = (value as { weeks: EarnedValueWeek[] }).weeks;
+  const dates = new Set<string>();
+  const date = /^\d{4}-\d{2}-\d{2}$/;
+  for (const week of weeks) {
+    if (!week || typeof week !== "object" || !date.test(week.week_start))
+      return "La semana debe tener una fecha ISO válida";
+    const parsed = new Date(`${week.week_start}T00:00:00Z`);
+    if (
+      Number.isNaN(parsed.getTime()) ||
+      parsed.toISOString().slice(0, 10) !== week.week_start ||
+      parsed.getUTCDay() !== 4
+    )
+      return `La semana debe comenzar un jueves: ${week.week_start}`;
+    if (dates.has(week.week_start)) return `Semana repetida: ${week.week_start}`;
+    dates.add(week.week_start);
+    for (const [name, hours] of [["PV", week.pv], ["AC", week.ac], ["EV", week.ev]] as const) {
+      if (typeof hours !== "number" || !Number.isFinite(hours) || hours < 0)
+        return `${name} debe ser una cantidad de horas no negativa`;
+    }
+  }
+  return null;
+}
+
+export async function writeEarnedValue(weeks: EarnedValueWeek[]): Promise<void> {
+  const sorted = [...weeks].sort((a, b) => a.week_start.localeCompare(b.week_start));
+  await writeYaml(FILES.earnedValue, { weeks: sorted });
 }
 
 /**
@@ -247,6 +283,18 @@ export async function handleApi(
       const error = validate(plan);
       if (error) return json(res, 400, { error });
       await writePlan(plan);
+      return json(res, 200, { ok: true, savedAt: new Date().toISOString() });
+    }
+
+    if (url === "/api/earned-value" && req.method === "GET") {
+      return json(res, 200, await readEarnedValue());
+    }
+
+    if (url === "/api/earned-value" && req.method === "PUT") {
+      const body = JSON.parse(await readBody(req)) as unknown;
+      const error = validateEarnedValueWeeks(body);
+      if (error) return json(res, 400, { error });
+      await writeEarnedValue((body as { weeks: EarnedValueWeek[] }).weeks);
       return json(res, 200, { ok: true, savedAt: new Date().toISOString() });
     }
 
