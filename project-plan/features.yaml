@@ -57,7 +57,6 @@ epics:
           - PIT-7
           - PIT-8
           - PIT-9
-          - PIT-10
         starts: 2026-08-13
         ends: 2026-08-20
       - id: capacitacion-frontend
@@ -74,7 +73,6 @@ epics:
           - PIT-13
           - PIT-14
           - PIT-15
-          - PIT-16
           - PIT-17
         starts: 2026-08-13
         ends: 2026-08-20
@@ -673,7 +671,7 @@ epics:
           posible a una app mobile. Hoy ademas, al seleccionar un input en un celular se
           hace zoom a ese input, por el tamano del texto de los inputs, y eso no tiene
           que pasar mas.
-        status: in_progress
+        status: done
         estimate: 2
         starts: 2026-09-10
         ends: 2026-09-17
@@ -681,6 +679,20 @@ epics:
         depends_on: []
         ticket_refs:
           - PIT-44
+      - id: fixes-s1-tabs-icons
+        title: Agregar iconos al componente tabs como una propiedad opcional
+        description: >-
+          Permitir un icono opcional de Lucide en cada tab del componente existente.
+          En Garage, usar info para Informacion, thumbs-up para Recomendados y heart
+          para Deseos. Eliminar la tab Historial.
+        status: done
+        estimate: 1
+        starts: 2026-09-10
+        ends: 2026-09-17
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-45
       - id: fixes-s1-nueva-6
         title: Estados vacios en Inicio, Calendario y Perfil, con el mismo margen que Garage
         description: >-
@@ -719,7 +731,7 @@ epics:
           neumaticos, bateria, correa de distribucion, bujias, suspension, luces y
           demas), cada uno con su icono, mas la posibilidad de escribir uno que no este
           en la lista si se elige "Otro"
-        status: backlog
+        status: done
         estimate: 2
         prototype:
           - lib/pitstop/services.ts
@@ -744,9 +756,9 @@ epics:
           El boton "Adjuntar comprobante" que se ve en el formulario del prototipo no se
           construye: los adjuntos quedaron fuera del alcance del MVP.
 
-          Vincularlo a una frecuencia no entra aca: las frecuencias todavia no existen
-          y eso se hace en recomendados-defaults-baseline.
-        status: backlog
+          Vincularlo a una frecuencia no entra aca: las frecuencias todavia no existen y
+          eso se hace en recomendados-defaults-baseline.
+        status: done
         estimate: 5
         prototype:
           - components/pitstop/sheets/maintenance-form.tsx
@@ -763,7 +775,7 @@ epics:
           puede corregir cualquier dato. Mostrar la frecuencia a la que pertenece,
           cuando toca el proximo y recalcularlo al cambiar la fecha o el kilometraje se
           hace en recomendados-defaults-baseline, cuando existan las frecuencias.
-        status: backlog
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/sheets/maintenance-detail.tsx
@@ -800,7 +812,7 @@ epics:
           La foto se sube desde el formulario de alta y edicion del vehiculo, en la
           seccion Identificacion, y se muestra en la ficha del Garage y en el selector
           de vehiculo activo.
-        status: backlog
+        status: done
         estimate: 4
         prototype:
           - components/pitstop/screens/garage.tsx
@@ -840,7 +852,7 @@ epics:
 
           Debe ser igual que en el prototipo, tanto los datos a mostrar como el layout
           (no incluir el switch entre vista como lista y como timeline).
-        status: backlog
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/screens/calendar.tsx
@@ -857,13 +869,14 @@ epics:
           chips para ver todos, solo mantenimientos o solo arreglos; y un selector de
           orden por fecha, kilometraje o costo. Todo se combina entre si y hay un
           mensaje claro cuando la busqueda no da resultados.
-        status: todo
+        status: done
         estimate: 3
         prototype:
           - components/pitstop/screens/history.tsx
         depends_on:
           - historial-lista
-        ticket_refs: []
+        ticket_refs:
+          - PIT-54
         starts: 2026-09-24
         ends: 2026-10-01
   - id: recomendados
@@ -888,13 +901,14 @@ epics:
           cada N meses, cada N kilometros o las dos cosas. No puede haber dos
           frecuencias del mismo tipo para el mismo vehiculo y al menos uno de los dos
           criterios tiene que estar cargado."
-        status: todo
+        status: done
         estimate: 4
         prototype:
           - components/pitstop/sheets/schedule-form.tsx
         depends_on:
           - mantenimientos-catalogo
-        ticket_refs: []
+        ticket_refs:
+          - PIT-52
         starts: 2026-09-24
         ends: 2026-10-01
       - id: recomendados-calculo
@@ -908,13 +922,14 @@ epics:
           se agregan al modelo User con sus valores por defecto, 30 dias y 1500 km, para
           que el calculo no dependa de que exista la pantalla de preferencias. Poder
           editarlos llega despues, con el perfil."
-        status: todo
+        status: done
         estimate: 4
         prototype:
           - lib/pitstop/helpers.ts
         depends_on:
           - recomendados-frecuencias
-        ticket_refs: []
+        ticket_refs:
+          - PIT-53
         starts: 2026-09-24
         ends: 2026-10-01
       - id: recomendados-defaults-baseline
@@ -933,7 +948,7 @@ epics:
           mostrar en el detalle del mantenimiento la frecuencia a la que pertenece y
           cuando toca el proximo, y recalcular el proximo vencimiento cuando se edita la
           fecha o el kilometraje de un mantenimiento.
-        status: todo
+        status: in_progress
         estimate: 3
         prototype:
           - lib/pitstop/services.ts
@@ -941,26 +956,46 @@ epics:
         depends_on:
           - recomendados-calculo
           - mantenimientos-registro
-        ticket_refs: []
+          - mantenimientos-detalle-edicion
+        ticket_refs:
+          - PIT-55
         starts: 2026-09-24
         ends: 2026-10-01
-      - id: recomendados-vista
-        title: Solapa Recomendados del garage con alta, detalle y edicion
+      - id: recomendados-vista-lista
+        title: Mostrar las frecuencias en Garage
         description: >-
           La lista de frecuencias del vehiculo con su estado y cuanto falta para cada
-          una, con accesos para crear una nueva, ver el detalle y editarla. Si no hay
-          ninguna, un estado vacio que explique para que sirven.
+          una, con accesos para crear una nueva y ver el detalle. Si no hay ninguna, un
+          estado vacio que explique para que sirven.
 
           En mobile la lista va en una columna; en pantallas anchas en dos.
-        status: todo
-        estimate: 4
+        status: done
+        estimate: 2
         prototype:
           - components/pitstop/screens/garage.tsx
-          - components/pitstop/sheets/schedule-detail.tsx
           - components/pitstop/cards.tsx
         depends_on:
           - recomendados-calculo
-        ticket_refs: []
+        ticket_refs:
+          - PIT-56
+        starts: 2026-09-24
+        ends: 2026-10-01
+      - id: recomendados-vista-detalle-edicion
+        title: Ver, editar y eliminar una frecuencia desde Garage
+        description: Desde la tarjeta de una frecuencia, mostrar su tipo, intervalos, estado,
+          base de calculo y proximo vencimiento. Permitir modificar tipo o intervalos
+          con las mismas validaciones del alta y eliminarla con confirmacion. Al guardar
+          o eliminar, actualizar la lista sin recargar la pagina.
+        status: backlog
+        estimate: 2
+        prototype:
+          - components/pitstop/screens/garage.tsx
+          - components/pitstop/sheets/schedule-detail.tsx
+          - components/pitstop/sheets/schedule-form.tsx
+        depends_on:
+          - recomendados-vista-lista
+        ticket_refs:
+          - PIT-57
         starts: 2026-09-24
         ends: 2026-10-01
   - id: calendario
@@ -982,27 +1017,29 @@ epics:
           Las frecuencias que solo vencen por kilometraje no pueden ubicarse en el
           calendario, asi que se listan en una seccion aparte con cuantos kilometros
           faltan.
-        status: todo
+        status: backlog
         estimate: 5
         prototype:
           - components/pitstop/screens/calendar.tsx
         depends_on:
           - recomendados-calculo
           - historial-lista
-        ticket_refs: []
+        ticket_refs:
+          - PIT-60
         starts: 2026-10-01
         ends: 2026-10-08
       - id: calendario-dia
         title: Detalle de los mantenimientos de un dia
         description: Al tocar un dia con eventos se abren los mantenimientos de esa fecha, con
           acceso al detalle de cada uno.
-        status: todo
+        status: backlog
         estimate: 2
         prototype:
           - components/pitstop/sheets/day-maintenance-list.tsx
         depends_on:
           - calendario-mes
-        ticket_refs: []
+        ticket_refs:
+          - PIT-61
         starts: 2026-10-01
         ends: 2026-10-08
   - id: inicio
@@ -1031,7 +1068,7 @@ epics:
           que el primer service que registre va a aparecer ahi.
 
           En mobile las dos secciones van apiladas; en desktop lado a lado.
-        status: todo
+        status: backlog
         estimate: 4
         prototype:
           - components/pitstop/screens/dashboard.tsx
@@ -1039,7 +1076,8 @@ epics:
         depends_on:
           - recomendados-calculo
           - historial-lista
-        ticket_refs: []
+        ticket_refs:
+          - PIT-62
         starts: 2026-10-01
         ends: 2026-10-08
   - id: alertas
@@ -1053,7 +1091,7 @@ epics:
     status: todo
     features:
       - id: alertas-suscripcion
-        title: Pedir permiso de notificaciones y registrar el dispositivo
+        title: Activar notificaciones y guardar el dispositivo del usuario
         description: >-
           El permiso de notificaciones se pide en un momento concreto: cuando el usuario
           termina de registrar su primer mantenimiento. Al cerrarse el formulario con
@@ -1069,17 +1107,66 @@ epics:
           misma hoja explica como agregarla a la pantalla de inicio en vez de pedir el
           permiso.
 
+          El permiso del navegador se solicita solo al tocar "Activar". Configurar
+          Firebase Cloud Messaging y el registro minimo del service worker necesario
+          para suscribir el dispositivo. Obtener su registro de FCM y guardarlo en
+          PostgreSQL mediante un endpoint autenticado, asociado al usuario. Permitir
+          varios dispositivos por usuario y actualizar los registros existentes sin
+          duplicarlos. Desvincular el dispositivo al cerrar sesion para que no reciba
+          alertas de la cuenta anterior.
+
           La preferencia de notificaciones nace aca: se agrega al modelo User con su
           valor por defecto, para que el envio no dependa de que exista la pantalla de
-          perfil. El toggle para cambiarla llega despues.
-        status: todo
-        estimate: 4
+          perfil. Guardar tambien que la invitacion ya fue mostrada, para no insistir
+          automaticamente. Contemplar navegadores incompatibles. El toggle para
+          cambiar la preferencia llega despues.
+
+          Se considera terminada cuando aceptar deja el dispositivo registrado para
+          el usuario autenticado, repetir el proceso no genera duplicados y rechazar
+          permite seguir usando la app. La recepcion de mensajes se completa en
+          alertas-recepcion-push; el cron y los envios automaticos quedan fuera.
+        status: backlog
+        estimate: 3
         prototype:
           - components/pitstop/sheets/maintenance-form.tsx
         depends_on:
           - deploy-pwa
           - mantenimientos-registro
-        ticket_refs: []
+        ticket_refs:
+          - PIT-58
+        starts: 2026-10-01
+        ends: 2026-10-08
+      - id: alertas-recepcion-push
+        title: Recibir una notificacion de prueba con la app cerrada
+        description: >-
+          Completar la integracion de Firebase Cloud Messaging con el service worker
+          de la PWA para recibir mensajes en segundo plano y mostrar una notificacion
+          del sistema con titulo, cuerpo e icono de PitStop. Conservar el comportamiento
+          actual de instalacion y cache de la PWA.
+
+          Definir tambien la recepcion cuando la app esta abierta, evitando mostrar
+          dos veces el mismo mensaje. Preparar un mecanismo controlado de envio de
+          prueba desde el backend al dispositivo guardado en alertas-suscripcion:
+          no debe permitir envios arbitrarios a otros usuarios ni exponer credenciales
+          de envio al frontend.
+
+          Verificar la recepcion con la pestana cerrada y, en iOS, con la PWA instalada
+          y el permiso concedido. Se considera terminada cuando una push de prueba
+          enviada al dispositivo registrado muestra una sola notificacion aunque la
+          app este cerrada.
+
+          Esta tarea depende de alertas-suscripcion y se planifica para la misma
+          persona, primero activacion y persistencia y despues recepcion. El cron,
+          el calculo diario de vencimientos, los envios automaticos y la apertura del
+          destino al tocar la notificacion quedan en alertas-evaluacion-envio, para
+          el 15 de octubre.
+        status: backlog
+        estimate: 3
+        prototype: []
+        depends_on:
+          - alertas-suscripcion
+        ticket_refs:
+          - PIT-59
         starts: 2026-10-01
         ends: 2026-10-08
       - id: alertas-evaluacion-envio
@@ -1092,11 +1179,31 @@ epics:
           La notificacion dice de que vehiculo y de que service se trata, y al tocarla
           se abre directamente ese mantenimiento en la app. Respeta las preferencias del
           usuario.
+
+          La ejecucion diaria se programa con Vercel Cron en el proyecto de la API.
+          El flujo es: Vercel Cron invoca un endpoint protegido de la API, la API
+          consulta las frecuencias y reutiliza el calculo de vencimientos existente,
+          envia las alertas correspondientes mediante Firebase Cloud Messaging y el
+          service worker de la PWA las recibe y muestra. No requiere un servidor
+          encendido permanentemente ni una Cloud Function programada de Firebase.
+
+          Configurar el cron en vercel.json y proteger el endpoint con CRON_SECRET,
+          guardado como variable de entorno del backend. Documentar el horario diario
+          y su equivalencia en UTC. La revision no depende de que el usuario tenga
+          abierta la app; el permiso, la persistencia del dispositivo y la recepcion
+          de prueba ya quedan preparados en las tareas anteriores.
+
+          Registrar los envios para evitar notificar nuevamente el mismo vencimiento
+          y contemplar reintentos o ejecuciones concurrentes del cron. Respetar la
+          preferencia del usuario, gestionar registros de dispositivos invalidos y
+          permitir continuar con los demas destinatarios si falla un envio. Incluir
+          tests de backend para la proteccion del endpoint, la seleccion de alertas,
+          el respeto de preferencias y la prevencion de duplicados.
         status: todo
         estimate: 5
         prototype: []
         depends_on:
-          - alertas-suscripcion
+          - alertas-recepcion-push
           - recomendados-calculo
         ticket_refs: []
         starts: 2026-10-08

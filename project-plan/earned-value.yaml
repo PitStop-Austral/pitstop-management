@@ -24,12 +24,12 @@ weeks:
     ev: 18
   - week_start: 2026-09-17
     pv: 18
-    ac: 0
-    ev: 0
+    ac: 18
+    ev: 18
   - week_start: 2026-09-24
     pv: 15
-    ac: 0
-    ev: 0
+    ac: 18
+    ev: 18
   - week_start: 2026-10-01
     pv: 18
     ac: 0
