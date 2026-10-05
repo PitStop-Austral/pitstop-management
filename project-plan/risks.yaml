@@ -2,7 +2,7 @@
 # Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
 # asi que los comentarios que agregues aca se van a perder.
 meta:
-  updated: 2026-09-03
+  updated: 2026-10-01
   notes: Registro de riesgos e incidentes del proyecto.
 risks:
   - id: deuda-tecnica-inexperiencia

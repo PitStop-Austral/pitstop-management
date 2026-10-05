@@ -681,8 +681,7 @@ epics:
           - PIT-44
       - id: fixes-s1-tabs-icons
         title: Agregar iconos al componente tabs como una propiedad opcional
-        description: >-
-          Permitir un icono opcional de Lucide en cada tab del componente existente.
+        description: Permitir un icono opcional de Lucide en cada tab del componente existente.
           En Garage, usar info para Informacion, thumbs-up para Recomendados y heart
           para Deseos. Eliminar la tab Historial.
         status: done
@@ -1118,11 +1117,11 @@ epics:
           La preferencia de notificaciones nace aca: se agrega al modelo User con su
           valor por defecto, para que el envio no dependa de que exista la pantalla de
           perfil. Guardar tambien que la invitacion ya fue mostrada, para no insistir
-          automaticamente. Contemplar navegadores incompatibles. El toggle para
-          cambiar la preferencia llega despues.
+          automaticamente. Contemplar navegadores incompatibles. El toggle para cambiar
+          la preferencia llega despues.
 
-          Se considera terminada cuando aceptar deja el dispositivo registrado para
-          el usuario autenticado, repetir el proceso no genera duplicados y rechazar
+          Se considera terminada cuando aceptar deja el dispositivo registrado para el
+          usuario autenticado, repetir el proceso no genera duplicados y rechazar
           permite seguir usando la app. La recepcion de mensajes se completa en
           alertas-recepcion-push; el cron y los envios automaticos quedan fuera.
         status: backlog
@@ -1139,27 +1138,27 @@ epics:
       - id: alertas-recepcion-push
         title: Recibir una notificacion de prueba con la app cerrada
         description: >-
-          Completar la integracion de Firebase Cloud Messaging con el service worker
-          de la PWA para recibir mensajes en segundo plano y mostrar una notificacion
-          del sistema con titulo, cuerpo e icono de PitStop. Conservar el comportamiento
+          Completar la integracion de Firebase Cloud Messaging con el service worker de
+          la PWA para recibir mensajes en segundo plano y mostrar una notificacion del
+          sistema con titulo, cuerpo e icono de PitStop. Conservar el comportamiento
           actual de instalacion y cache de la PWA.
 
-          Definir tambien la recepcion cuando la app esta abierta, evitando mostrar
-          dos veces el mismo mensaje. Preparar un mecanismo controlado de envio de
-          prueba desde el backend al dispositivo guardado en alertas-suscripcion:
-          no debe permitir envios arbitrarios a otros usuarios ni exponer credenciales
-          de envio al frontend.
+          Definir tambien la recepcion cuando la app esta abierta, evitando mostrar dos
+          veces el mismo mensaje. Preparar un mecanismo controlado de envio de prueba
+          desde el backend al dispositivo guardado en alertas-suscripcion: no debe
+          permitir envios arbitrarios a otros usuarios ni exponer credenciales de envio
+          al frontend.
 
           Verificar la recepcion con la pestana cerrada y, en iOS, con la PWA instalada
           y el permiso concedido. Se considera terminada cuando una push de prueba
-          enviada al dispositivo registrado muestra una sola notificacion aunque la
-          app este cerrada.
+          enviada al dispositivo registrado muestra una sola notificacion aunque la app
+          este cerrada.
 
           Esta tarea depende de alertas-suscripcion y se planifica para la misma
-          persona, primero activacion y persistencia y despues recepcion. El cron,
-          el calculo diario de vencimientos, los envios automaticos y la apertura del
-          destino al tocar la notificacion quedan en alertas-evaluacion-envio, para
-          el 15 de octubre.
+          persona, primero activacion y persistencia y despues recepcion. El cron, el
+          calculo diario de vencimientos, los envios automaticos y la apertura del
+          destino al tocar la notificacion quedan en alertas-evaluacion-envio, para el
+          15 de octubre.
         status: backlog
         estimate: 3
         prototype: []
@@ -1180,25 +1179,25 @@ epics:
           se abre directamente ese mantenimiento en la app. Respeta las preferencias del
           usuario.
 
-          La ejecucion diaria se programa con Vercel Cron en el proyecto de la API.
-          El flujo es: Vercel Cron invoca un endpoint protegido de la API, la API
-          consulta las frecuencias y reutiliza el calculo de vencimientos existente,
-          envia las alertas correspondientes mediante Firebase Cloud Messaging y el
-          service worker de la PWA las recibe y muestra. No requiere un servidor
-          encendido permanentemente ni una Cloud Function programada de Firebase.
+          La ejecucion diaria se programa con Vercel Cron en el proyecto de la API. El
+          flujo es: Vercel Cron invoca un endpoint protegido de la API, la API consulta
+          las frecuencias y reutiliza el calculo de vencimientos existente, envia las
+          alertas correspondientes mediante Firebase Cloud Messaging y el service worker
+          de la PWA las recibe y muestra. No requiere un servidor encendido
+          permanentemente ni una Cloud Function programada de Firebase.
 
           Configurar el cron en vercel.json y proteger el endpoint con CRON_SECRET,
-          guardado como variable de entorno del backend. Documentar el horario diario
-          y su equivalencia en UTC. La revision no depende de que el usuario tenga
-          abierta la app; el permiso, la persistencia del dispositivo y la recepcion
-          de prueba ya quedan preparados en las tareas anteriores.
+          guardado como variable de entorno del backend. Documentar el horario diario y
+          su equivalencia en UTC. La revision no depende de que el usuario tenga abierta
+          la app; el permiso, la persistencia del dispositivo y la recepcion de prueba
+          ya quedan preparados en las tareas anteriores.
 
-          Registrar los envios para evitar notificar nuevamente el mismo vencimiento
-          y contemplar reintentos o ejecuciones concurrentes del cron. Respetar la
+          Registrar los envios para evitar notificar nuevamente el mismo vencimiento y
+          contemplar reintentos o ejecuciones concurrentes del cron. Respetar la
           preferencia del usuario, gestionar registros de dispositivos invalidos y
           permitir continuar con los demas destinatarios si falla un envio. Incluir
-          tests de backend para la proteccion del endpoint, la seleccion de alertas,
-          el respeto de preferencias y la prevencion de duplicados.
+          tests de backend para la proteccion del endpoint, la seleccion de alertas, el
+          respeto de preferencias y la prevencion de duplicados.
         status: todo
         estimate: 5
         prototype: []

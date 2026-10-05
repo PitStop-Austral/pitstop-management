@@ -5,7 +5,7 @@ import { d3Curve, defineChart, lineY, ruleX, text } from '@tanstack/charts'
 import { scaleLinear } from '@tanstack/charts/scales/linear'
 import { curveMonotoneX } from 'd3-shape'
 import type { EarnedValueDocument, EarnedValueWeek } from '../types'
-import { calculateEarnedValue } from '../lib/earnedValue'
+import { calculateEarnedValue, calculateEarnedValueForecast } from '../lib/earnedValue'
 import { addDays, formatShort, parseISO } from '../lib/week'
 import { Button, Field, SectionTitle } from './ui'
 import { saveEarnedValue } from '../api'
@@ -70,6 +70,8 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
         ['CV', `${number(latest?.cv ?? 0)} h`],
         ['SPI', number(latest?.spi ?? null)],
         ['CPI', number(latest?.cpi ?? null)],
+        ['BAC', `${number(bac)} h`],
+        ['EAC', eac == null ? '—' : `${number(eac)} h`],
       ],
     })
     const image = new Image()
@@ -96,7 +98,8 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
   const chartEnd = points.at(-1) ? chartDate(points.at(-1)!.week_start) : null
   const visiblePoints = points.filter((point) => chartDate(point.week_start) <= todayAtMidnight)
   const latest = visiblePoints.at(-1)
-  const max = Math.max(...points.flatMap((point) => [point.pvAccumulated, point.evAccumulated, point.acAccumulated]), 1)
+  const { bac, eac } = calculateEarnedValueForecast(points, latest)
+  const max = Math.max(...points.flatMap((point) => [point.pvAccumulated, point.evAccumulated, point.acAccumulated]), bac, eac ?? 0, 1)
   const todayIsWithinChart = Boolean(chartStart && chartEnd && chartStart < chartEnd && todayAtMidnight >= chartStart && todayAtMidnight <= chartEnd)
   const series = (key: 'pvAccumulated' | 'evAccumulated' | 'acAccumulated', data: typeof points) =>
     data.map((point) => ({ date: chartDate(point.week_start).getTime(), value: point[key] }))
@@ -105,6 +108,13 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
       lineY(series('pvAccumulated', points), { x: 'date', y: 'value', stroke: '#71717a', strokeWidth: 2, strokeDasharray: '6 6', curve: d3Curve(curveMonotoneX) }),
       lineY(series('evAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#e10600', strokeWidth: 2, curve: d3Curve(curveMonotoneX) }),
       lineY(series('acAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#f59e0b', strokeWidth: 2, curve: d3Curve(curveMonotoneX) }),
+      ...(chartStart && chartEnd ? [
+        lineY([{ date: chartStart.getTime(), value: bac }, { date: chartEnd.getTime(), value: bac }], { x: 'date', y: 'value', stroke: '#2563eb', strokeWidth: 2, strokeDasharray: '3 5' }),
+        text([{ date: chartStart.getTime(), value: bac, label: `BAC · ${number(bac)} h` }], { x: 'date', y: 'value', text: 'label', fill: '#2563eb', fontSize: 11, fontWeight: 700, anchor: 'start', dx: 8, dy: 14 }),
+      ] : []),
+      ...(latest && eac != null && chartEnd && chartDate(latest.week_start) < chartEnd ? [
+        lineY([{ date: chartDate(latest.week_start).getTime(), value: latest.acAccumulated }, { date: chartEnd.getTime(), value: eac }], { x: 'date', y: 'value', stroke: '#f59e0b', strokeWidth: 2, strokeDasharray: '6 4' }),
+      ] : []),
       ...(todayIsWithinChart ? [
         ruleX([todayAtMidnight.getTime()], { stroke: '#e10600', strokeWidth: 2 }),
         text([{ date: todayAtMidnight.getTime(), value: max, label: 'Hoy' }], { x: 'date', y: 'value', text: 'label', fill: '#e10600', fontSize: 11, fontWeight: 700, anchor: 'end', dx: -8, dy: 14 }),
@@ -116,7 +126,7 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
     },
     clip: true,
     theme: { grid: '#e5e5e7', foreground: '#71717a' },
-  }), [points, visiblePoints, chartStart, chartEnd, todayAtMidnight, todayIsWithinChart, max])
+  }), [points, visiblePoints, chartStart, chartEnd, todayAtMidnight, todayIsWithinChart, max, bac, eac, latest])
 
   return (
     <div className="space-y-6">
@@ -133,7 +143,7 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
 
       {error ? <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-semibold text-brand-700">{error}</p> : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <Metric label="PV" value={`${number(latest?.pvAccumulated ?? 0)} h`} />
         <Metric label="EV" value={`${number(latest?.evAccumulated ?? 0)} h`} />
         <Metric label="AC" value={`${number(latest?.acAccumulated ?? 0)} h`} />
@@ -141,6 +151,8 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
         <Metric label="CV" value={`${number(latest?.cv ?? 0)} h`} />
         <Metric label="SPI" value={number(latest?.spi ?? null)} />
         <Metric label="CPI" value={number(latest?.cpi ?? null)} />
+        <Metric label="BAC" value={`${number(bac)} h`} hint="Presupuesto total · suma del PV de todas las semanas" />
+        <Metric label="EAC" value={eac == null ? '—' : `${number(eac)} h`} hint={eac == null ? 'Sin proyección: se necesita un CPI mayor que cero' : 'Estimación al cierre · BAC / CPI acumulado actual'} />
       </div>
 
       <section className="card overflow-hidden">
@@ -150,10 +162,11 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
         </div>
         <div className="overflow-x-auto px-5 pt-4">
           <div ref={chartRef} className="min-w-[760px] rounded-xl border border-border bg-muted/30 px-2 py-1">
-            <Chart className="earned-value-chart" style={{ fontFamily: 'Inter, system-ui, sans-serif' }} definition={chartDefinition} height={height} initialWidth={1200} ariaLabel="Curvas acumuladas PV EV y AC" />
+            <Chart className="earned-value-chart" style={{ fontFamily: 'Inter, system-ui, sans-serif' }} definition={chartDefinition} height={height} initialWidth={1200} ariaLabel="Curvas acumuladas PV, EV y AC, presupuesto BAC y proyección EAC" />
           </div>
         </div>
-        <div className="mt-4 flex gap-5 border-t border-border px-5 py-3 text-xs font-semibold"><Legend color="#71717a" label="PV" dashed /><Legend color="#e10600" label="EV" /><Legend color="#f59e0b" label="AC" /></div>
+        <div className="mt-4 flex flex-wrap gap-5 border-t border-border px-5 py-3 text-xs font-semibold"><Legend color="#71717a" label="PV" dashed /><Legend color="#e10600" label="EV" /><Legend color="#f59e0b" label="AC" /><Legend color="#2563eb" label="BAC" dashed /><Legend color="#f59e0b" label="EAC (proyección)" dashed /></div>
+        <p className="px-5 pb-4 text-xs text-muted-foreground">EAC supone que se mantiene el CPI de las semanas cerradas. La línea proyectada une el AC actual con la estimación al cierre; no representa una planificación semanal.</p>
       </section>
 
       <section className="card overflow-x-auto">
@@ -191,6 +204,8 @@ function createExportSvg({ chart, sourceWidth, sourceHeight, metrics }: { chart:
     ['#71717a', 'PV', '6 6'],
     ['#e10600', 'EV', ''],
     ['#f59e0b', 'AC', ''],
+    ['#2563eb', 'BAC', '3 5'],
+    ['#f59e0b', 'EAC', '6 4'],
   ].map(([color, label, dash], index) => {
     const x = inset + index * 130
     return `<g><line x1="${x}" y1="${legendY}" x2="${x + 34}" y2="${legendY}" stroke="${color}" stroke-width="3" ${dash ? `stroke-dasharray="${dash}"` : ''}/><text x="${x + 48}" y="${legendY + 6}" fill="#3f3f46" font-size="17" font-weight="600">${label}</text></g>`

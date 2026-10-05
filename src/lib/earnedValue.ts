@@ -31,3 +31,9 @@ export function calculateEarnedValue(entries: EarnedValueWeek[]): EarnedValuePoi
     }
   })
 }
+
+export function calculateEarnedValueForecast(points: EarnedValuePoint[], latest?: EarnedValuePoint) {
+  const bac = points.at(-1)?.pvAccumulated ?? 0
+  const eac = latest?.cpi != null && latest.cpi > 0 ? bac / latest.cpi : null
+  return { bac, eac }
+}
