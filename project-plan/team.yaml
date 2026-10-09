@@ -2,7 +2,7 @@
 # Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
 # asi que los comentarios que agregues aca se van a perder.
 meta:
-  updated: 2026-09-08
+  updated: 2026-10-08
   notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
     dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
     verificados contra el workspace pitstop-austral."
@@ -176,8 +176,11 @@ sprints:
       - Inicio
       - Alertas
       - Fixes - S2
-    notes: Los nueve projects de este sprint ya estan creados en Linear, con las fechas del
-      cronograma y la prioridad de cada epica.
+      - KPI Reporting
+    notes: Los diez projects de este sprint están creados en Linear, incluido KPI Reporting.
+      Los vencimientos de PIT-66 y PIT-67 se reflejan en el plan para el 15 de octubre
+      de 2026. La sincronización del 8 de octubre actualizó únicamente el plan local;
+      las fechas de los projects de Linear no se modificaron.
   - number: 3
     name: Sprint 3
     cycle_id: 77772c6e-71b6-47bb-b7b1-17ea8306a28a

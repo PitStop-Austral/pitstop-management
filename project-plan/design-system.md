@@ -111,6 +111,7 @@ encapsulados en el componente.
 | Variante | Clases que aplica | Tag por defecto | Cuando se usa |
 |---|---|---|---|
 | `display` | `font-display text-[32px] font-bold tracking-[-0.03em]` | `h1` | Cifra hero, pantalla de bienvenida |
+| `landing-headline` | `font-display font-bold leading-[0.96] tracking-[-0.065em] text-[clamp(3.2rem,7vw,6.75rem)]` | `h1` | Promesa principal de la landing publica |
 | `title` | `font-display text-2xl font-bold tracking-[-0.03em]` | `h1` | Titulo de pantalla |
 | `heading` | `font-display text-xl font-bold` | `h2` | Titulo de seccion, titulo de hoja inferior o modal |
 | `subheading` | `font-display text-lg font-bold` | `h3` | Titulo de tarjeta, titulo de estado vacio |
@@ -305,7 +306,35 @@ color `muted`, alineada por `items-baseline`.
 
 ---
 
-## 11. Reglas para escribir tickets
+## 11. Landing publica
+
+La primera pantalla publica usa `auth-banner.webp` como imagen de borde a borde, con
+`object-cover` y oscurecimiento `neutral-900/95` a la izquierda que se desvanece a
+`neutral-900/15` a la derecha. En mobile el degradado sube desde `neutral-900` abajo
+hacia `neutral-900/25` arriba para mantener legible el texto. El hero mide al menos
+`100dvh` y no tiene cabecera. El contenido queda anclado abajo en
+mobile y centrado verticalmente en desktop (`lg`, 1024 px). La segunda seccion usa
+`background` y una fila de tres beneficios separados por espacio y una linea `border`,
+sin tarjetas.
+
+El logo real se muestra sobre fondo `card` en el footer. El titulo usa
+`landing-headline`, `inverse`, con "siempre al dia" en `primary`; el cuerpo usa `body`, `inverse` con opacidad 80%; las
+etiquetas cortas usan `overline`. El CTA principal reutiliza `Button primary` de 48 px,
+`rounded-full`, `shadow-lg`, hover `red-700`; lleva `ArrowRight` size `md`, color
+`on-primary`. El acceso a login queda al lado de `Empezar gratis` en el hero: boton
+`ghost` transparente, texto `label/inverse`, `rounded-full`, hover blanco al 10%,
+sin borde ni sombra. Ambos miden al menos 48 px de alto y se mantienen en una fila
+desde 320 px de ancho. Los beneficios usan `Icon` size `xl`, color `primary`,
+titulos `heading/default` y descripciones `body/muted`. El foco visible de ambas
+acciones tiene un contorno de 2 px que contraste con el fondo. La entrada del texto
+del hero es escalonada: sobrelinea a 80 ms, titulo a 180 ms, descripcion a 310 ms
+y boton a 440 ms. Cada pieza sube 20 px mientras aparece en 650 ms. La flecha se
+desplaza 4 px en hover. Con movimiento reducido, ambas transiciones se desactivan.
+El footer usa `card`, borde superior
+`border`, logo real, una frase `body/muted`, enlaces a inicio de seccion, login y
+registro en `label/emphasis` o `label/primary`, y copyright `caption/muted`.
+
+## 12. Reglas para escribir tickets
 
 Todo ticket que pida un componente o una pantalla tiene que dejar respondidas estas
 cinco preguntas, con los nombres de este documento:

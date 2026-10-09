@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-09-08
+  updated: 2026-10-08
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -348,6 +348,36 @@ epics:
           - PIT-31
         starts: 2026-08-27
         ends: 2026-09-03
+      - id: auth-landing
+        title: Landing pública antes del inicio de sesión
+        description: "Quien abre PitStop sin sesion ve primero una landing breve que explica
+          para que sirve la app: guardar los vehiculos, consultar el historial de
+          servicios y anticipar los proximos mantenimientos. La imagen de marca ocupa la
+          primera pantalla; la accion principal lleva al registro y la secundaria al
+          login. Ambas conservan el destino original cuando la persona venia de un
+          enlace a una pantalla protegida. Quien ya inicio sesion entra directo a la app
+          y no vuelve a ver la landing; cerrar sesion vuelve a mostrarla. La landing
+          tiene una segunda seccion corta con los tres beneficios y otra accion para
+          crear cuenta. No hay cabecera en la landing: el acceso a login aparece como
+          boton ghost al lado de Empezar gratis dentro del hero. El logo real aparece en
+          el footer, que tambien ofrece accesos a registro, login y volver arriba. Debe
+          funcionar en celular y escritorio con teclado y animacion de entrada
+          escalonada que respeta la preferencia de movimiento reducido."
+        status: in_progress
+        estimate: 2
+        prototype:
+          - components/pitstop/auth/landing-screen.tsx
+          - components/pitstop/auth/auth-gate.tsx
+          - components/pitstop/auth/auth-store.tsx
+          - components/pitstop/auth/login-screen.tsx
+          - public/auth-banner.webp
+        depends_on:
+          - auth-login-registro
+          - auth-rutas-protegidas
+        ticket_refs:
+          - PIT-64
+        starts: 2026-10-08
+        ends: 2026-10-15
       - id: auth-recuperar
         title: Recuperar la cuenta por email
         description: Pantalla para pedir el mail de recuperacion, con confirmacion visible de
@@ -416,7 +446,7 @@ epics:
         starts: 2026-08-27
         ends: 2026-09-03
       - id: deploy-pwa
-        title: PWA instalable en mobile y desktop
+        title: Instalar PitStop desde el navegador como una app
         description: Manifest con nombre, colores e iconos de PitStop, service worker registrado
           y la app instalable desde el navegador en Android, iOS y desktop. Al abrirla
           instalada tiene que verse sin la barra del navegador.
@@ -471,7 +501,7 @@ epics:
         starts: 2026-09-03
         ends: 2026-09-10
       - id: vehiculos-baja
-        title: Eliminar un vehiculo con confirmacion explicita
+        title: Eliminar un vehiculo con confirmacion
         description: Borrar un vehiculo pide confirmacion y avisa que se van a perder sus
           mantenimientos, frecuencias, deseos y accesos compartidos. Si era el vehiculo
           activo, la app pasa a otro automaticamente.
@@ -486,7 +516,7 @@ epics:
         starts: 2026-09-03
         ends: 2026-09-10
       - id: vehiculos-garage
-        title: Pantalla Garage con la ficha del vehiculo y su estado general
+        title: Pantalla Garage con la ficha del vehiculo
         description: >-
           La pantalla del vehiculo activo: foto (por ahora debe ir una imagen de ejemplo
           mock hasta que se implemente la funcion de subir imagenes), marca, modelo,
@@ -512,7 +542,7 @@ epics:
         starts: 2026-09-03
         ends: 2026-09-10
       - id: vehiculo-activo-selector
-        title: Selector de vehiculo activo con la seleccion persistida
+        title: Selector de vehiculo activo en el celular y en la compu
         description: >-
           Desde la barra superior (header) en mobile y en la sidebar en desktop, debe
           haber un selector de autos mostrando el auto actual con su foto. Al apretarlo
@@ -545,7 +575,7 @@ epics:
           del vehiculo, el odometro se actualiza solo. Es una regla del backend para que
           no dependa de que el front se acuerde de hacerlo.
         status: done
-        estimate: 3
+        estimate: 2
         prototype:
           - components/pitstop/sheets/update-km-form.tsx
           - components/pitstop/store.tsx
@@ -600,7 +630,7 @@ epics:
 
           En mobile las tarjetas van apiladas; en desktop en dos columnas.
         status: done
-        estimate: 3
+        estimate: 2
         prototype:
           - components/pitstop/screens/garage.tsx
           - components/pitstop/service-icon.tsx
@@ -625,7 +655,7 @@ epics:
     fixes: true
     features:
       - id: fixes-s1-nueva
-        title: Cursor de mano y animacion al apretar en todos los controles
+        title: Cursor pointer y animacion al apretar en todos los controles
         description: >-
           Todos los elementos que puedan ser clickeables deben tener cursor pointer
           (botones, selectores, checkbox, solapas, items de menu). Si estan
@@ -647,7 +677,7 @@ epics:
         description: El componente de select debe abrir un popover custom, no el nativo del
           navegador. Esto debe funcionar bien tanto en desktop como en mobile.
         status: done
-        estimate: 1
+        estimate: 2
         starts: 2026-09-10
         ends: 2026-09-17
         prototype: []
@@ -655,8 +685,9 @@ epics:
         ticket_refs:
           - PIT-39
       - id: fixes-s1-nueva-4
-        title: En el celular no se hace zoom al escribir ni se scrollea el fondo de los
-          formularios
+        title: En el celular no se debe poder hace zoom con los dedos ni se debe hacer zoom
+          automatico al hacer focus en un input ni se debe poder scrollear el fondo de
+          los modals
         description: >-
           Los modals y bottom sheets deben bloquear el scroll del contenido que esta
           detras de ellos. Solo se debe poder hacer scroll del contenido dentro del
@@ -725,13 +756,13 @@ epics:
     status: todo
     features:
       - id: mantenimientos-catalogo
-        title: Catalogo de servicios con icono y opcion de servicio libre
+        title: Catálogo de servicios con su ícono y opción de escribir uno propio
         description: Una lista predefinida de servicios (cambio de aceite, filtros, frenos,
           neumaticos, bateria, correa de distribucion, bujias, suspension, luces y
           demas), cada uno con su icono, mas la posibilidad de escribir uno que no este
           en la lista si se elige "Otro"
         status: done
-        estimate: 2
+        estimate: 1
         prototype:
           - lib/pitstop/services.ts
           - components/pitstop/service-selector.tsx
@@ -744,7 +775,7 @@ epics:
         starts: 2026-09-17
         ends: 2026-09-24
       - id: mantenimientos-registro
-        title: Registrar un mantenimiento
+        title: Registrar un mantenimiento del vehículo activo
         description: >-
           Formulario con tipo de servicio, categoria (mantenimiento preventivo o
           arreglo), fecha, kilometraje, taller, costo y notas. La categoria importa
@@ -769,7 +800,7 @@ epics:
         starts: 2026-09-17
         ends: 2026-09-24
       - id: mantenimientos-detalle-edicion
-        title: Ver y editar un mantenimiento registrado
+        title: Ver el detalle de un mantenimiento, editarlo y borrarlo
         description: Todos los datos del service en una vista, con acceso para editarlo. Se
           puede corregir cualquier dato. Mostrar la frecuencia a la que pertenece,
           cuando toca el proximo y recalcularlo al cambiar la fecha o el kilometraje se
@@ -795,7 +826,7 @@ epics:
     status: todo
     features:
       - id: foto-vehiculo-subida
-        title: Subir, reemplazar y optimizar la foto del vehiculo
+        title: Subir y reemplazar la foto del vehículo, achicada antes de subirla
         description: >-
           Desde mobile se puede sacar la foto con la camara o elegirla de la galeria;
           desde desktop se sube un archivo. Solo imagenes, con un limite de tamano
@@ -812,7 +843,7 @@ epics:
           seccion Identificacion, y se muestra en la ficha del Garage y en el selector
           de vehiculo activo.
         status: done
-        estimate: 4
+        estimate: 5
         prototype:
           - components/pitstop/screens/garage.tsx
           - components/pitstop/sheets/vehicle-form.tsx
@@ -835,7 +866,7 @@ epics:
     status: todo
     features:
       - id: historial-lista
-        title: Historial de mantenimientos
+        title: Lista del historial de mantenimientos en Calendario
         description: >-
           Todos los mantenimientos del vehiculo activo, ordenados del mas reciente al
           mas viejo. Cada item muestra tipo, fecha y kilometraje de proximo y ultimo
@@ -895,7 +926,7 @@ epics:
     status: todo
     features:
       - id: recomendados-frecuencias
-        title: Definir una frecuencia por meses, por kilometros o por ambos
+        title: Definir una frecuencia por meses, kilómetros o ambos
         description: "El usuario elige un tipo de servicio y cada cuanto corresponde hacerlo:
           cada N meses, cada N kilometros o las dos cosas. No puede haber dos
           frecuencias del mismo tipo para el mismo vehiculo y al menos uno de los dos
@@ -911,7 +942,7 @@ epics:
         starts: 2026-09-24
         ends: 2026-10-01
       - id: recomendados-calculo
-        title: Calculo de vencimiento y estado al dia, proximo o vencido
+        title: Calcular vencimientos y estados de las frecuencias
         description: "A partir de la ultima vez que se hizo el service y del intervalo, se
           calcula cuando y a que kilometraje toca el proximo, y cuanto falta. Vence por
           el primer criterio alcanzado. El estado es vencido si ya paso, proximo si esta
@@ -932,7 +963,7 @@ epics:
         starts: 2026-09-24
         ends: 2026-10-01
       - id: recomendados-defaults-baseline
-        title: Frecuencias por defecto y reinicio al registrar un service
+        title: Cargar frecuencias iniciales y reiniciar el cálculo al registrar un servicio
         description: >-
           Un vehiculo nuevo arranca con frecuencias razonables ya cargadas (cambio de
           aceite, filtro de aceite, filtro de aire, alineacion y correa de distribucion)
@@ -947,7 +978,7 @@ epics:
           mostrar en el detalle del mantenimiento la frecuencia a la que pertenece y
           cuando toca el proximo, y recalcular el proximo vencimiento cuando se edita la
           fecha o el kilometraje de un mantenimiento.
-        status: in_progress
+        status: done
         estimate: 3
         prototype:
           - lib/pitstop/services.ts
@@ -985,7 +1016,7 @@ epics:
           base de calculo y proximo vencimiento. Permitir modificar tipo o intervalos
           con las mismas validaciones del alta y eliminarla con confirmacion. Al guardar
           o eliminar, actualizar la lista sin recargar la pagina.
-        status: backlog
+        status: done
         estimate: 2
         prototype:
           - components/pitstop/screens/garage.tsx
@@ -1007,7 +1038,7 @@ epics:
     status: todo
     features:
       - id: calendario-mes
-        title: Vista mensual con completados, proximos y vencidos
+        title: Vista mensual con completados, próximos y vencidos
         description: >-
           Calendario del mes con los dias marcados segun lo que pasa en cada uno:
           services ya registrados, frecuencias que vencen y frecuencias vencidas, cada
@@ -1016,7 +1047,7 @@ epics:
           Las frecuencias que solo vencen por kilometraje no pueden ubicarse en el
           calendario, asi que se listan en una seccion aparte con cuantos kilometros
           faltan.
-        status: backlog
+        status: done
         estimate: 5
         prototype:
           - components/pitstop/screens/calendar.tsx
@@ -1028,10 +1059,10 @@ epics:
         starts: 2026-10-01
         ends: 2026-10-08
       - id: calendario-dia
-        title: Detalle de los mantenimientos de un dia
+        title: Detalle de los mantenimientos de un día
         description: Al tocar un dia con eventos se abren los mantenimientos de esa fecha, con
           acceso al detalle de cada uno.
-        status: backlog
+        status: done
         estimate: 2
         prototype:
           - components/pitstop/sheets/day-maintenance-list.tsx
@@ -1051,7 +1082,7 @@ epics:
     status: todo
     features:
       - id: inicio-dashboard
-        title: Inicio con proximos mantenimientos y ultimos registrados
+        title: Inicio con próximos mantenimientos y últimos registrados
         description: >-
           Arriba, los mantenimientos vencidos primero y despues los proximos, ordenados
           por cuanto falta, cada uno mostrando de que se trata y por que aparece (por
@@ -1067,7 +1098,7 @@ epics:
           que el primer service que registre va a aparecer ahi.
 
           En mobile las dos secciones van apiladas; en desktop lado a lado.
-        status: backlog
+        status: done
         estimate: 4
         prototype:
           - components/pitstop/screens/dashboard.tsx
@@ -1124,8 +1155,8 @@ epics:
           usuario autenticado, repetir el proceso no genera duplicados y rechazar
           permite seguir usando la app. La recepcion de mensajes se completa en
           alertas-recepcion-push; el cron y los envios automaticos quedan fuera.
-        status: backlog
-        estimate: 3
+        status: done
+        estimate: 4
         prototype:
           - components/pitstop/sheets/maintenance-form.tsx
         depends_on:
@@ -1136,7 +1167,7 @@ epics:
         starts: 2026-10-01
         ends: 2026-10-08
       - id: alertas-recepcion-push
-        title: Recibir una notificacion de prueba con la app cerrada
+        title: Recibir una notificación de prueba con la app cerrada
         description: >-
           Completar la integracion de Firebase Cloud Messaging con el service worker de
           la PWA para recibir mensajes en segundo plano y mostrar una notificacion del
@@ -1159,8 +1190,8 @@ epics:
           calculo diario de vencimientos, los envios automaticos y la apertura del
           destino al tocar la notificacion quedan en alertas-evaluacion-envio, para el
           15 de octubre.
-        status: backlog
-        estimate: 3
+        status: in_progress
+        estimate: 2
         prototype: []
         depends_on:
           - alertas-suscripcion
@@ -1169,7 +1200,7 @@ epics:
         starts: 2026-10-01
         ends: 2026-10-08
       - id: alertas-evaluacion-envio
-        title: Deteccion diaria de vencimientos y envio de la notificacion
+        title: Enviar una alerta diaria cuando un mantenimiento esté próximo o vencido
         description: >-
           Una vez por dia se revisan todas las frecuencias de todos los usuarios y se
           determina cuales entraron en estado proximo o vencido segun los umbrales de
@@ -1198,27 +1229,83 @@ epics:
           permitir continuar con los demas destinatarios si falla un envio. Incluir
           tests de backend para la proteccion del endpoint, la seleccion de alertas, el
           respeto de preferencias y la prevencion de duplicados.
-        status: todo
-        estimate: 5
+        status: backlog
+        estimate: 4
         prototype: []
         depends_on:
           - alertas-recepcion-push
           - recomendados-calculo
-        ticket_refs: []
+        ticket_refs:
+          - PIT-63
         starts: 2026-10-08
         ends: 2026-10-15
-      - id: alertas-metrica
-        title: Medir cuantas alertas terminan en un servicio registrado
-        description: Registrar cada alerta enviada y si dentro del plazo se registro el
-          mantenimiento correspondiente, para poder calcular el KPI del 80% y mostrarlo
-          en el informe final del proyecto.
-        status: todo
+  - id: kpis
+    title: KPIs
+    description: "Medir los indicadores de PitStop desde datos reales y preparar su futura
+      publicación en la API central de Lab4. El registro de requests y los sondeos de
+      health se implementan como tareas separadas; los cálculos diarios y el reporting
+      se incorporarán después. Referencia: project-plan/adr/ADR-KPIs-PitStop.md.
+      Proyecto de Linear: KPI Reporting. PIT-66 y PIT-67 vencen el 15 de octubre de 2026
+      y se ubican en la semana del 8 al 15 de octubre. El monitoreo mantiene el alcance
+      actual con artifacts de GitHub; el almacenamiento en una base separada sigue
+      pendiente de decisión. Estas tareas no reemplazan el margen de Fixes y carry."
+    sprint: 2
+    linear_project: KPI Reporting
+    moscow: must
+    status: backlog
+    features:
+      - id: kpis-request-logging
+        title: Registrar el estado HTTP y la latencia de cada request en la base de datos
+        description: >-
+          Crear una tabla de registros HTTP y un middleware global en la API NestJS que
+          guarde una fila por request observada: método, ruta normalizada, inicio y
+          final UTC, código HTTP final, duración en milisegundos y si la respuesta
+          terminó o se interrumpió. Registrar respuestas exitosas, 4xx y 5xx, no
+          solamente errores, para disponer del total de requests cuando se calculen los
+          indicadores.
+
+          Conservar también health y reporting, identificándolos para filtrarlos en los
+          cálculos futuros. No guardar cuerpos, headers, query strings, tokens, IPs ni
+          identificadores de usuarios o vehículos. Medir hasta el final de la respuesta,
+          evitar duplicados entre finish y close y hacer que un fallo de persistencia no
+          altere la respuesta original. Contemplar la finalización de la escritura en el
+          despliegue serverless de Vercel.
+
+          Esta tarea incluye modelo Prisma, migración, middleware, repository y pruebas
+          de backend. Solo registra datos: no calcula porcentajes ni p95, no agrega
+          dashboards, endpoints de KPIs, cron ni envíos a Lab4. Draft:
+          project-plan/ticket-drafts/kpis-request-logging.md.
+        status: backlog
         estimate: 3
         prototype: []
-        depends_on:
-          - alertas-evaluacion-envio
-          - mantenimientos-registro
-        ticket_refs: []
+        depends_on: []
+        ticket_refs:
+          - PIT-66
+        starts: 2026-10-08
+        ends: 2026-10-15
+      - id: kpis-health-monitor
+        title: Chequear la API y la base cada 30 minutos y guardar los resultados en GitHub
+        description: >-
+          Crear un workflow de GitHub Actions que cada 30 minutos consulte los endpoints
+          existentes /health y /health/db de PitStop. Realizar ambos chequeos en cada
+          ejecución, aunque el primero falle, con timeout por request. Guardar un JSON
+          con los dos resultados como artifact de esa corrida, incluyendo fecha UTC,
+          código HTTP, estado y motivo de fallo.
+
+          Preservar los resultados también ante errores HTTP, timeout o problemas de
+          conexión. Distinguir un fallo del chequeo de base a través de la API de una
+          caída confirmada de Neon. Permitir ejecución manual, usar nombres de artifacts
+          únicos por corrida e intento y conservarlos durante 14 días.
+
+          Reutilizar los endpoints actuales; no depende de PIT-66. Esta tarea no calcula
+          disponibilidad, no guarda muestras en Neon y no publica KPIs en Lab4. Draft:
+          project-plan/ticket-drafts/kpis-health-monitor.md.
+        status: backlog
+        estimate: 2
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-67
         starts: 2026-10-08
         ends: 2026-10-15
   - id: fixes-s2
@@ -1261,6 +1348,25 @@ epics:
         prototype: []
         depends_on: []
         ticket_refs: []
+      - id: fixes-s2-proximo-servicio
+        title: Mostrar fecha y kilometraje del próximo servicio en las tarjetas de mantenimiento
+        description: Mostrar en las tarjetas de mantenimiento de Inicio y del historial de
+          Calendario la fecha, el kilometraje o ambos del próximo servicio, según la
+          frecuencia asociada al vehículo y tipo de servicio. Consumir el vencimiento ya
+          calculado por la API, sin duplicar cálculos ni hacer una consulta por tarjeta.
+          Mostrar "Sin frecuencia definida" solo cuando se confirmó que no existe una
+          frecuencia; distinguir carga pendiente y errores. Actualizar el resultado al
+          modificar mantenimientos o frecuencias y al cambiar de vehículo. Conservar la
+          fila de último servicio y el acceso al detalle. Verificar el comportamiento en
+          móvil y escritorio.
+        status: backlog
+        estimate: 1
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-65
+        starts: null
+        ends: 2026-10-15
   - id: perfil
     title: Perfil y preferencias
     description: La pantalla donde el usuario ve su cuenta y configura como quiere que la
