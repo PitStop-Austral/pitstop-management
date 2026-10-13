@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-10-08
+  updated: 2026-10-13
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -23,6 +23,19 @@ meta:
     Estimaciones en escala 1 a 5, donde 1 SP es una hora estimada con margen para un
     estudiante de 3er año usando Claude Code. La calibracion esta en team.yaml, en
     `capacity.notes`.
+
+
+    Plan local del Sprint 3: cuatro semanas de 18 SP del 15 de octubre al 12 de
+    noviembre, 72 SP incluyendo 22 SP de reserva explícita de fixes/carry.
+    Núcleo KPI al 22; integración GitHub/Linear, datos y notificaciones de Perfil,
+    modelo y backend de deseos al 29. Preferencias y contraseña de Perfil, frontend
+    de deseos y recordatorio de km al 5. Release al 12. Perfil conserva 12 SP y
+    deseos 11 SP; solo se adelantan fechas. Los 12 SP adicionales son reserva,
+    no esfuerzo de funcionalidades nuevas. La instrumentación KPI histórica
+    conserva sus 8 SP del Sprint 2, sin duplicarlos. Catálogo manual,
+    documentación y validación integrada fuera de tickets de este equipo.
+    Linear no se modifica; PIT-69 conserva una referencia y 5 SP (3 + 2).
+
 out_of_scope:
   - App nativa iOS / Android
   - CarPlay / Android Auto
@@ -31,6 +44,7 @@ out_of_scope:
   - Publicidad
   - Catalogo con todos los vehiculos del mercado
   - Adjuntar comprobantes o facturas a un mantenimiento
+  - Acceso compartido a vehículos (ADR 02; fuera del MVP)
 epics:
   - id: capacitacion
     title: Capacitacion del equipo de desarrollo
@@ -42,7 +56,7 @@ epics:
     sprint: 1
     linear_project: Capacitación
     moscow: must
-    status: in_progress
+    status: done
     features:
       - id: capacitacion-backend
         title: Modulo backend de Changuito (Prisma, auth, CRUD, historial)
@@ -98,7 +112,7 @@ epics:
     sprint: 1
     linear_project: Setup
     moscow: must
-    status: todo
+    status: done
     features:
       - id: setup-monorepo
         title: Crear el repo del MVP desde el template, con base local
@@ -298,7 +312,7 @@ epics:
     sprint: 1
     linear_project: Auth
     moscow: must
-    status: todo
+    status: done
     features:
       - id: auth-usuario-backend
         title: Guardar al usuario de Firebase en nuestra base y proteger la API
@@ -348,36 +362,6 @@ epics:
           - PIT-31
         starts: 2026-08-27
         ends: 2026-09-03
-      - id: auth-landing
-        title: Landing pública antes del inicio de sesión
-        description: "Quien abre PitStop sin sesion ve primero una landing breve que explica
-          para que sirve la app: guardar los vehiculos, consultar el historial de
-          servicios y anticipar los proximos mantenimientos. La imagen de marca ocupa la
-          primera pantalla; la accion principal lleva al registro y la secundaria al
-          login. Ambas conservan el destino original cuando la persona venia de un
-          enlace a una pantalla protegida. Quien ya inicio sesion entra directo a la app
-          y no vuelve a ver la landing; cerrar sesion vuelve a mostrarla. La landing
-          tiene una segunda seccion corta con los tres beneficios y otra accion para
-          crear cuenta. No hay cabecera en la landing: el acceso a login aparece como
-          boton ghost al lado de Empezar gratis dentro del hero. El logo real aparece en
-          el footer, que tambien ofrece accesos a registro, login y volver arriba. Debe
-          funcionar en celular y escritorio con teclado y animacion de entrada
-          escalonada que respeta la preferencia de movimiento reducido."
-        status: in_progress
-        estimate: 2
-        prototype:
-          - components/pitstop/auth/landing-screen.tsx
-          - components/pitstop/auth/auth-gate.tsx
-          - components/pitstop/auth/auth-store.tsx
-          - components/pitstop/auth/login-screen.tsx
-          - public/auth-banner.webp
-        depends_on:
-          - auth-login-registro
-          - auth-rutas-protegidas
-        ticket_refs:
-          - PIT-64
-        starts: 2026-10-08
-        ends: 2026-10-15
       - id: auth-recuperar
         title: Recuperar la cuenta por email
         description: Pantalla para pedir el mail de recuperacion, con confirmacion visible de
@@ -420,7 +404,7 @@ epics:
     sprint: 1
     linear_project: Deploy
     moscow: must
-    status: todo
+    status: done
     features:
       - id: deploy-web-api
         title: Front, API y base de datos desplegados con entornos separados
@@ -475,7 +459,7 @@ epics:
     sprint: 1
     linear_project: Vehiculos
     moscow: must
-    status: todo
+    status: done
     features:
       - id: vehiculos-alta-edicion
         title: Registrar y editar un vehiculo
@@ -593,7 +577,7 @@ epics:
     sprint: 1
     linear_project: Ficha tecnica
     moscow: must
-    status: todo
+    status: done
     features:
       - id: ficha-datos
         title: "Cargar la ficha tecnica del vehiculo: aceites, transmision, neumaticos y luces"
@@ -651,7 +635,7 @@ epics:
     sprint: 1
     linear_project: Fixes - S1
     moscow: must
-    status: todo
+    status: done
     fixes: true
     features:
       - id: fixes-s1-nueva
@@ -753,7 +737,7 @@ epics:
     sprint: 2
     linear_project: Mantenimientos
     moscow: must
-    status: todo
+    status: done
     features:
       - id: mantenimientos-catalogo
         title: Catálogo de servicios con su ícono y opción de escribir uno propio
@@ -823,7 +807,7 @@ epics:
     sprint: 2
     linear_project: Foto del vehiculo
     moscow: should
-    status: todo
+    status: done
     features:
       - id: foto-vehiculo-subida
         title: Subir y reemplazar la foto del vehículo, achicada antes de subirla
@@ -863,7 +847,7 @@ epics:
     sprint: 2
     linear_project: Historial
     moscow: must
-    status: todo
+    status: done
     features:
       - id: historial-lista
         title: Lista del historial de mantenimientos en Calendario
@@ -923,7 +907,7 @@ epics:
     sprint: 2
     linear_project: Recomendados
     moscow: must
-    status: todo
+    status: done
     features:
       - id: recomendados-frecuencias
         title: Definir una frecuencia por meses, kilómetros o ambos
@@ -1035,7 +1019,7 @@ epics:
     sprint: 2
     linear_project: Calendario
     moscow: must
-    status: todo
+    status: done
     features:
       - id: calendario-mes
         title: Vista mensual con completados, próximos y vencidos
@@ -1079,7 +1063,7 @@ epics:
     sprint: 2
     linear_project: Inicio
     moscow: must
-    status: todo
+    status: done
     features:
       - id: inicio-dashboard
         title: Inicio con próximos mantenimientos y últimos registrados
@@ -1118,7 +1102,7 @@ epics:
     sprint: 2
     linear_project: Alertas
     moscow: must
-    status: todo
+    status: in_progress
     features:
       - id: alertas-suscripcion
         title: Activar notificaciones y guardar el dispositivo del usuario
@@ -1190,7 +1174,7 @@ epics:
           calculo diario de vencimientos, los envios automaticos y la apertura del
           destino al tocar la notificacion quedan en alertas-evaluacion-envio, para el
           15 de octubre.
-        status: in_progress
+        status: done
         estimate: 2
         prototype: []
         depends_on:
@@ -1229,7 +1213,7 @@ epics:
           permitir continuar con los demas destinatarios si falla un envio. Incluir
           tests de backend para la proteccion del endpoint, la seleccion de alertas, el
           respeto de preferencias y la prevencion de duplicados.
-        status: backlog
+        status: in_progress
         estimate: 4
         prototype: []
         depends_on:
@@ -1239,20 +1223,103 @@ epics:
           - PIT-63
         starts: 2026-10-08
         ends: 2026-10-15
-  - id: kpis
-    title: KPIs
-    description: "Medir los indicadores de PitStop desde datos reales y preparar su futura
-      publicación en la API central de Lab4. El registro de requests y los sondeos de
-      health se implementan como tareas separadas; los cálculos diarios y el reporting
-      se incorporarán después. Referencia: project-plan/adr/ADR-KPIs-PitStop.md.
-      Proyecto de Linear: KPI Reporting. PIT-66 y PIT-67 vencen el 15 de octubre de 2026
-      y se ubican en la semana del 8 al 15 de octubre. El monitoreo mantiene el alcance
-      actual con artifacts de GitHub; el almacenamiento en una base separada sigue
-      pendiente de decisión. Estas tareas no reemplazan el margen de Fixes y carry."
+  - id: fixes-s2
+    title: Fixes y carry — Sprint 2
+    description: Correcciones concretas y ajustes del Sprint 2 identificados durante QA y el
+      cierre del sprint. Cada funcionalidad incluye su alcance y referencia al ticket de
+      Linear; la épica no reserva puntos adicionales mediante tareas genéricas.
     sprint: 2
+    linear_project: Fixes - S2
+    moscow: must
+    status: in_progress
+    fixes: true
+    features:
+      - id: fixes-s2-proximo-servicio
+        title: Mostrar fecha y kilometraje del próximo servicio en las tarjetas de mantenimiento
+        description: Mostrar en las tarjetas de mantenimiento de Inicio y del historial de
+          Calendario la fecha, el kilometraje o ambos del próximo servicio, según la
+          frecuencia asociada al vehículo y tipo de servicio. Consumir el vencimiento ya
+          calculado por la API, sin duplicar cálculos ni hacer una consulta por tarjeta.
+          Mostrar "Sin frecuencia definida" solo cuando se confirmó que no existe una
+          frecuencia; distinguir carga pendiente y errores. Actualizar el resultado al
+          modificar mantenimientos o frecuencias y al cambiar de vehículo. Conservar la
+          fila de último servicio y el acceso al detalle. Verificar el comportamiento en
+          móvil y escritorio.
+        status: done
+        estimate: 1
+        prototype: []
+        depends_on: []
+        ticket_refs:
+          - PIT-65
+        starts: 2026-10-08
+        ends: 2026-10-15
+      - id: fixes-s2-limpiar-formulario-vehiculo
+        title: Limpiar el formulario después de crear un vehículo
+        description: Después de crear un vehículo correctamente, restablecer todos los campos
+          del formulario a sus valores iniciales, incluidos los opcionales, errores de
+          validación y estado de envío. Al abrirlo para un segundo vehículo no deben
+          quedar datos del anterior. Si el alta falla, conservar lo ingresado para
+          reintentar; la edición debe seguir mostrando los datos del vehículo existente.
+          Validar dos altas consecutivas, error al guardar y edición, en móvil y
+          escritorio. Ticket asignado en Linear a Ignacio Siaba, con vencimiento el 15
+          de octubre.
+        status: backlog
+        estimate: 1
+        prototype:
+          - components/pitstop/sheets/vehicle-form.tsx
+        depends_on:
+          - vehiculos-alta-edicion
+        ticket_refs:
+          - PIT-70
+        starts: 2026-10-08
+        ends: 2026-10-15
+      - id: auth-landing
+        title: Landing pública antes del inicio de sesión
+        description: "Quien abre PitStop sin sesion ve primero una landing breve que explica
+          para que sirve la app: guardar los vehiculos, consultar el historial de
+          servicios y anticipar los proximos mantenimientos. La imagen de marca ocupa la
+          primera pantalla; la accion principal lleva al registro y la secundaria al
+          login. Ambas conservan el destino original cuando la persona venia de un
+          enlace a una pantalla protegida. Quien ya inicio sesion entra directo a la app
+          y no vuelve a ver la landing; cerrar sesion vuelve a mostrarla. La landing
+          tiene una segunda seccion corta con los tres beneficios y otra accion para
+          crear cuenta. No hay cabecera en la landing: el acceso a login aparece como
+          boton ghost al lado de Empezar gratis dentro del hero. El logo real aparece en
+          el footer, que tambien ofrece accesos a registro, login y volver arriba. Debe
+          funcionar en celular y escritorio con teclado y animacion de entrada
+          escalonada que respeta la preferencia de movimiento reducido."
+        status: done
+        estimate: 2
+        prototype:
+          - components/pitstop/auth/landing-screen.tsx
+          - components/pitstop/auth/auth-gate.tsx
+          - components/pitstop/auth/auth-store.tsx
+          - components/pitstop/auth/login-screen.tsx
+          - public/auth-banner.webp
+        depends_on:
+          - auth-login-registro
+          - auth-rutas-protegidas
+        ticket_refs:
+          - PIT-64
+        starts: 2026-10-08
+        ends: 2026-10-15
+  - id: kpis
+    title: KPI Reporting
+    description: >-
+      Única épica KPI Reporting. PIT-66, PIT-67 y PIT-68 conservan 8 SP históricos del
+      8–15 de octubre. Núcleo del 15–22: 17 SP; implementación GitHub/Linear del 22–29:
+      6 SP. Total 31 SP, incluyendo 23 del Sprint 3. PIT-69 conserva 5 SP (3 cálculo + 2
+      endpoint) y una referencia. API calcula/persiste negocio y HTTP con el GET diario
+      del ADR 02; Actions agrega sondeos y entrega, conserva el lote y publica. Catálogo
+      manual fuera de tickets. Documentación, validación integrada, piloto y
+      comprobación final quedan a cargo de otro equipo, sin puntos ni tickets en este
+      backlog. Cada implementación conserva sus pruebas y controles funcionales. No
+      activar indicadores sin evidencia. Plan local sin modificar Linear. Alcance:
+      project-plan/ticket-drafts/kpis-implementation.md.
+    sprint: 3
     linear_project: KPI Reporting
     moscow: must
-    status: backlog
+    status: in_progress
     features:
       - id: kpis-request-logging
         title: Registrar el estado HTTP y la latencia de cada request en la base de datos
@@ -1275,7 +1342,7 @@ epics:
           de backend. Solo registra datos: no calcula porcentajes ni p95, no agrega
           dashboards, endpoints de KPIs, cron ni envíos a Lab4. Draft:
           project-plan/ticket-drafts/kpis-request-logging.md.
-        status: backlog
+        status: in_progress
         estimate: 3
         prototype: []
         depends_on: []
@@ -1289,7 +1356,7 @@ epics:
           Crear un workflow de GitHub Actions que cada 30 minutos consulte los endpoints
           existentes /health y /health/db de PitStop. Realizar ambos chequeos en cada
           ejecución, aunque el primero falle, con timeout por request. Guardar un JSON
-          con los dos resultados como artifact de esa corrida, incluyendo fecha UTC,
+          con los dos resultados como artifact de esa corrida, incluyendo ambiente, tipo de ejecución (programada/manual), fecha UTC,
           código HTTP, estado y motivo de fallo.
 
           Preservar los resultados también ante errores HTTP, timeout o problemas de
@@ -1308,65 +1375,228 @@ epics:
           - PIT-67
         starts: 2026-10-08
         ends: 2026-10-15
-  - id: fixes-s2
-    title: Fixes y carry — Sprint 2
-    description: "Margen del Sprint 2. La ultima semana del sprint no se llena con
-      funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
-      alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
-      esa semana, este ticket generico se reemplaza por los tickets reales de lo que
-      haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
-      que sigue."
-    sprint: 2
-    linear_project: Fixes - S2
-    moscow: must
-    status: todo
-    fixes: true
-    features:
-      - id: fixes-s2-carry-1
-        title: Fixes y ajustes del Sprint 2 (1 de 2)
-        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
-          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
-          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
-          pisarse.
-        status: todo
-        estimate: 5
-        starts: 2026-10-08
-        ends: 2026-10-15
+      - id: kpis-persistence
+        title: Crear las tablas y el módulo de persistencia de KPIs
+        description: "Crear kpi_runs y kpi_results, su migración y un módulo interno con
+          repository para persistir una corrida y sus resultados en una transacción y
+          recuperarlos por UUID. La persistencia sirve a todas las fuentes de KPIs.
+          Conservar ambiente, fecha medida, ventanas, versión de cálculo, estados, valor
+          y conteos auditables. Unicidad por corrida/KPI, integridad referencial e
+          índices; permitir distintas corridas para una misma fecha y ambiente. READY
+          exige valor finito; NO_DATA y ERROR guardan null, con diagnósticos seguros.
+          Verificar ventanas válidas, conteos no negativos, conflictos y rollback sin
+          inserciones parciales. Incluye pruebas de integridad y atomicidad. No incluye
+          endpoint, fórmulas, catálogo ni publicación externa. No depende de PIT-66.
+          Referencia: project-plan/ticket-drafts/kpis-persistence.md."
+        status: done
+        estimate: 3
         prototype: []
-        depends_on: []
-        ticket_refs: []
-      - id: fixes-s2-carry-2
-        title: Fixes y ajustes del Sprint 2 (2 de 2)
-        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
-          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
-          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
-          pisarse.
-        status: todo
-        estimate: 5
-        starts: 2026-10-08
-        ends: 2026-10-15
-        prototype: []
-        depends_on: []
-        ticket_refs: []
-      - id: fixes-s2-proximo-servicio
-        title: Mostrar fecha y kilometraje del próximo servicio en las tarjetas de mantenimiento
-        description: Mostrar en las tarjetas de mantenimiento de Inicio y del historial de
-          Calendario la fecha, el kilometraje o ambos del próximo servicio, según la
-          frecuencia asociada al vehículo y tipo de servicio. Consumir el vencimiento ya
-          calculado por la API, sin duplicar cálculos ni hacer una consulta por tarjeta.
-          Mostrar "Sin frecuencia definida" solo cuando se confirmó que no existe una
-          frecuencia; distinguir carga pendiente y errores. Actualizar el resultado al
-          modificar mantenimientos o frecuencias y al cambiar de vehículo. Conservar la
-          fila de último servicio y el acceso al detalle. Verificar el comportamiento en
-          móvil y escritorio.
-        status: backlog
-        estimate: 1
-        prototype: []
-        depends_on: []
+        depends_on:
+          - setup-prisma
         ticket_refs:
-          - PIT-65
-        starts: null
+          - PIT-68
+        starts: 2026-10-08
         ends: 2026-10-15
+      - id: kpis-business-snapshots
+        title: Calcular y persistir los cuatro KPIs de negocio del ADR 02
+        description: >-
+          Cálculo de PIT-69: 3 SP aquí y 2 SP en kpis-business-endpoint, una sola
+          referencia al padre de 5 SP. Extender el KpisModule y KpisRepository
+          existentes (PIT-68), sin recrear tablas. Calcular preventive_rate y
+          alert_resolution_rate, y contar service_users_30d por Vehicle.ownerId y
+          active_vehicles_30d por Maintenance.vehicleId distintos con
+          Maintenance.createdAt en los últimos 30 días argentinos. Los dos porcentajes
+          de vehículos del borrador anterior quedan reemplazados. Preventivos usa fecha
+          de servicio y requiere confirmar la clasificación MANTENIMIENTO; sin
+          denominador o evidencia de alertas, NO_DATA. Los contadores pueden dar cero
+          real. Guardar los cuatro resultados y su corrida atómicamente con
+          createRunWithResults, ventanas, conteos y versión. No implementar publicación
+          ni un endpoint separado de snapshots. Probar fórmulas, distintos, corte y
+          rollback. Cambios locales pendientes de sincronizar con Linear. Alcance y
+          aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        status: backlog
+        estimate: 3
+        prototype: []
+        depends_on:
+          - kpis-persistence
+        ticket_refs:
+          - PIT-69
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: kpis-business-endpoint
+        title: Proteger y exponer el GET diario de KPIs
+        description: >-
+          Acceso de PIT-69: 2 SP aquí más 3 SP de cálculo, sin duplicar el padre.
+          Exponer GET /internal/kpis/daily?date=YYYY-MM-DD del ADR 02 con guard de
+          servicio independiente de Firebase, fecha argentina cerrada y ambiente del
+          backend. Llamar al servicio de negocio y devolver el snapshot persistido,
+          runId UUID, ventanas, measurements válidas y diagnostics separados; serializar
+          BigInt como strings. El GET genera una corrida interna por consulta; los
+          reintentos de publicación reutilizan el lote de Actions sin consultar otra
+          vez. HTTP diario amplía esta misma respuesta después, sin controller por
+          fuente. No agregar POST de snapshots, endpoint de ingesta de sondeos/entrega
+          ni endpoint de consulta por UUID. Probar secreto, fecha, serialización,
+          NO_DATA y fallo de BD. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 2
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on:
+          - kpis-business-snapshots
+        ticket_refs: []
+      - id: kpis-alert-evidence
+        title: Vincular alertas enviadas con su resolución dentro del plazo
+        description: "Preparar la evidencia que PIT-63 no incluye: identificar cada alerta y
+          ciclo de vencimiento, conservar envío efectivo, plazo y frecuencia/vehículo, y
+          relacionarla con el mantenimiento del tipo correspondiente que resolvió ese
+          ciclo. No considerar resuelta cualquier alerta por cualquier servicio del
+          vehículo. Definir cuáles son evaluables al corte y evitar múltiples conteos
+          por dispositivos, reintentos o varios servicios. Extender repositories y
+          migración cuando falten campos. Probar servicio en plazo y fuera de plazo,
+          ciclo sin resolver, envíos fallidos y duplicados. Sin evidencia suficiente, el
+          cálculo conserva NO_DATA; no inventar porcentajes. Este trabajo completa datos
+          de negocio, sin reemplazar el cron de alertas."
+        status: todo
+        estimate: 3
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on:
+          - alertas-evaluacion-envio
+          - mantenimientos-registro
+        ticket_refs: []
+      - id: kpis-http-daily
+        title: Calcular tasa de errores 5xx y latencia p95 diarios
+        description: >-
+          Agregar api_error_rate y api_latency_p95 al servicio del mismo GET diario.
+          Usar registros de PIT-66 dentro del día argentino cerrado; definir el conjunto
+          como respuestas COMPLETED de tráfico de aplicación, excluyendo
+          health/reporting. Errores: 5xx / total de ese conjunto × 100; latencia:
+          nearest-rank sobre sus duraciones completas. ABORTED y faltantes van al
+          diagnóstico. Persistir ambos resultados junto al snapshot API con
+          KpisRepository, sin otra corrida/controlador por fuente. Sin observaciones,
+          NO_DATA; una muestra válida alcanza para p95. Probar 0% real, mezcla 5xx, p95
+          pequeño, filtros y corte. Coordinar el servicio común con PIT-69 para integrar
+          antes del 22. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 3
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on:
+          - kpis-request-logging
+          - kpis-business-snapshots
+        ticket_refs: []
+      - id: kpis-health-daily
+        title: Agregar sondeos de API y base de datos por día argentino
+        description: >-
+          Agregar en scripts/kpis/ del runner api_availability y db_availability desde
+          artifacts de PIT-67; no mandar muestras a PitStop ni persistirlas en Neon.
+          Listar y descargar artifacts con paginación, validar ambiente de origen,
+          schema y timestamp real dentro del día argentino. Deduplicar artifacts y, para
+          reejecuciones del mismo runId/target, conservar el primer intento con muestra.
+          Éxitos / sondeos observados × 100; informar cobertura frente a 48 corridas
+          nominales sin convertir ausencias en caídas. Sin muestras, NO_DATA. Guardar
+          agregados y diagnósticos en el artifact de cierre. Probar límites, intentos,
+          fallos, paginación y artifacts ausentes. /health/db mide acceso vía API.
+          Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 2
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on:
+          - kpis-health-monitor
+        ticket_refs: []
+      - id: kpis-publish-client
+        title: Publicar mediciones inmutables en la API de Lab4
+        description: >-
+          Implementar en scripts/kpis/ un cliente de mediciones para un catálogo ya
+          registrado manualmente por ambiente. El registro de catálogo no pertenece a
+          este ni a otro ticket. Leer configuración de URL, ambiente y secretos;
+          transformar solo READY finitos al contrato kpi_id/date/env/value/run_id. POST
+          /rest/v1/measurement?on_conflict=project_id,kpi_id,date,env con apikey,
+          X-Project-Key y Prefer: resolution=ignore-duplicates. Validar 1–10 filas antes
+          del POST atómico; conservar payload y UUID, y verificar por GET cada valor
+          recibido. Un HTTP exitoso no prueba que un valor previo coincida; divergencia
+          es fallo visible, sin sobrescribir. Probar lote, rechazo y reenvío idéntico.
+          No crear comando de catálogo ni administración dinámica. Alcance y aceptación:
+          project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 2
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: kpis-reporting-workflows
+        title: Programar cierre diario y reintentos con artifacts recuperables
+        description: >-
+          Reutilizar el workflow de PIT-67 para sondeos y, después de guardar su
+          evidencia, procesar lotes preparados/reintentos cada 30 minutos. Agregar un
+          segundo workflow de cierre a las 04:00 UTC (01:00 argentina), manual por
+          fecha. El cierre llama al GET diario de PitStop, agrega sondeos en Actions y
+          prepara el lote del día anterior. Antes del primer POST, subir el JSON
+          definitivo y UUID como artifact durante 14 días; si falla guardar ese
+          respaldo, no publicar. Un reintento descarga el mismo lote, sin recalcular ni
+          volver a consultar fuentes. Concurrencia por ambiente compartida entre ambos
+          workflows; no cancelar un envío en curso. La salud fallida no impide
+          reintentar publicación. Un ERROR de fuente deja fallo visible y permite
+          publicar READY de otras fuentes; NO_DATA se diagnostica. El núcleo no espera
+          GitHub/Linear; no publicar día abierto. Probar manual, recuperación tras fallo
+          y verificación GET. El catálogo manual es prerrequisito, no parte del ticket.
+          Documentación y validación integrada a cargo de otro equipo. Alcance y aceptación:
+          project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 2
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on:
+          - kpis-business-endpoint
+          - kpis-http-daily
+          - kpis-health-daily
+          - kpis-publish-client
+        ticket_refs: []
+      - id: kpis-delivery-source
+        title: Obtener estados de Linear y PRs de GitHub para métricas de entrega
+        description: >-
+          Adaptador de lectura en scripts/kpis/ del runner para Linear y GitHub.
+          Paginar, vincular PIT-XX con PRs por referencia verificable y recuperar
+          primera entrada en In Progress, primera apertura y merge. Confirmar acceso al
+          historial: updatedAt no sustituye la transición. Conservar evidencia mínima en
+          artifacts 14 días, sin cuerpos, secretos ni datos personales. Probar
+          paginación, varias PRs, falta de historial y fallo parcial. No modificar
+          tickets Linear ni agregar una base o endpoint de ingesta. No bloquea el núcleo
+          del 22. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 4
+        starts: 2026-10-22
+        ends: 2026-10-29
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: kpis-delivery-daily
+        title: Calcular Mean Time to PR y Mean Time to Merge
+        description: >-
+          Calcular en el runner mean_time_to_pr: media en horas desde primera entrada en
+          In Progress a primera PR, seleccionando por apertura en los últimos 30 días;
+          mean_time_to_merge: media apertura–merge de PRs mergeadas en esa ventana.
+          Excluir evidencia incompleta, duraciones negativas y duplicados con
+          diagnóstico. Sin casos, NO_DATA; cero solo si se midió. Guardar
+          agregados/conteos en el artifact de cierre e incluir READY en el mismo lote de
+          publicación. No enviar evidencia ni resultados a Neon; no agregar endpoint.
+          Probar selección temporal, horas fraccionarias y faltantes. Una falla externa
+          no impide publicar otras fuentes. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        status: todo
+        estimate: 2
+        starts: 2026-10-22
+        ends: 2026-10-29
+        prototype: []
+        depends_on:
+          - kpis-delivery-source
+        ticket_refs: []
   - id: perfil
     title: Perfil y preferencias
     description: La pantalla donde el usuario ve su cuenta y configura como quiere que la
@@ -1380,143 +1610,226 @@ epics:
       - id: perfil-datos
         title: Pantalla de perfil con los datos de la cuenta y los contadores
         description: >-
-          Tarjeta con el nombre, el email y las iniciales del usuario, con la opcion de
-          editar el nombre. El email no se edita en esta version.
+          Objetivo: reemplazar la pantalla provisional de Perfil por los datos reales de
+          la cuenta autenticada, con nombre, email de solo lectura, iniciales y tres
+          contadores calculados en el backend. Los contadores representan vehículos
+          propios, servicios registrados en esos vehículos y vehículos propios
+          compartidos con al menos una persona; contar vehículos distintos, no
+          invitaciones. Compartir vehículos queda fuera del MVP según el ADR 02: el
+          tercer contador devuelve cero y no ofrece accesos ni invitaciones.
 
-          Arriba, tres contadores: cantidad de vehiculos, de servicios registrados y de
-          vehiculos compartidos. Se calculan en el backend, no sumando listas en el
-          front.
+
+          Permitir editar el nombre, validando que no quede vacío tras quitar espacios.
+          Conservar el cambio al recargar y actualizar las iniciales y demás lugares que
+          muestran el nombre. Definir la sincronización con Firebase para que el próximo
+          inicio de sesión no sobrescriba el nombre editado con el claim anterior: el
+          repository actual sincroniza ese campo desde el token. No editar email,
+          contraseña ni permisos en este trabajo.
+
+
+          Criterios de aceptación: cuentas sin vehículos muestran cero; los agregados no
+          filtran información de otro usuario; guardar y volver a entrar conserva el
+          nombre; errores mantienen lo ingresado y permiten reintentar. Resolver carga,
+          error y layout en móvil y escritorio según el prototipo. Incluir pruebas de
+          agregados y autorización en la API; validar el flujo de UI corriendo la app.
+          Margen de estimación: integración de agregados, edición de nombre y sincronización con Firebase, con estados de carga/error en ambas vistas.
         status: todo
-        estimate: 3
+        estimate: 4
         prototype:
           - components/pitstop/screens/profile.tsx
         depends_on:
           - auth-rutas-protegidas
+          - auth-usuario-backend
+          - vehiculos-garage
+          - historial-lista
         ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
+        starts: 2026-10-22
+        ends: 2026-10-29
       - id: perfil-preferencias
         title: Umbrales de anticipacion por dias y por kilometros
-        description: "La pantalla para editar los umbrales de anticipacion de la cuenta: una
-          cantidad de dias y una de kilometros, globales y con 30 dias y 1500 km como
-          valores de arranque. Los campos y el calculo que los usa ya existen desde
-          recomendados-calculo; lo que agrega este trabajo es poder cambiarlos."
+        description: >-
+          Objetivo: editar desde Perfil la anticipación global de la cuenta en días y
+          kilómetros, reutilizando los campos y el cálculo existentes de Recomendados.
+          Los valores iniciales son 30 días y 1500 km; abrir el formulario con los
+          valores persistidos. Explicar que alcanza cualquiera de los dos umbrales.
+
+
+          Aceptar enteros no negativos, incluido cero; rechazar vacíos, negativos,
+          decimales y valores no numéricos tanto en UI como en API. No cambiar
+          frecuencias, fechas ni kilometrajes al guardar. Reutilizar el cálculo
+          centralizado de vencimientos y refrescar Recomendados, Inicio y Calendario; la
+          evaluación diaria de alertas debe leer la preferencia vigente. Cancelar no
+          persiste cambios.
+
+
+          Criterios de aceptación: guardar y recargar conserva ambos valores, otra
+          cuenta mantiene sus preferencias, un cambio de umbral modifica el estado
+          próximo cuando corresponde y no altera un vencido. Mostrar errores sin perder
+          datos ni cerrar el formulario. Hoja inferior en móvil y modal en escritorio.
+          Probar validación, aislamiento y efectos en el cálculo desde la API.
+          Margen de estimación: validación compartida, persistencia e invalidación de vistas que consumen los umbrales.
         status: todo
-        estimate: 2
+        estimate: 3
         prototype:
           - components/pitstop/sheets/preferences-form.tsx
         depends_on:
           - perfil-datos
           - recomendados-calculo
         ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
+        starts: 2026-10-29
+        ends: 2026-11-05
       - id: perfil-notificaciones
         title: Preferencias de notificaciones push
-        description: Un toggle que el usuario prende o apaga y queda guardado en su cuenta. La
-          preferencia ya existe con su valor por defecto desde alertas-suscripcion; este
-          trabajo agrega poder cambiarla desde el perfil.
+        description: >-
+          Objetivo: permitir cambiar desde Perfil la preferencia push existente de la
+          cuenta. Reutilizar notificationsEnabled y el registro de dispositivos de
+          alertas-suscripcion; distinguir la preferencia guardada del permiso real del
+          navegador. No crear otra preferencia ni duplicar suscripciones.
+
+
+          Al apagar, persistir la preferencia y hacer que el envío automático la respete
+          en todos los dispositivos de esa cuenta. Al encender desde un dispositivo sin
+          registro, reutilizar el flujo de activación y solicitar permiso únicamente por
+          esa acción; si el permiso está bloqueado o el navegador no soporta push,
+          explicar el motivo y no mostrar el dispositivo como habilitado. Reutilizar las
+          instrucciones existentes para iOS/PWA. No incluye email, programación del cron
+          ni nuevas reglas de aviso.
+
+
+          Criterios de aceptación: recargar conserva la preferencia; apagar impide
+          nuevos envíos; reactivar con permiso válido reutiliza el dispositivo sin
+          duplicarlo. Ante error, restaurar el estado confirmado y permitir reintentar.
+          Verificar permiso concedido, denegado y entorno incompatible; probar
+          autorización y persistencia en backend.
+          Margen de estimación: coordinación de preferencia de cuenta, permisos del navegador y registro existente de dispositivos.
         status: todo
-        estimate: 1
+        estimate: 2
         prototype:
           - components/pitstop/screens/profile.tsx
         depends_on:
           - perfil-datos
           - alertas-suscripcion
         ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
+        starts: 2026-10-22
+        ends: 2026-10-29
       - id: perfil-password
         title: Cambiar contrasena desde la app
-        description: Formulario con la contrasena actual y la nueva. Si la sesion es vieja,
-          Firebase pide reautenticar antes de dejar cambiarla y hay que manejarlo con un
-          mensaje entendible.
-        status: todo
-        estimate: 2
-        prototype:
-          - components/pitstop/screens/profile.tsx
-        depends_on:
-          - auth-rutas-protegidas
-        ticket_refs: []
-        starts: 2026-10-15
-        ends: 2026-10-22
-  - id: compartir-vehiculo
-    title: Acceso compartido a un vehiculo
-    description: "Que una familia o una pareja puedan administrar el mismo auto sin
-      compartir la cuenta. El charter lo lista como Could y quedo fuera del MVP: se hace
-      solo si sobra tiempo."
-    sprint: 3
-    linear_project: Compartir vehiculo
-    moscow: could
-    status: todo
-    features:
-      - id: compartir-invitar
-        title: Invitar por email con un rol y controlar los permisos
         description: >-
-          El duenio invita por email y elige si la persona entra como Administrador o
-          como Colaborador. Si el email no tiene cuenta en PitStop, la invitacion queda
-          pendiente hasta que se registre.
+          Objetivo: cambiar la contraseña de la cuenta autenticada desde Perfil mediante
+          Firebase, con contraseña actual, nueva y confirmación. Validar la política de
+          contraseña vigente del proyecto y coincidencia de la confirmación; no
+          introducir reglas distintas de Registro.
 
-          Un Administrador puede editar el vehiculo y registrar mantenimientos; un
-          Colaborador solo puede registrar mantenimientos y actualizar el kilometraje.
-          Nadie que no sea el duenio puede eliminar el vehiculo. Se valida en el
-          backend, no solo escondiendo botones.
+
+          Reautenticar con la contraseña actual antes de actualizar, manejar contraseña
+          incorrecta, sesión que exige reautenticación, nueva contraseña rechazada y
+          fallos de conexión con mensajes claros. Evitar envíos duplicados, permitir
+          mostrar u ocultar campos y limpiarlos al cerrar o completar el cambio.
+          Contraseñas y credenciales no se guardan en la API de PitStop ni se registran
+          en logs.
+
+
+          Criterios de aceptación: la contraseña anterior deja de permitir ingresar y la
+          nueva funciona; un intento fallido no cambia credenciales; la UI no muestra
+          éxito hasta confirmación de Firebase. Validar el flujo real con una cuenta de
+          prueba, en hoja inferior móvil y modal de escritorio. Cambiar email y
+          recuperar contraseña quedan fuera del ticket.
+          Margen de estimación: reautenticación, política vigente, errores de Firebase y limpieza segura del formulario.
         status: todo
-        estimate: 4
+        estimate: 3
         prototype:
-          - components/pitstop/sheets/share-form.tsx
-        depends_on:
-          - vehiculos-garage
-          - auth-usuario-backend
-        ticket_refs: []
-        starts: 2026-10-22
-        ends: 2026-10-29
-      - id: compartir-quitar
-        title: Quitar el acceso y ver los vehiculos compartidos desde el perfil
-        description: Desde el perfil se ve con quien esta compartido cada vehiculo y se le puede
-          quitar el acceso. La persona a la que se lo quitan deja de ver el vehiculo
-          inmediatamente.
-        status: todo
-        estimate: 2
-        prototype:
-          - components/pitstop/sheets/share-form.tsx
           - components/pitstop/screens/profile.tsx
         depends_on:
-          - compartir-invitar
+          - perfil-datos
+          - auth-login-registro
         ticket_refs: []
-        starts: 2026-10-22
-        ends: 2026-10-29
+        starts: 2026-10-29
+        ends: 2026-11-05
   - id: lista-deseos
     title: Lista de deseos del vehiculo
-    description: "Anotar las mejoras, accesorios y repuestos que el usuario quiere comprarle
-      al vehiculo. El charter lo lista como Should, pero quedo fuera del MVP: se hace
-      solo si sobra tiempo."
+    description: >-
+      Lista de deseos desglosada en modelo/migración (2 SP) y backend (4 SP), del 22 al
+      29 de octubre; integración frontend (5 SP), del 29 de octubre al 5 de noviembre.
+      Total 11 SP. Modelo y backend forman una cadena de 6 SP para la misma persona; el
+      frontend comienza con esa API disponible. Mantiene prioridad Could y cede ante
+      carry de Must. Compartir vehículos queda fuera del MVP.
     sprint: 3
     linear_project: Lista de deseos
     moscow: could
     status: todo
     features:
-      - id: deseos-lista
-        title: Lista de deseos por vehiculo
-        description: Cada deseo pertenece a un vehiculo y tiene nombre, precio estimado
-          opcional, prioridad alta, media o baja, y una nota. Se puede marcar como
-          comprado y eliminar. Los comprados se distinguen de los pendientes y la lista
-          pone primero los pendientes de mayor prioridad.
+      - id: deseos-modelo
+        title: Crear el modelo de datos de la lista de deseos
+        description: "Crear el modelo de deseos asociado obligatoriamente a un vehículo: nombre,
+          precio estimado opcional, prioridad alta/media/baja, nota opcional, estado de
+          compra y timestamps. Preparar migración, relación e índices para consultas por
+          vehículo y orden estable. Definir precio con precisión adecuada y
+          restricciones de datos; no permitir registros huérfanos ni montos negativos.
+          Actualizar el cliente de persistencia y verificar migración e integridad en
+          base de prueba. No incluye endpoints ni pantalla."
         status: todo
-        estimate: 3
+        estimate: 2
+        prototype: []
+        depends_on:
+          - setup-prisma
+          - vehiculos-alta-edicion
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+      - id: deseos-backend
+        title: Implementar la API de la lista de deseos por vehículo
+        description: Construir el módulo con controller, servicio y repository sobre el modelo
+          de deseos. Listar por vehículo, crear, marcar comprado y eliminar; ordenar
+          pendientes por prioridad y conservar un desempate estable. Validar nombre no
+          vacío, precio finito no negativo y prioridad válida. Autorizar cada operación
+          contra el propietario del vehículo y devolver errores claros; compartir
+          vehículos sigue fuera del MVP. Incluir pruebas de contrato, orden,
+          persistencia y aislamiento entre cuentas. La eliminación de un deseo no afecta
+          otro vehículo ni sus mantenimientos. No agregar edición, pagos, proveedores o
+          catálogo de productos.
+        status: todo
+        estimate: 4
+        prototype: []
+        depends_on:
+          - deseos-modelo
+          - auth-usuario-backend
+        ticket_refs: []
+        starts: 2026-10-22
+        ends: 2026-10-29
+      - id: deseos-lista
+        title: Integrar la lista de deseos con el frontend
+        description: Integrar la API real en Garage para el vehículo activo. Mostrar deseos
+          pendientes por prioridad, distinguir comprados y permitir alta, compra y
+          eliminación con confirmación. Formulario con nombre, precio y nota opcionales,
+          y prioridad media inicial; reutilizar los componentes del proyecto.
+          Implementar consultas/mutaciones e invalidación, carga, vacío, error y
+          reintento; cambiar de vehículo limpia los datos del anterior. Un alta fallida
+          conserva lo ingresado y no cierra el formulario. Resolver tarjetas y
+          formulario tanto en hoja inferior móvil como en modal de escritorio, con
+          navegación de teclado. Validar manualmente alta → compra → borrado → recarga y
+          cambio de vehículo; no sumar tests automáticos de frontend ni otra
+          implementación de los endpoints. Esta parte conserva el ID anterior
+          deseos-lista para no romper referencias; el esfuerzo total de la épica pasa de
+          3 a 11 SP.
+        status: todo
+        estimate: 5
         prototype:
           - components/pitstop/sheets/wishlist-form.tsx
           - components/pitstop/cards.tsx
         depends_on:
+          - deseos-backend
           - vehiculos-garage
         ticket_refs: []
-        starts: 2026-10-22
-        ends: 2026-10-29
+        starts: 2026-10-29
+        ends: 2026-11-05
   - id: recordatorio-km
     title: Recordatorio de actualizacion de kilometraje
     description: Si hace mucho que el usuario no actualiza el odometro de un vehiculo, se le
       recuerda, porque sin ese dato las alertas por kilometros dejan de servir. El
-      charter lo lista como Could y quedo fuera del MVP.
+      charter lo lista como Could y quedo fuera del MVP. Planificado como extra en la
+      tercera semana; antes de emitir el ticket el PO debe fijar umbral y repetición. Si
+      no se resuelve esa decisión, sus 2 SP se dedican a defectos reales del piloto y no
+      se consideran una funcionalidad terminada.
     sprint: 3
     linear_project: Recordatorio de km
     moscow: could
@@ -1524,9 +1837,31 @@ epics:
     features:
       - id: recordatorio-km-push
         title: Recordatorio periodico para actualizar el kilometraje
-        description: Notificacion que se dispara cuando pasaron demasiados dias desde la ultima
-          actualizacion del odometro, y que al tocarla abre directamente el formulario
-          de actualizar km.
+        description: >-
+          Objetivo opcional: reutilizar el cron y el canal push de alertas para recordar
+          la actualización de kilometraje cuando transcurre el período de inactividad
+          acordado. Antes de crear el ticket, el PO debe definir cuántos días activan el
+          recordatorio y cuándo se permite repetirlo: el plan actual no fija esos
+          valores. El timestamp debe corresponder a la última actualización explícita
+          del odómetro, no al updatedAt genérico del vehículo; agregar ese dato si aún
+          no existe.
+
+
+          Evaluar vehículos accesibles y destinatarios habilitados con la política de
+          permisos existente; respetar preferencia de notificaciones y registros de
+          dispositivos válidos. Conservar evidencia y clave de deduplicación por
+          vehículo/período para que reintentos o cron concurrente no generen el mismo
+          aviso dos veces. Actualizar kilometraje reinicia la ventana.
+
+
+          Al tocar la push, abrir el formulario de kilometraje del vehículo indicado,
+          resolviendo autenticación y autorización antes de mostrarlo. Un vehículo
+          eliminado o inaccesible lleva a un estado seguro. Criterios de aceptación:
+          antes del umbral no se envía, al alcanzarlo se emite una sola vez, apagar
+          notificaciones lo impide y actualizar el odómetro reinicia el plazo. Probar
+          límites temporales, deduplicación y deep link con la app cerrada. No sumar un
+          segundo scheduler. Fuera del MVP; no comprometer fechas de ejecución sin
+          definir el umbral.
         status: todo
         estimate: 2
         prototype:
@@ -1534,17 +1869,21 @@ epics:
         depends_on:
           - alertas-evaluacion-envio
           - kilometraje-actualizar
+          - perfil-notificaciones
         ticket_refs: []
-        starts: 2026-10-22
-        ends: 2026-10-29
+        starts: 2026-10-29
+        ends: 2026-11-05
   - id: fixes-s3
     title: Fixes y carry — Sprint 3
-    description: "Margen del Sprint 3. La ultima semana del sprint no se llena con
-      funcionalidades nuevas: queda para arreglar lo que aparecio, terminar lo que se
-      alargo y cerrar la definicion de terminado de lo que quedo a medias. Cuando llega
-      esa semana, este ticket generico se reemplaza por los tickets reales de lo que
-      haya que arreglar; si no aparecio nada, se usa para adelantar trabajo del sprint
-      que sigue."
+    description: >-
+      Reservas explícitas de fixes/carry: 1 SP del 15–22 de octubre, 5 SP del 29 de
+      octubre–5 de noviembre y 16 SP del 5–12 de noviembre, más release de 2 SP en la
+      última semana. Total 22 SP de reserva, incluidos los 10 SP previos. Los 12 SP
+      adicionales ocupan capacidad liberada al retirar documentación y validación. Cada
+      reserva se sustituye por defectos o carry concretos sin duplicar puntos; no
+      implica trabajo ya identificado ni funcionalidades nuevas. Otro equipo realiza
+      documentación y validación integrada y aporta defectos reproducibles. Las cuatro
+      semanas del Sprint 3 quedan en 18 SP.
     sprint: 3
     linear_project: Fixes - S3
     moscow: must
@@ -1553,10 +1892,16 @@ epics:
     features:
       - id: fixes-s3-carry-1
         title: Fixes y ajustes del Sprint 3 (1 de 2)
-        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
-          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
-          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
-          pisarse.
+        description: "Reserva de 5 SP para carry y defectos funcionales del cierre:
+          autenticación, vehículo activo, alta y edición de servicios, historial,
+          frecuencias, Perfil y preferencias. QA aporta reproducción, esperado/obtenido,
+          entorno y evidencia; TL identifica la causa y se emiten arreglos acotados que
+          sustituyen esta reserva, sin duplicar puntos. Cada arreglo debe incluir
+          pruebas de regresión de API cuando afecta endpoints y validación manual del
+          flujo en móvil y escritorio. Se considera consumida solo por trabajo concreto
+          que cumpla la definición de terminado; mantener visible el carry que no
+          cierre. Coordinar con la segunda reserva para evitar dos cambios sobre el
+          mismo defecto."
         status: todo
         estimate: 5
         starts: 2026-11-05
@@ -1566,12 +1911,99 @@ epics:
         ticket_refs: []
       - id: fixes-s3-carry-2
         title: Fixes y ajustes del Sprint 3 (2 de 2)
-        description: Ticket generico del margen del sprint. Se parte en los arreglos concretos
-          que hayan salido del QA de las semanas anteriores. El margen se parte en dos
-          tickets de 5 SP para que dos personas puedan tomar arreglos en paralelo sin
-          pisarse.
+        description: >-
+          Reserva de 5 SP para corregir defectos de integración y salida del MVP
+          reportados por el equipo de validación: recepción y destino de push,
+          preferencias, PWA, errores de red, permisos y reporting de KPIs. Cada defecto
+          se convierte en una corrección concreta con evidencia y resultado esperado que
+          sustituye esta reserva, sin duplicar puntos. Cerrar con PR aprobado, build y
+          pruebas propias de la corrección. Si no hay defectos, dejar la capacidad
+          disponible; no abrir extras automáticamente.
         status: todo
         estimate: 5
+        starts: 2026-11-05
+        ends: 2026-11-12
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: cierre-mvp-release
+        title: Cerrar versión, despliegue y entrega técnica del MVP
+        description: >-
+          Preparar la versión de cierre y desplegar los cambios aprobados y mergeados,
+          con build y chequeos técnicos aplicables. Comprobar que el despliegue arranque
+          correctamente. Otro equipo realiza documentación y validación integrada; sus
+          controles no se estiman ni recrean como tareas de este backlog. Las
+          correcciones de defectos se cubren con las reservas de fixes.
+        status: todo
+        estimate: 2
+        starts: 2026-11-05
+        ends: 2026-11-12
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s3-carry-nucleo
+        title: Reserva de fixes y carry del núcleo de KPIs
+        description: >-
+          Reserva de capacidad para defectos y trabajo de implementación que se arrastre
+          a esta semana. Sustituir por correcciones concretas con alcance y estimación
+          cuando se identifiquen, sin sumar sus puntos nuevamente. No incluye
+          documentación, validación integrada, catálogo ni funcionalidades nuevas. Las
+          correcciones mantienen sus pruebas propias; si no hay defectos o carry, la
+          reserva queda sin consumir. Distribuir los arreglos concretos respetando 6 SP
+          por desarrollador.
+        status: todo
+        estimate: 1
+        starts: 2026-10-15
+        ends: 2026-10-22
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s3-carry-perfil-deseos
+        title: Reserva de fixes y carry de Perfil y deseos
+        description: >-
+          Reserva de capacidad para defectos y trabajo de implementación que se arrastre
+          a esta semana. Sustituir por correcciones concretas con alcance y estimación
+          cuando se identifiquen, sin sumar sus puntos nuevamente. No incluye
+          documentación, validación integrada, catálogo ni funcionalidades nuevas. Las
+          correcciones mantienen sus pruebas propias; si no hay defectos o carry, la
+          reserva queda sin consumir. Distribuir los arreglos concretos respetando 6 SP
+          por desarrollador.
+        status: todo
+        estimate: 5
+        starts: 2026-10-29
+        ends: 2026-11-05
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s3-carry-cierre-1
+        title: Reserva adicional de carry del cierre (1 de 2)
+        description: >-
+          Reserva de capacidad para defectos y trabajo de implementación que se arrastre
+          a esta semana. Sustituir por correcciones concretas con alcance y estimación
+          cuando se identifiquen, sin sumar sus puntos nuevamente. No incluye
+          documentación, validación integrada, catálogo ni funcionalidades nuevas. Las
+          correcciones mantienen sus pruebas propias; si no hay defectos o carry, la
+          reserva queda sin consumir. Distribuir los arreglos concretos respetando 6 SP
+          por desarrollador.
+        status: todo
+        estimate: 3
+        starts: 2026-11-05
+        ends: 2026-11-12
+        prototype: []
+        depends_on: []
+        ticket_refs: []
+      - id: fixes-s3-carry-cierre-2
+        title: Reserva adicional de carry del cierre (2 de 2)
+        description: >-
+          Reserva de capacidad para defectos y trabajo de implementación que se arrastre
+          a esta semana. Sustituir por correcciones concretas con alcance y estimación
+          cuando se identifiquen, sin sumar sus puntos nuevamente. No incluye
+          documentación, validación integrada, catálogo ni funcionalidades nuevas. Las
+          correcciones mantienen sus pruebas propias; si no hay defectos o carry, la
+          reserva queda sin consumir. Distribuir los arreglos concretos respetando 6 SP
+          por desarrollador.
+        status: todo
+        estimate: 3
         starts: 2026-11-05
         ends: 2026-11-12
         prototype: []

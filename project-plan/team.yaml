@@ -2,7 +2,7 @@
 # Se puede editar a mano, pero la app reescribe el archivo entero al guardar,
 # asi que los comentarios que agregues aca se van a perder.
 meta:
-  updated: 2026-10-08
+  updated: 2026-10-13
   notes: "Equipo, capacidad y coordenadas del proyecto. Se edita desde la app (npm run
     dev): al guardar, el archivo se reescribe entero. Los ids de Linear fueron
     verificados contra el workspace pitstop-austral."
@@ -177,26 +177,45 @@ sprints:
       - Alertas
       - Fixes - S2
       - KPI Reporting
-    notes: Los diez projects de este sprint están creados en Linear, incluido KPI Reporting.
-      Los vencimientos de PIT-66 y PIT-67 se reflejan en el plan para el 15 de octubre
-      de 2026. La sincronización del 8 de octubre actualizó únicamente el plan local;
-      las fechas de los projects de Linear no se modificaron.
+    notes: "Sprint 2 conserva la instrumentación de KPI Reporting (PIT-66, PIT-67 y PIT-68)
+      y los fixes concretos. Se retiraron las dos reservas genéricas de 5 SP conforme al
+      ADR 02. PIT-69 se desarrolla en el Sprint 3 del 15 al 22 de octubre, desglosado
+      solo en el plan local. Linear no se modifica en la replanificación del 13 de
+      octubre; las diferencias previas de Auth/landing se conservan para una revisión
+      separada."
   - number: 3
     name: Sprint 3
     cycle_id: 77772c6e-71b6-47bb-b7b1-17ea8306a28a
     starts: 2026-10-16
     ends: 2026-11-12
     weeks: 4
-    theme: Alertas + Perfil + Extras + cierre del MVP
+    theme: KPIs al 22 + integración GitHub/Linear y backend de deseos al 29 + Perfil y deseos al 5 + cierre
     linear_projects:
       - Profile
-      - Compartir vehiculo
       - Lista de deseos
       - Recordatorio de km
       - Fixes - S3
-    notes: El project Profile ya existia en Linear y se movio a este sprint. Los otros
-      cuatro ya estan creados, con las fechas del cronograma y la prioridad de cada
-      epica.
+      - KPI Reporting
+    notes: >-
+      Cuatro semanas de 18 SP = 72 horas estimadas, tres desarrolladores de 6 h
+      semanales. 15–22 de octubre: KPIs 17 y reserva de fixes/carry 1. 22–29:
+      KPIs 6 (fuente de entrega 4, cálculo 2), Perfil 6 (datos 4, notificaciones 2)
+      y deseos 6 (modelo 2, backend 4). Tres cadenas de 6 SP: mantener cada cadena
+      con una misma persona, completando primero sus bloqueantes. 29 de octubre–5 de
+      noviembre: Perfil 6 (preferencias 3, contraseña 3), frontend de deseos 5,
+      recordatorio de km 2 y reserva 5. 5–12 de noviembre: reservas 16 (5 + 5 + 3 + 3)
+      y release 2. Las reservas se desglosan en arreglos concretos al aparecer carry
+      o defectos y se distribuyen dentro de los 6 SP por desarrollador; no confundir
+      reserva presupuestada con esfuerzo ya consumido ni duplicar puntos al sustituirla.
+      Los 12 SP antes libres pasan a reserva explícita; reservas totales 22 SP.
+      Documentación, validación integrada, piloto y comprobación final a cargo de otro
+      equipo, fuera de este backlog. KPI Reporting conserva 31 SP, 8 históricos del
+      Sprint 2 y 23 del Sprint 3. Las épicas etiquetadas Sprint 3 suman 80 SP por esos
+      históricos, pero la carga por fechas es 72. Perfil conserva 12 SP (4 + 3 + 2 + 3)
+      y deseos 11 (2 + 4 + 5), sin ampliar alcance. Catálogo manual fuera de tickets.
+      Deseos y recordatorio mantienen prioridad Could y ceden ante carry de Must.
+      Compartir vehículos sigue fuera del MVP. No modificar Linear ni asignar responsables.
+
 people:
   - id: tomas
     name: Tomas Serra

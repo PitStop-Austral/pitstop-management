@@ -56,9 +56,3 @@ Actions puede retrasar o perder corridas: no garantiza puntualidad exacta. Contr
 Se agregan monitor/reporter en Actions, endpoint de KPIs, telemetría e integraciones Linear/GitHub. Se retiran Dataverse, Entra ID y Vercel Cron del diseño de KPIs; el cron de alertas de PIT-63 tiene alcance separado.
 
 Para el 8–15 de octubre se proponen tres tickets: contrato/catálogo (2 SP), monitor/reporter (4 SP) y endpoint de negocio (4 SP). Los 10 SP sustituirían el margen de Fixes y carry, sujetos a revisar carry y capacidad; no se agregan a la carga existente. Telemetría HTTP y métricas de entrega requieren otros 6 SP preliminares. Compartir vehículos continúa fuera del MVP comprometido.
-
-**Referencias**
-
-- Guía: https://github.com/lab4-kpis/kpis/blob/main/docs/TEAM_GUIDE.md
-- Swagger: https://lab4-kpis.github.io/kpis/dev/#/docs
-- Actions: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule

@@ -79,6 +79,8 @@ Generar un único `health-checks.json` por corrida, con ambos resultados. Campos
 ```json
 {
   "schemaVersion": 1,
+  "env": "prod",
+  "eventName": "schedule",
   "runId": "123456789",
   "runAttempt": 1,
   "checks": [
@@ -100,6 +102,8 @@ Generar un único `health-checks.json` por corrida, con ambos resultados. Campos
 }
 ```
 
+Guardar `env` desde la configuración y `eventName` (schedule/workflow_dispatch)
+para aislar ambientes e identificar sondeos manuales al calcular cobertura.
 Usar el timestamp UTC real de cada chequeo. `httpStatus=null` cuando no hay respuesta HTTP. Valores de `errorKind`: `http_error`, `timeout`, `connection_error`, `invalid_response` o null. No copiar mensajes crudos de transporte, cuerpos, headers ni secretos al JSON.
 
 Cargar el archivo con `actions/upload-artifact`, con nombre único `kpi-health-<runId>-<runAttempt>` y `retention-days: 14`. Configurar la carga para ejecutarse aunque el paso de chequeos termine con error; fallar si el archivo esperado no existe. Después de preservar la evidencia, marcar el job fallido si algún chequeo falló. No dejar que el manejo de errores muestre un resultado verde cuando la API o el acceso a BD no respondió.
