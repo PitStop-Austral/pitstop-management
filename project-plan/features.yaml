@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-10-13
+  updated: 2026-10-14
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -25,16 +25,17 @@ meta:
     `capacity.notes`.
 
 
-    Plan local del Sprint 3: cuatro semanas de 18 SP del 15 de octubre al 12 de
-    noviembre, 72 SP incluyendo 22 SP de reserva explícita de fixes/carry.
-    Núcleo KPI al 22; integración GitHub/Linear, datos y notificaciones de Perfil,
-    modelo y backend de deseos al 29. Preferencias y contraseña de Perfil, frontend
-    de deseos y recordatorio de km al 5. Release al 12. Perfil conserva 12 SP y
-    deseos 11 SP; solo se adelantan fechas. Los 12 SP adicionales son reserva,
-    no esfuerzo de funcionalidades nuevas. La instrumentación KPI histórica
-    conserva sus 8 SP del Sprint 2, sin duplicarlos. Catálogo manual,
-    documentación y validación integrada fuera de tickets de este equipo.
-    Linear no se modifica; PIT-69 conserva una referencia y 5 SP (3 + 2).
+    Plan local del Sprint 3: cuatro semanas con capacidad de 18 SP, 72 SP del
+    15 de octubre al 12 de noviembre. KPI Reporting se reemplaza por seis tareas
+    de 18 SP al 22, con cadenas A/B/C de 6 SP e integración técnica incluida.
+    Se preservan los 8 SP históricos de instrumentación del Sprint 2. Se elimina
+    la reserva de 1 SP de la semana KPI porque sus 18 SP están completos.
+    La semana del 22–29 conserva Perfil 6 y deseos 6, con 6 SP disponibles sin
+    nuevas tareas. Perfil mantiene 12 SP y deseos 11. Carga del Sprint 3 por fechas:
+    66 SP, incluidos 21 SP de reservas; capacidad disponible 6 SP. Catálogo y
+    evidencia de alertas son prerrequisitos fuera de los 18 SP KPI. Piloto,
+    documentación y aceptación final a cargo de otro equipo. Linear no se modifica;
+    PIT-69 conserva una referencia, con estimación local nueva de 3 SP.
 
 out_of_scope:
   - App nativa iOS / Android
@@ -1306,15 +1307,19 @@ epics:
   - id: kpis
     title: KPI Reporting
     description: >-
-      Única épica KPI Reporting. PIT-66, PIT-67 y PIT-68 conservan 8 SP históricos del
-      8–15 de octubre. Núcleo del 15–22: 17 SP; implementación GitHub/Linear del 22–29:
-      6 SP. Total 31 SP, incluyendo 23 del Sprint 3. PIT-69 conserva 5 SP (3 cálculo + 2
-      endpoint) y una referencia. API calcula/persiste negocio y HTTP con el GET diario
-      del ADR 02; Actions agrega sondeos y entrega, conserva el lote y publica. Catálogo
-      manual fuera de tickets. Documentación, validación integrada, piloto y
-      comprobación final quedan a cargo de otro equipo, sin puntos ni tickets en este
-      backlog. Cada implementación conserva sus pruebas y controles funcionales. No
-      activar indicadores sin evidencia. Plan local sin modificar Linear. Alcance:
+      KPI Reporting: seis tareas nuevas del 15 al 22 de octubre, 18 SP distribuidos
+      entre responsables A, B y C, 6 SP cada uno. A entrega KPIService/endpoint/
+      persistencia (3) y workflows/publicación (3); B implementa disponibilidad (4)
+      y la integra (2); C implementa GitHub/Linear y sus cálculos (4) y los integra
+      con prueba conjunta del flujo completo (2). PIT-66, PIT-67 y PIT-68 conservan
+      8 SP históricos del Sprint 2; total de la épica 26 SP. PIT-69 se referencia
+      una sola vez en la nueva tarea de servicio, estimada localmente en 3 SP;
+      Linear no se modifica. B/C avanzan con fixtures tras acordar el formato común.
+      El workflow selecciona dev/prod explícitamente, empieza configurado y probado
+      en dev y reserva pasos para ambas integraciones antes de congelar el lote.
+      Evidencia de alertas y catálogo manual son prerrequisitos externos a los 18 SP.
+      Pruebas propias e integración técnica incluidas; piloto, documentación y
+      validación de aceptación del MVP a cargo de otro equipo. Detalle:
       project-plan/ticket-drafts/kpis-implementation.md.
     sprint: 3
     linear_project: KPI Reporting
@@ -1397,206 +1402,159 @@ epics:
           - PIT-68
         starts: 2026-10-08
         ends: 2026-10-15
-      - id: kpis-business-snapshots
-        title: Calcular y persistir los cuatro KPIs de negocio del ADR 02
-        description: >-
-          Cálculo de PIT-69: 3 SP aquí y 2 SP en kpis-business-endpoint, una sola
-          referencia al padre de 5 SP. Extender el KpisModule y KpisRepository
-          existentes (PIT-68), sin recrear tablas. Calcular preventive_rate y
-          alert_resolution_rate, y contar service_users_30d por Vehicle.ownerId y
-          active_vehicles_30d por Maintenance.vehicleId distintos con
-          Maintenance.createdAt en los últimos 30 días argentinos. Los dos porcentajes
-          de vehículos del borrador anterior quedan reemplazados. Preventivos usa fecha
-          de servicio y requiere confirmar la clasificación MANTENIMIENTO; sin
-          denominador o evidencia de alertas, NO_DATA. Los contadores pueden dar cero
-          real. Guardar los cuatro resultados y su corrida atómicamente con
-          createRunWithResults, ventanas, conteos y versión. No implementar publicación
-          ni un endpoint separado de snapshots. Probar fórmulas, distintos, corte y
-          rollback. Cambios locales pendientes de sincronizar con Linear. Alcance y
-          aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+      - id: kpis-service
+        title: Implementar KPIService, endpoint diario y persistencia
         status: backlog
         estimate: 3
-        prototype: []
         depends_on:
           - kpis-persistence
+          - kpis-request-logging
         ticket_refs:
           - PIT-69
-        starts: 2026-10-15
-        ends: 2026-10-22
-      - id: kpis-business-endpoint
-        title: Proteger y exponer el GET diario de KPIs
-        description: >-
-          Acceso de PIT-69: 2 SP aquí más 3 SP de cálculo, sin duplicar el padre.
-          Exponer GET /internal/kpis/daily?date=YYYY-MM-DD del ADR 02 con guard de
-          servicio independiente de Firebase, fecha argentina cerrada y ambiente del
-          backend. Llamar al servicio de negocio y devolver el snapshot persistido,
-          runId UUID, ventanas, measurements válidas y diagnostics separados; serializar
-          BigInt como strings. El GET genera una corrida interna por consulta; los
-          reintentos de publicación reutilizan el lote de Actions sin consultar otra
-          vez. HTTP diario amplía esta misma respuesta después, sin controller por
-          fuente. No agregar POST de snapshots, endpoint de ingesta de sondeos/entrega
-          ni endpoint de consulta por UUID. Probar secreto, fecha, serialización,
-          NO_DATA y fallo de BD. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
-        status: todo
-        estimate: 2
-        starts: 2026-10-15
-        ends: 2026-10-22
+        description: |-
+          **Responsable A · 3 SP · Referencia existente: PIT-69**
+
+          **Objetivo.** Obtener el cierre de los cuatro KPIs de negocio y los dos de HTTP desde la API, conservarlo y devolverlo al runner. Esta tarea amplía localmente PIT-69; no vuelve a crear la persistencia de PIT-68.
+
+          **Contexto del repositorio.** `apps/api/src/modules/kpis/kpis.module.ts` ya está importado por `AppModule`, pero solo registra y exporta `KpisRepository`. El repository ofrece `createRunWithResults` y `findRunById`; la primera operación persiste corrida y resultados atómicamente. `apps/api/prisma/models/kpi.prisma` define ambientes `DEV`/`PROD`, resultados `READY`/`NO_DATA`/`ERROR` y conteos BigInt. `Maintenance` contiene `category`, `date`, `createdAt` y `vehicleId`; `Vehicle.ownerId` permite contar usuarios distintos. Los repositories actuales de mantenimientos sirven operaciones por vehículo/propietario; agregar consultas de agregación, sin descargar historiales individuales al runner.
+
+          **Implementación.** Extender el módulo existente con `KpiService`, controller, DTO de fecha y guard de servicio; archivos nuevos bajo `apps/api/src/modules/kpis/`. Seguir el patrón controller → service → repository, con Prisma exclusivamente en repositories. Exponer `GET /internal/kpis/daily?date=YYYY-MM-DD`. Aplicar `@Public()` únicamente junto con el guard que verifica `KPI_CRON_SECRET`: `FirebaseAuthGuard` es global y, sin esa excepción, intenta validar Firebase y sincronizar un usuario. El flujo KPI no debe hacerlo.
+
+          Agregar `KPI_ENV=dev|prod` y `KPI_CRON_SECRET` a la configuración del backend y documentar placeholders en `apps/api/.env.example`. La API obtiene su ambiente del despliegue, no de un query param ni de `NODE_ENV`; convertir explícitamente `dev/prod` a `DEV/PROD` al persistir y devolver minúsculas al runner. Rechazar configuración faltante/inválida. El entorno desplegado debe tener su base y secreto correspondientes; cambiar una etiqueta no transforma datos productivos en datos de desarrollo.
+
+          Calcular `preventive_rate`, `alert_resolution_rate`, `service_users_30d`, `active_vehicles_30d`, `api_error_rate` y `api_latency_p95` con las reglas del ADR 02. Negocio usa sus ventanas de 30 días o el corte de alertas; HTTP usa el día cerrado, solo tráfico APPLICATION y respuestas COMPLETED, excluyendo health/reporting. Reutilizar el modelo real que entregue PIT-66 al integrarlo; hoy no está presente en este checkout. `Maintenance.date` es fecha calendario, distinta del timestamp `createdAt`.
+
+          Guardar una corrida y seis resultados con UUID generado por el backend, versión, ventanas y conteos. Sin denominador o evidencia, conservar NO_DATA; ante un fallo de fuente, responder 503 con diagnóstico seguro. No inferir resolución de alertas desde un mantenimiento cualquiera: faltan envío efectivo, ciclo, plazo y vínculo de resolución. Reutilizar los datos cuando estén disponibles; construirlos queda fuera de los 3 SP.
+
+          **Contrato de salida.** `{runId,date,env,calculationVersion,windowStart,windowEnd,measurements,diagnostics}`; `measurements` solo contiene `{kpi_id,value}` READY y finitos. Serializar BigInt como strings en diagnósticos. Respuesta sin caché ni datos personales. Una nueva consulta puede generar otra corrida; los reintentos externos recuperan el lote del runner y no llaman otra vez al endpoint.
+
+          **Criterios de cierre.** Probar 60% con tres preventivos y dos arreglos, owners/vehículos distintos, conteos vacíos iguales a cero, porcentaje sin denominador, alertas sin evidencia, filtros HTTP, p95 y corte argentino. Probar 400 de fecha, 401 de secreto, 503 de fuente, ambiente y rollback. Agregar pruebas unitarias en el módulo y pruebas de endpoint con el patrón Jest/Supertest de `apps/api/test/app.e2e-spec.ts`; reutilizar `test/kpis.db-spec.ts` para la persistencia. Las pruebas con BD requieren `TEST_DATABASE_URL` de una base terminada en `_test`.
         prototype: []
-        depends_on:
-          - kpis-business-snapshots
-        ticket_refs: []
-      - id: kpis-alert-evidence
-        title: Vincular alertas enviadas con su resolución dentro del plazo
-        description: "Preparar la evidencia que PIT-63 no incluye: identificar cada alerta y
-          ciclo de vencimiento, conservar envío efectivo, plazo y frecuencia/vehículo, y
-          relacionarla con el mantenimiento del tipo correspondiente que resolvió ese
-          ciclo. No considerar resuelta cualquier alerta por cualquier servicio del
-          vehículo. Definir cuáles son evaluables al corte y evitar múltiples conteos
-          por dispositivos, reintentos o varios servicios. Extender repositories y
-          migración cuando falten campos. Probar servicio en plazo y fuera de plazo,
-          ciclo sin resolver, envíos fallidos y duplicados. Sin evidencia suficiente, el
-          cálculo conserva NO_DATA; no inventar porcentajes. Este trabajo completa datos
-          de negocio, sin reemplazar el cron de alertas."
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: kpis-workflow-publish
+        title: Implementar workflows, publicación en Supabase y prueba API a receptor
         status: todo
         estimate: 3
-        starts: 2026-10-15
-        ends: 2026-10-22
-        prototype: []
         depends_on:
-          - alertas-evaluacion-envio
-          - mantenimientos-registro
+          - kpis-service
+          - kpis-health-monitor
         ticket_refs: []
-      - id: kpis-http-daily
-        title: Calcular tasa de errores 5xx y latencia p95 diarios
-        description: >-
-          Agregar api_error_rate y api_latency_p95 al servicio del mismo GET diario.
-          Usar registros de PIT-66 dentro del día argentino cerrado; definir el conjunto
-          como respuestas COMPLETED de tráfico de aplicación, excluyendo
-          health/reporting. Errores: 5xx / total de ese conjunto × 100; latencia:
-          nearest-rank sobre sus duraciones completas. ABORTED y faltantes van al
-          diagnóstico. Persistir ambos resultados junto al snapshot API con
-          KpisRepository, sin otra corrida/controlador por fuente. Sin observaciones,
-          NO_DATA; una muestra válida alcanza para p95. Probar 0% real, mezcla 5xx, p95
-          pequeño, filtros y corte. Coordinar el servicio común con PIT-69 para integrar
-          antes del 22. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
-        status: todo
-        estimate: 3
+        description: |-
+          **Responsable A · 3 SP**
+
+          **Objetivo.** Entregar un flujo API → lote guardado → Supabase que inicialmente se configure y pruebe en dev, permita seleccionar prod y deje definidos los puntos donde B/C conectarán sus fuentes.
+
+          **Contexto del repositorio.** Actualmente solo existe `.github/workflows/ci.yml`: checks de PR a main, pnpm 11.20.0, Node 24 e instalación con lockfile congelado. No hay carpeta `scripts/` ni workflows KPI en este checkout. Reutilizar esas convenciones y mantener los scripts separados del YAML. Las rutas y nombres siguientes son propuestos, no archivos implementados.
+
+          **Selección del ambiente.** Agregar un input manual `environment` con valores `dev` y `prod`, predeterminado dev, además de la fecha opcional. Para schedule, resolver `KPI_SCHEDULE_ENV` desde una variable de repositorio y usar dev si todavía no está definida. Validar el valor antes de elegir el job; aplicar el GitHub Environment correspondiente para obtener su configuración. La rama main no implica prod. Tanto el cierre como el monitor/reporter deben usar la misma política de selección.
+
+          Preparar la configuración separada de los GitHub Environments dev y prod. Variables por ambiente: `PITSTOP_API_BASE_URL`, `KPI_API_BASE_URL` del receptor, `KPI_ENABLE_AVAILABILITY` y `KPI_ENABLE_DELIVERY`; las dos integraciones empiezan deshabilitadas. Credenciales por ambiente: `KPI_CRON_SECRET`, `SUPABASE_PUBLISHABLE_KEY` y `PROJECT_KEY`. Las credenciales futuras de GitHub/Linear se incorporan en la tarea 6. No agregar DATABASE_URL ni credenciales de Neon al runner. Configuración faltante, snapshot de otro ambiente o URLs/identidad incompatibles con el destino elegido deben fallar antes de publicar; nunca reutilizar las claves de dev como fallback de prod. Documentar qué despliegue/base alimenta cada ambiente y comprobar el destino según el contrato del receptor.
+
+          **Archivos y puntos de integración.** Crear `scripts/kpis/` con un contrato y validador compartidos, helpers de fecha/configuración y comandos para obtener el snapshot, preparar el lote y publicarlo. Nombres propuestos: `contracts.mjs`, `dates.mjs`, `config.mjs`, `api-snapshot.mjs`, `prepare-batch.mjs`, `publish-batch.mjs`. Usar Node 24; si se agregan scripts `.mjs`, definir una prueba ejecutable con `node --test` e incorporarla a CI, sin instalar otro framework solo para estos scripts.
+
+          Definir el pipeline con pasos identificables: resolver contexto → recuperar lote existente → obtener snapshot API si no hay lote → availability (tarea 4) → delivery (tarea 6) → validar y congelar lote → subir artifact → publicar → verificar recepción. B/C reciben el mismo `--date`, `--env` y un `--output` para escribir su fragmento JSON. El preparador reúne únicamente los fragmentos habilitados; valida fecha, ambiente, versión, IDs únicos y números finitos, conserva diagnósticos y asigna un UUID común. No crear stubs con mediciones falsas. Si una integración se habilita sin script/configuración válida, dejar un fallo visible.
+
+          **Referencia de configuración.** Separar variables y secretos siguiendo [Variables](https://docs.github.com/en/actions/concepts/workflows-and-actions/variables) y [Environments](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/deploy-to-environment) de GitHub; el schedule corre en la rama predeterminada, según [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows). Esto no determina el ambiente de datos.
+
+          **Workflows y recuperación.** Crear `.github/workflows/kpi-daily.yml` para el cierre a `0 4 * * *` UTC y reutilizar/extender `.github/workflows/kpi-health-monitor.yml` de PIT-67 para sondeos/reintentos cada 30 minutos. Si PIT-67 aún no está integrado, coordinar su archivo/contrato; no implementarlo de nuevo dentro de esta tarea. Permisos de lectura mínimos para código y recuperación de artifacts. Separar contexto y nombres de artifacts por ambiente/fecha; coordinar concurrencia por ambiente sin cancelar un envío en curso. Publicar solo después de conservar lote y UUID durante 14 días. Recuperar también lotes de corridas fallidas; un reintento no ejecuta la API ni los scripts de B/C, incluso si luego cambian sus flags. Los fallos del monitor no deben impedir la recuperación del reporter.
+
+          Enviar 1–10 filas `{kpi_id,date,env,value,run_id}` a `POST /rest/v1/measurement?on_conflict=project_id,kpi_id,date,env`, con `apikey`, `X-Project-Key` y `Prefer: resolution=ignore-duplicates`. No enviar null ni campos internos. Verificar por GET fecha, ambiente y valores: un POST exitoso puede haber ignorado una fila previa distinta. Conservar recibo y diagnóstico; no sobrescribir valores aceptados.
+
+          **Criterios de cierre.** Ejecutar manualmente en dev con datos conocidos y catálogo dev previamente registrado; descargar el lote, comprobar recepción y reintentar idénticamente. Probar selección manual dev/prod y selección de schedule con mocks/configuración controlada, sin enviar datos reales a prod como prueba. Probar ausencia/cruce de credenciales, ambiente incorrecto, rechazo, 429/5xx, pérdida de confirmación, fallo al guardar artifact y conflictos. Entregar el contrato y los pasos reservados para B/C; la tarea debe cerrar con API → Supabase dev aunque ambas integraciones estén deshabilitadas. Documentar cómo cambiar el ambiente explícitamente y cómo correr/verificar el flujo; catálogo manual fuera de alcance.
+        prototype: []
         starts: 2026-10-15
         ends: 2026-10-22
-        prototype: []
-        depends_on:
-          - kpis-request-logging
-          - kpis-business-snapshots
-        ticket_refs: []
-      - id: kpis-health-daily
-        title: Agregar sondeos de API y base de datos por día argentino
-        description: >-
-          Agregar en scripts/kpis/ del runner api_availability y db_availability desde
-          artifacts de PIT-67; no mandar muestras a PitStop ni persistirlas en Neon.
-          Listar y descargar artifacts con paginación, validar ambiente de origen,
-          schema y timestamp real dentro del día argentino. Deduplicar artifacts y, para
-          reejecuciones del mismo runId/target, conservar el primer intento con muestra.
-          Éxitos / sondeos observados × 100; informar cobertura frente a 48 corridas
-          nominales sin convertir ausencias en caídas. Sin muestras, NO_DATA. Guardar
-          agregados y diagnósticos en el artifact de cierre. Probar límites, intentos,
-          fallos, paginación y artifacts ausentes. /health/db mide acceso vía API.
-          Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+      - id: kpis-availability-script
+        title: Implementar y probar el script de disponibilidad de API y base
         status: todo
-        estimate: 2
-        starts: 2026-10-15
-        ends: 2026-10-22
-        prototype: []
+        estimate: 4
         depends_on:
           - kpis-health-monitor
         ticket_refs: []
-      - id: kpis-publish-client
-        title: Publicar mediciones inmutables en la API de Lab4
-        description: >-
-          Implementar en scripts/kpis/ un cliente de mediciones para un catálogo ya
-          registrado manualmente por ambiente. El registro de catálogo no pertenece a
-          este ni a otro ticket. Leer configuración de URL, ambiente y secretos;
-          transformar solo READY finitos al contrato kpi_id/date/env/value/run_id. POST
-          /rest/v1/measurement?on_conflict=project_id,kpi_id,date,env con apikey,
-          X-Project-Key y Prefer: resolution=ignore-duplicates. Validar 1–10 filas antes
-          del POST atómico; conservar payload y UUID, y verificar por GET cada valor
-          recibido. Un HTTP exitoso no prueba que un valor previo coincida; divergencia
-          es fallo visible, sin sobrescribir. Probar lote, rechazo y reenvío idéntico.
-          No crear comando de catálogo ni administración dinámica. Alcance y aceptación:
-          project-plan/ticket-drafts/kpis-implementation.md.
-        status: todo
-        estimate: 2
+        description: |-
+          **Responsable B · 4 SP**
+
+          **Objetivo.** Crear `scripts/kpis/availability.mjs`, ejecutable independientemente del workflow, que devuelva los dos KPIs de disponibilidad y su cobertura.
+
+          **Contexto del repositorio.** `HealthController` ya expone públicamente GET `/health` con `{status:"ok"}` y GET `/health/db` con `{database:"up"}`. `HealthRepository` ejecuta SELECT 1 y `HealthService` devuelve 503 cuando la consulta falla. El monitor de PIT-67 aún no está en main; su borrador local define `health-checks.json` con `schemaVersion`, `env`, `eventName`, `runId`, `runAttempt` y `checks` con target, checkedAt, httpStatus, ok y errorKind. Coordinar el formato real antes de integrar; desarrollar con fixtures sin esperar al workflow de A.
+
+          **Implementación.** Recibir `--date`, `--env` y `--output` conforme al contrato común. Separar lectura/paginación/descarga de artifacts del agregador puro, con cliente HTTP y reloj sustituibles en pruebas. Leer artifacts incluso de corridas fallidas, filtrar el ambiente solicitado y usar el timestamp real de cada sondeo para decidir pertenencia al día argentino. Validar archivos y campos; un artifact seleccionado cuyo contenido contradice su ambiente no se acepta como muestra válida.
+
+          Deduplicar por `runId`/target conservando el primer intento con muestra; no contar un rerun como nuevo sondeo programado. Calcular `api_availability` y `db_availability` como éxitos / sondeos observados × 100, siguiendo la condición de éxito del monitor. Mantener diferenciadas muestras manuales y programadas para informar cobertura sobre 48 corridas nominales. Sondeos ausentes no son fallos; sin muestras, NO_DATA. La métrica DB es acceso vía API y no una medición independiente de Neon.
+
+          Escribir un fragmento `source=availability` con measurements READY, diagnósticos por KPI, numeradores/denominadores, cobertura, ventana y referencias mínimas de origen. Un fallo de lectura debe identificarse como ERROR, distinto de ausencia de muestras. No publicar, escribir en Neon ni asignar run_id de publicación. Las credenciales de lectura llegan por entorno y no se escriben en JSON.
+
+          **Criterios de cierre.** Fixtures para límites del día, éxito/fallo/timeout, 0% real, 100%, falta de muestras, artifacts duplicados, intentos, manuales, ambientes mezclados, archivos inválidos y varias páginas. Probar el CLI y las funciones con `node --test` si se adopta el runtime `.mjs` de A. Entregar ejemplo de fragmento y comando local reproducible; la integración al workflow queda en la tarea 4.
+        prototype: []
         starts: 2026-10-15
         ends: 2026-10-22
-        prototype: []
-        depends_on: []
-        ticket_refs: []
-      - id: kpis-reporting-workflows
-        title: Programar cierre diario y reintentos con artifacts recuperables
-        description: >-
-          Reutilizar el workflow de PIT-67 para sondeos y, después de guardar su
-          evidencia, procesar lotes preparados/reintentos cada 30 minutos. Agregar un
-          segundo workflow de cierre a las 04:00 UTC (01:00 argentina), manual por
-          fecha. El cierre llama al GET diario de PitStop, agrega sondeos en Actions y
-          prepara el lote del día anterior. Antes del primer POST, subir el JSON
-          definitivo y UUID como artifact durante 14 días; si falla guardar ese
-          respaldo, no publicar. Un reintento descarga el mismo lote, sin recalcular ni
-          volver a consultar fuentes. Concurrencia por ambiente compartida entre ambos
-          workflows; no cancelar un envío en curso. La salud fallida no impide
-          reintentar publicación. Un ERROR de fuente deja fallo visible y permite
-          publicar READY de otras fuentes; NO_DATA se diagnostica. El núcleo no espera
-          GitHub/Linear; no publicar día abierto. Probar manual, recuperación tras fallo
-          y verificación GET. El catálogo manual es prerrequisito, no parte del ticket.
-          Documentación y validación integrada a cargo de otro equipo. Alcance y aceptación:
-          project-plan/ticket-drafts/kpis-implementation.md.
+      - id: kpis-availability-integration
+        title: Integrar disponibilidad al workflow y verificar el flujo
         status: todo
         estimate: 2
-        starts: 2026-10-15
-        ends: 2026-10-22
-        prototype: []
         depends_on:
-          - kpis-business-endpoint
-          - kpis-http-daily
-          - kpis-health-daily
-          - kpis-publish-client
+          - kpis-workflow-publish
+          - kpis-availability-script
         ticket_refs: []
-      - id: kpis-delivery-source
-        title: Obtener estados de Linear y PRs de GitHub para métricas de entrega
-        description: >-
-          Adaptador de lectura en scripts/kpis/ del runner para Linear y GitHub.
-          Paginar, vincular PIT-XX con PRs por referencia verificable y recuperar
-          primera entrada en In Progress, primera apertura y merge. Confirmar acceso al
-          historial: updatedAt no sustituye la transición. Conservar evidencia mínima en
-          artifacts 14 días, sin cuerpos, secretos ni datos personales. Probar
-          paginación, varias PRs, falta de historial y fallo parcial. No modificar
-          tickets Linear ni agregar una base o endpoint de ingesta. No bloquea el núcleo
-          del 22. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        description: |-
+          **Responsable B · 2 SP**
+
+          **Objetivo.** Conectar el script de la tarea 3 al punto availability definido en la tarea 2, sin crear otra publicación o scheduler.
+
+          **Implementación.** Depende de tareas 2 y 3 y del monitor PIT-67. Usar el contexto de fecha/ambiente ya resuelto, permisos de lectura de Actions y archivo de salida acordado. Habilitar `KPI_ENABLE_AVAILABILITY` primero en dev y conservar la configuración independiente de prod. Asegurar que el monitor produzca muestras del mismo ambiente: artifacts prod no alimentan el cierre dev. Mantener el sondeo semihorario; el cierre solo agrega sus resultados, no sustituye un día de evidencia por dos requests puntuales.
+
+          Incorporar el fragmento antes de congelar el lote y guardar su evidencia/diagnósticos 14 días. Dejar que el preparador valide fecha, ambiente e IDs. Si el script falla, conservar el diagnóstico y permitir el manejo de otros READY según el contrato; finalizar con fallo visible, sin usar continue-on-error para ocultarlo. Si falla la validación global o no se puede conservar el lote, no publicar. La recuperación usa el archivo definitivo ya guardado y saltea la agregación.
+
+          **Criterios de cierre.** Ejecución manual en dev con muestras conocidas y comprobación de ambos valores recibidos en Supabase. Probar NO_DATA, error de lectura, archivo ausente, ambiente incorrecto y fallo de publicación seguido de recuperación sin volver a descargar/calcular muestras. Si el script funciona pero no queda conectado y verificado hasta el receptor, la tarea no está terminada.
+        prototype: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: kpis-delivery-script
+        title: Implementar y probar el script de métricas de GitHub y Linear
         status: todo
         estimate: 4
-        starts: 2026-10-22
-        ends: 2026-10-29
-        prototype: []
         depends_on: []
         ticket_refs: []
-      - id: kpis-delivery-daily
-        title: Calcular Mean Time to PR y Mean Time to Merge
-        description: >-
-          Calcular en el runner mean_time_to_pr: media en horas desde primera entrada en
-          In Progress a primera PR, seleccionando por apertura en los últimos 30 días;
-          mean_time_to_merge: media apertura–merge de PRs mergeadas en esa ventana.
-          Excluir evidencia incompleta, duraciones negativas y duplicados con
-          diagnóstico. Sin casos, NO_DATA; cero solo si se midió. Guardar
-          agregados/conteos en el artifact de cierre e incluir READY en el mismo lote de
-          publicación. No enviar evidencia ni resultados a Neon; no agregar endpoint.
-          Probar selección temporal, horas fraccionarias y faltantes. Una falla externa
-          no impide publicar otras fuentes. Alcance y aceptación: project-plan/ticket-drafts/kpis-implementation.md.
+        description: |-
+          **Responsable C · 4 SP**
+
+          **Objetivo.** Crear `scripts/kpis/delivery.mjs`, independiente del workflow, para calcular Mean Time to PR y Mean Time to Merge con evidencia verificable.
+
+          **Contexto del repositorio.** El monorepo no tiene cliente Linear, script de entrega ni paquete compartido KPI; no crear un módulo Nest ni tablas para estas fuentes. La CI actual se ejecuta sobre PRs a main. Recibir explícitamente owner/repositorio de GitHub y equipo/proyecto de Linear; no buscar todo el workspace ni asumir que una PR cualquiera corresponde a PitStop. Verificar permisos y disponibilidad real del historial al comenzar; las fechas de ejemplo no sustituyen la evidencia de la API.
+
+          **Implementación.** Recibir `--date`, `--env`, `--output` y configuración de las fuentes. Separar adaptadores de lectura y agregadores puros para probar con fixtures mientras A implementa el workflow. Paginar issues/PRs e historial y vincular por referencias PIT-XX verificables en rama/título/cuerpo; conservar IDs y timestamps necesarios sin guardar cuerpos ni tokens. `env` identifica el contexto de reporte: las métricas describen el mismo repositorio/equipo y no se filtran por una supuesta rama dev/prod salvo una regla explícita de negocio.
+
+          Calcular `mean_time_to_pr`: media en horas desde primera entrada real en In Progress hasta primera PR asociada, seleccionada por apertura dentro de los 30 días que terminan en el corte argentino. `updatedAt` no prueba una transición, y una segunda entrada en In Progress no reemplaza a la primera. Calcular `mean_time_to_merge`: media apertura–merge de PRs mergeadas dentro de esa ventana; excluir cerradas sin merge. Definir explícitamente cómo se deduplican vínculos para no multiplicar una observación por referencias repetidas o varias PRs.
+
+          Conservar horas fraccionarias, excluir duraciones negativas y distinguir falta de casos, historial incompleto y fallo de proveedor. Devolver fragmento `source=delivery`, measurements READY y diagnósticos con conteos, ventanas y referencias mínimas. No transformar datos faltantes en cero, publicar ni persistir en Neon. El token GitHub debe tener acceso real a las PRs requeridas; el cliente Linear usa credencial de lectura externa a PROJECT_KEY y KPI_CRON_SECRET.
+
+          **Criterios de cierre.** Fixtures con varias páginas, reaperturas de estado, múltiples PRs, referencias repetidas, PRs sin ticket, issues sin historial, PRs abiertas fuera de ventana pero mergeadas dentro, horas fraccionarias y fallos parciales. Ejecutar pruebas independientes y validar el contrato común. Confirmar lectura real de las fuentes con credenciales dev de reporting, conservando evidencia segura; integración al workflow fuera de esta tarea.
+        prototype: []
+        starts: 2026-10-15
+        ends: 2026-10-22
+      - id: kpis-delivery-integration
+        title: Integrar métricas de entrega y verificar el flujo completo
         status: todo
         estimate: 2
-        starts: 2026-10-22
-        ends: 2026-10-29
-        prototype: []
         depends_on:
-          - kpis-delivery-source
+          - kpis-workflow-publish
+          - kpis-delivery-script
+          - kpis-availability-integration
         ticket_refs: []
+        description: |-
+          **Responsable C · 2 SP**
+
+          **Objetivo.** Conectar delivery al pipeline de A y cerrar la prueba técnica de API, disponibilidad y entrega publicadas juntas en dev.
+
+          **Implementación.** Integrar tras tareas 2 y 5; la prueba completa también requiere la tarea 4. Configurar owner/repositorio GitHub y equipo/proyecto Linear en el GitHub Environment seleccionado, y la credencial Linear como Secret. Reutilizar el token de GitHub con permisos de lectura si alcanza; documentar la alternativa de credencial dedicada solo si la fuente requerida no es accesible. No exponer secretos en argumentos, artifacts o logs.
+
+          Habilitar `KPI_ENABLE_DELIVERY` inicialmente en dev. Ejecutar el script con la misma fecha/ambiente que API y availability y guardar su fragmento antes de preparar el lote. Reutilizar validador, publicación y recuperación existentes; no crear otro POST ni volver a almacenar estas métricas en la API. Un fallo parcial conserva evidencia y diagnóstico, puede permitir publicar los READY válidos y debe dejar el workflow fallido. NO_DATA no es un valor publicable.
+
+          **Criterios de cierre.** Coordinar con A/B una ejecución manual dev con datos conocidos de las tres fuentes; verificar por GET los diez valores si todos tienen evidencia, y omisiones justificadas si algún KPI no puede calcularse. Comprobar que el catálogo activo dev coincide con los valores esperados; una publicación parcial no se presenta como cumplimiento completo. Descargar origen, lote y recibo. Repetir tras una publicación fallida y comprobar mismo UUID/valores y ausencia de nuevas consultas a API, artifacts de sondeos o proveedores. Probar script fallido, fragmento ausente, fuente sin datos, ambiente cruzado e IDs duplicados. Preparar configuración prod sin efectuar publicaciones productivas como parte de estas pruebas. La tarea incluye integración técnica; el piloto y aceptación del MVP siguen a cargo del otro equipo.
+        prototype: []
+        starts: 2026-10-15
+        ends: 2026-10-22
   - id: perfil
     title: Perfil y preferencias
     description: La pantalla donde el usuario ve su cuenta y configura como quiere que la
@@ -1876,14 +1834,15 @@ epics:
   - id: fixes-s3
     title: Fixes y carry — Sprint 3
     description: >-
-      Reservas explícitas de fixes/carry: 1 SP del 15–22 de octubre, 5 SP del 29 de
-      octubre–5 de noviembre y 16 SP del 5–12 de noviembre, más release de 2 SP en la
-      última semana. Total 22 SP de reserva, incluidos los 10 SP previos. Los 12 SP
-      adicionales ocupan capacidad liberada al retirar documentación y validación. Cada
+      Reservas explícitas de fixes/carry: 5 SP del 29 de octubre–5 de noviembre
+      y 16 SP del 5–12 de noviembre, más release de 2 SP en la última semana.
+      Total 21 SP de reserva, incluidos los 10 SP previos. Se elimina la antigua
+      reserva de 1 SP del 15–22 porque las seis tareas KPI completan sus 18 SP. Cada
       reserva se sustituye por defectos o carry concretos sin duplicar puntos; no
       implica trabajo ya identificado ni funcionalidades nuevas. Otro equipo realiza
-      documentación y validación integrada y aporta defectos reproducibles. Las cuatro
-      semanas del Sprint 3 quedan en 18 SP.
+      documentación y validación de aceptación y aporta defectos reproducibles.
+      La integración técnica de KPI se prueba dentro de sus tareas. El Sprint 3
+      tiene 66 SP planificados y 6 SP disponibles del 22 al 29 de octubre.
     sprint: 3
     linear_project: Fixes - S3
     moscow: must
@@ -1938,23 +1897,6 @@ epics:
         estimate: 2
         starts: 2026-11-05
         ends: 2026-11-12
-        prototype: []
-        depends_on: []
-        ticket_refs: []
-      - id: fixes-s3-carry-nucleo
-        title: Reserva de fixes y carry del núcleo de KPIs
-        description: >-
-          Reserva de capacidad para defectos y trabajo de implementación que se arrastre
-          a esta semana. Sustituir por correcciones concretas con alcance y estimación
-          cuando se identifiquen, sin sumar sus puntos nuevamente. No incluye
-          documentación, validación integrada, catálogo ni funcionalidades nuevas. Las
-          correcciones mantienen sus pruebas propias; si no hay defectos o carry, la
-          reserva queda sin consumir. Distribuir los arreglos concretos respetando 6 SP
-          por desarrollador.
-        status: todo
-        estimate: 1
-        starts: 2026-10-15
-        ends: 2026-10-22
         prototype: []
         depends_on: []
         ticket_refs: []
