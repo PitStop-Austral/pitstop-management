@@ -4,7 +4,7 @@
 meta:
   charter: ../../CLAUDE.md
   prototype_root: ../../PitStop Prototype/
-  updated: 2026-10-14
+  updated: 2026-10-15
   notes: >-
     Backlog de producto de PitStop. Se edita desde la app (npm run dev), no a mano: al
     guardar, el archivo se reescribe entero y los comentarios se pierden. Todo lo
@@ -1103,7 +1103,7 @@ epics:
     sprint: 2
     linear_project: Alertas
     moscow: must
-    status: in_progress
+    status: done
     features:
       - id: alertas-suscripcion
         title: Activar notificaciones y guardar el dispositivo del usuario
@@ -1214,7 +1214,7 @@ epics:
           permitir continuar con los demas destinatarios si falla un envio. Incluir
           tests de backend para la proteccion del endpoint, la seleccion de alertas, el
           respeto de preferencias y la prevencion de duplicados.
-        status: in_progress
+        status: done
         estimate: 4
         prototype: []
         depends_on:
@@ -1232,7 +1232,7 @@ epics:
     sprint: 2
     linear_project: Fixes - S2
     moscow: must
-    status: in_progress
+    status: done
     fixes: true
     features:
       - id: fixes-s2-proximo-servicio
@@ -1264,7 +1264,7 @@ epics:
           Validar dos altas consecutivas, error al guardar y edición, en móvil y
           escritorio. Ticket asignado en Linear a Ignacio Siaba, con vencimiento el 15
           de octubre.
-        status: backlog
+        status: done
         estimate: 1
         prototype:
           - components/pitstop/sheets/vehicle-form.tsx
@@ -1347,7 +1347,7 @@ epics:
           de backend. Solo registra datos: no calcula porcentajes ni p95, no agrega
           dashboards, endpoints de KPIs, cron ni envíos a Lab4. Draft:
           project-plan/ticket-drafts/kpis-request-logging.md.
-        status: in_progress
+        status: done
         estimate: 3
         prototype: []
         depends_on: []
@@ -1372,7 +1372,7 @@ epics:
           Reutilizar los endpoints actuales; no depende de PIT-66. Esta tarea no calcula
           disponibilidad, no guarda muestras en Neon y no publica KPIs en Lab4. Draft:
           project-plan/ticket-drafts/kpis-health-monitor.md.
-        status: backlog
+        status: in_progress
         estimate: 2
         prototype: []
         depends_on: []
