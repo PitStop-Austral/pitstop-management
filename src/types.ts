@@ -66,6 +66,18 @@ export type Backlog = {
   meta: Record<string, unknown>;
   out_of_scope: string[];
   epics: Epic[];
+  timeline_report?: TimelineReportCategory[];
+};
+
+export type TimelineReportCategory = {
+  id: string;
+  title: string;
+  epic_ids: string[];
+  baseline_start: string | null;
+  baseline_end: string | null;
+  actual_end: string | null;
+  /** Null uses completed story points from the current schedule. */
+  progress: number | null;
 };
 
 export type Person = {

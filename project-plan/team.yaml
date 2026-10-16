@@ -177,50 +177,27 @@ sprints:
       - Alertas
       - Fixes - S2
       - KPI Reporting
-    notes: "Sprint 2 conserva la instrumentación de KPI Reporting (PIT-66, PIT-67 y PIT-68)
-      y los fixes concretos. Se retiraron las dos reservas genéricas de 5 SP conforme al
+    notes: Sprint 2 conserva la instrumentación de KPI Reporting (PIT-66, PIT-67 y PIT-68) y
+      los fixes concretos. Se retiraron las dos reservas genéricas de 5 SP conforme al
       ADR 02. PIT-69 se desarrolla en el Sprint 3 del 15 al 22 de octubre dentro de la
       nueva tarea KPIService de 3 SP locales. Linear no se modifica en la revisión del
-      14 de octubre; las diferencias previas de Auth/landing se conservan para una revisión
-      separada."
+      14 de octubre; las diferencias previas de Auth/landing se conservan para una
+      revisión separada.
   - number: 3
     name: Sprint 3
     cycle_id: 77772c6e-71b6-47bb-b7b1-17ea8306a28a
     starts: 2026-10-16
     ends: 2026-11-12
     weeks: 4
-    theme: KPIs completos al 22 + backend de deseos y Perfil al 29 + Perfil y deseos al 5 + cierre
+    theme: KPIs completos al 22 + backend de deseos y Perfil al 29 + Perfil y deseos al 5 +
+      cierre
     linear_projects:
       - Profile
       - Lista de deseos
       - Recordatorio de km
       - Fixes - S3
       - KPI Reporting
-    notes: >-
-      Capacidad: cuatro semanas de 18 SP = 72 horas estimadas, tres desarrolladores
-      de 6 SP semanales. 15–22 de octubre: seis tareas KPI, 18 SP. A: servicio 3
-      y workflows/publicación 3; B: script de disponibilidad 4 e integración 2;
-      C: script de entrega 4 e integración/prueba conjunta 2. A/B/C son roles de
-      reparto, sin asignar nombres. B/C desarrollan en paralelo con fixtures tras
-      acordar el contrato; integran después al workflow de A. Pruebas propias y
-      verificación técnica de las tres fuentes incluidas en los 18 SP.
-      El reporting selecciona dev/prod explícitamente; configuración y pruebas
-      iniciales en dev, con contrato y pasos de integración definidos por A.
-      22–29: Perfil 6 (datos 4, notificaciones 2) y deseos 6 (modelo 2, backend 4),
-      con 6 SP disponibles sin crear tareas adicionales. 29 de octubre–5 de
-      noviembre: Perfil 6 (preferencias 3, contraseña 3), frontend de deseos 5,
-      recordatorio de km 2 y reserva 5. 5–12 de noviembre: reservas 16 y release 2.
-      Carga por fechas 66 SP, incluidos 21 SP de reservas, más 6 SP disponibles.
-      Se elimina la reserva de 1 SP de la semana KPI para no exceder sus 18 SP.
-      Reservas se sustituyen por arreglos concretos sin duplicar puntos y no
-      representan trabajo consumido. KPI Reporting suma 26 SP: 8 históricos del
-      Sprint 2 y 18 del Sprint 3; las épicas etiquetadas Sprint 3 suman 74 SP por
-      esos históricos. Perfil conserva 12 SP y deseos 11. PIT-66/PIT-67/PIT-68 son
-      prerrequisitos; catálogo manual y evidencia de alertas quedan fuera de los
-      18 SP. Piloto, documentación y aceptación final a cargo de otro equipo.
-      Deseos y recordatorio mantienen prioridad Could y ceden ante carry de Must.
-      Compartir vehículos sigue fuera del MVP. No modificar Linear.
-
+    notes: "Capacidad 72 SP, tres desarrolladores de 6 SP semanales. Semana KPI del 15–22: seis tareas de 3 SP, 18 SP. Reparto propuesto: Manuel Gioino PIT-69/PIT-71 (6), Juan Cruz García Ferrer disponibilidad/alertas (6), Ignacio Siaba GitHub/integración conjunta (6). Las dos integraciones anteriores se sustituyen por una; la evidencia de alertas se agrega con migración y pruebas y completa el cálculo en PIT-69. Dependencias entre personas coordinadas por contrato/fixtures y validación conjunta final. PIT-67 sigue In Progress; PIT-63/66/68 se reutilizan como Done. KPIs GitHub: ci_success_rate y mean_time_to_merge, sin integración de datos Linear. Sprint 3 por fechas 68 SP, incluidas reservas 21, frente a capacidad 72; se conservan las cargas y fechas ajenas a estos drafts. No se modifica valor ganado ni porcentajes manuales del cronograma. Pendientes de revisión: regla de plazo de alertas y atribución del ambiente del monitor. Carga parcial verificada: PIT-69/PIT-71 actualizados, PIT-72/PIT-73 creados; PIT-74/PIT-75 creados; las seis tareas están sincronizadas."
 people:
   - id: tomas
     name: Tomas Serra

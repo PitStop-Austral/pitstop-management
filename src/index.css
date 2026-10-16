@@ -1,5 +1,12 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Unbounded';
+  src: url('/fonts/Unbounded.ttf') format('truetype');
+  font-weight: 200 900;
+  font-display: swap;
+}
+
 /* Tokens del design system de PitStop (ver PitStop Prototype/DESIGN_SYSTEM.md). */
 @theme {
   --color-background: #fafafa;

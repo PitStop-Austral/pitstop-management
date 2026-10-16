@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "check:earned-value": "node --experimental-strip-types scripts/check-earned-value.mjs",
+    "check:timeline-report": "node --experimental-strip-types scripts/check-timeline-report.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },

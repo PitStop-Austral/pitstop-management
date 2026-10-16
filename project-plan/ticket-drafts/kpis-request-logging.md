@@ -117,7 +117,7 @@ El mecanismo sigue sujeto al timeout de la función. Una caída de la base o ter
 
 ## Fuera de alcance
 
-Cálculo de porcentaje de 5xx, p95, agregados diarios, limpieza programada, dashboard, endpoints de KPIs, cron, integración Linear/GitHub y publicación en Lab4. La retención y el crecimiento de la tabla se resolverán antes de operación sostenida mediante una tarea posterior.
+Cálculo de porcentaje de 5xx, p95, agregados diarios, limpieza programada, dashboard, endpoints de KPIs, cron, integración GitHub y publicación en Lab4. La retención y el crecimiento de la tabla se resolverán antes de operación sostenida mediante una tarea posterior.
 
 ## Referencias
 

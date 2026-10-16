@@ -1,6 +1,8 @@
 # ADR Reporting diario de KPI de PitStop
 
-Fecha: 8 de octubre de 2026. Estado: propuesta revisada para implementación.
+Fecha: 8 de octubre de 2026. Estado: propuesta histórica; el catálogo y alcance vigentes están en ADR_02_PitStop_Equipo_4.md.
+
+Revisión del 15 de octubre: Éxito de CI reemplaza el tiempo hasta abrir una PR. Los candidatos históricos adicionales de esta propuesta no forman parte del catálogo vigente de diez KPIs.
 
 ## Context
 
@@ -20,7 +22,7 @@ Reutilizar NestJS, Prisma y Neon, proteger credenciales, medir desde fuera de la
 
 **Programación.** Dos workflows en `pitstop-app`: monitor y reporting cada 30 minutos (`*/30 * * * *` UTC), y cierre de negocio a la 1:00 argentina (`0 4 * * *` UTC). El primero sondea `/health` y `/health/db`, conserva muestras y envía o reintenta cierres preparados. El segundo invoca el endpoint protegido de PitStop y reúne los indicadores del día argentino anterior. Ambos permiten ejecución manual por fecha y se publican en la rama predeterminada.
 
-**Ventanas y cálculo.** Usar `America/Argentina/Buenos_Aires`: desde las 00:00 inclusive hasta las 00:00 del día siguiente exclusive. Los indicadores de 30 días terminan en ese corte. Incorporar `GET /internal/kpis/daily?date=YYYY-MM-DD`, con secreto de servicio independiente de Firebase, validación de fecha y consultas Prisma en repositories. Devolver agregados válidos y diagnósticos separados, sin datos personales. El runner no accede directamente a Neon. Registrar eventos HTTP mínimos y vincular tickets Linear con PRs de GitHub.
+**Ventanas y cálculo.** Usar `America/Argentina/Buenos_Aires`: desde las 00:00 inclusive hasta las 00:00 del día siguiente exclusive. Los indicadores de 30 días terminan en ese corte. Incorporar `GET /internal/kpis/daily?date=YYYY-MM-DD`, con secreto de servicio independiente de Firebase, validación de fecha y consultas Prisma en repositories. Devolver agregados válidos y diagnósticos separados, sin datos personales. El runner no accede directamente a Neon. Registrar eventos HTTP mínimos y consultar ejecuciones de ci.yml y PRs de GitHub; los KPIs no requieren integración con Linear.
 
 **Autenticación y catálogo.** Configurar URL y credenciales por ambiente; confirmar el destino productivo porque Swagger de `dev` y OpenAPI de `main` apuntan a servidores distintos. Enviar `apikey: SUPABASE_PUBLISHABLE_KEY` y `X-Project-Key: PROJECT_KEY`, con la clave privada en GitHub Secrets. Registrar por ambiente en `POST /rest/v1/kpi_catalog`: `id`, `kind`, `unit`, `description`; fuente y justificación opcionales. El servidor asigna equipo y frecuencia diaria. Retirar KPIs con `deprecated_at`, sin borrarlos ni renombrarlos.
 
@@ -36,7 +38,7 @@ Todos se publican como cierres diarios. Porcentajes de 0 a 100; `%`, `h`, `ms` y
 | --- | --- | --- | --- |
 | Preventivos `preventive_rate` | business / % | Neon: preventivos / servicios × 100, últimos 30 días. | Objetivo ≥60%. |
 | Alertas a tiempo `alert_resolution_rate` | business / % | Neon: alertas evaluables con servicio en plazo / evaluables × 100, al corte. | Objetivo ≥80%. |
-| Mean Time to PR `mean_time_to_pr` | technical / h | Linear/GitHub: media de primera entrada en In Progress a primera PR; PRs abiertas en últimos 30 días. | Demora hasta revisión. |
+| Éxito de CI `ci_success_rate` | technical / % | API GitHub (ci.yml): success / (success + failure) × 100, 30 d; solo PRs a main, omite cancelled/skipped. | Mide fallos de CI en PRs a main. |
 | Mean Time to Merge `mean_time_to_merge` | technical / h | GitHub: media de apertura a merge; PRs mergeadas en últimos 30 días. | Demora de integración. |
 | Tickets sin PR `tickets_without_pr` | technical / 1 | Linear/GitHub: tickets en curso sin PR, con más de 48 h al corte. | Trabajo detenido. |
 | PRs abiertas antiguas `aged_open_prs` | technical / 1 | GitHub: PRs abiertas con más de 48 h al corte. | Acumulación en revisión. |
@@ -53,6 +55,6 @@ Actions puede retrasar o perder corridas: no garantiza puntualidad exacta. Contr
 
 ## Impact on Current Project
 
-Se agregan monitor/reporter en Actions, endpoint de KPIs, telemetría e integraciones Linear/GitHub. Se retiran Dataverse, Entra ID y Vercel Cron del diseño de KPIs; el cron de alertas de PIT-63 tiene alcance separado.
+Se agregan monitor/reporter en Actions, endpoint de KPIs, telemetría e integraciones GitHub. Se retiran Dataverse, Entra ID y Vercel Cron del diseño de KPIs; el cron de alertas de PIT-63 tiene alcance separado.
 
 Para el 8–15 de octubre se proponen tres tickets: contrato/catálogo (2 SP), monitor/reporter (4 SP) y endpoint de negocio (4 SP). Los 10 SP sustituirían el margen de Fixes y carry, sujetos a revisar carry y capacidad; no se agregan a la carga existente. Telemetría HTTP y métricas de entrega requieren otros 6 SP preliminares. Compartir vehículos continúa fuera del MVP comprometido.

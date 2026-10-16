@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { calculateEarnedValue, calculateEarnedValueForecast } from '../src/lib/earnedValue.ts'
+import { calculateEarnedValue, calculateEarnedValueForecast, earnedValueThroughDate } from '../src/lib/earnedValue.ts'
 
 const points = calculateEarnedValue([
   { week_start: '2026-08-27', pv: 2, ac: 2, ev: 2 },
@@ -25,4 +25,21 @@ const noProgress = calculateEarnedValue([{ week_start: '2026-09-24', pv: 40, ac:
 assert.deepEqual(calculateEarnedValueForecast(noProgress, noProgress[0]), { bac: 40, eac: null })
 assert.deepEqual(calculateEarnedValueForecast(points, points.at(-1)), { bac: 5, eac: 6 })
 assert.deepEqual(calculateEarnedValueForecast([]), { bac: 0, eac: null })
+const weeklyPoints = calculateEarnedValue([
+  { week_start: '2026-10-01', pv: 18, ac: 16, ev: 16 },
+  { week_start: '2026-10-08', pv: 18, ac: 20, ev: 20 },
+  { week_start: '2026-10-15', pv: 18, ac: 0, ev: 0 },
+])
+for (const day of [15, 16, 21]) {
+  const visible = earnedValueThroughDate(weeklyPoints, new Date(2026, 9, day, 15))
+  assert.deepEqual(visible.map((point) => point.week_start), ['2026-10-01', '2026-10-08'])
+  assert.equal(visible.at(-1).acAccumulated, 36)
+  assert.deepEqual(calculateEarnedValueForecast(weeklyPoints, visible.at(-1)), { bac: 54, eac: 54 })
+}
+assert.equal(earnedValueThroughDate(weeklyPoints, new Date(2026, 9, 22)).length, 3)
+for (const day of [8, 9, 14]) {
+  assert.deepEqual(earnedValueThroughDate(weeklyPoints, new Date(2026, 9, day)).map((point) => point.week_start), ['2026-10-01'])
+}
+assert.deepEqual(earnedValueThroughDate(weeklyPoints, new Date(2026, 9, 1)), [])
+assert.deepEqual(earnedValueThroughDate([], new Date(2026, 9, 14)), [])
 console.log('earned-value check ok')

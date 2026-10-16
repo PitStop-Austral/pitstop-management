@@ -1,4 +1,5 @@
 import type { EarnedValueWeek } from '../types.ts'
+import { addDays, parseISO } from './week.ts'
 
 export type EarnedValuePoint = EarnedValueWeek & {
   pv: number
@@ -30,6 +31,11 @@ export function calculateEarnedValue(entries: EarnedValueWeek[]): EarnedValuePoi
       cpi: acAccumulated > 0 ? evAccumulated / acAccumulated : null,
     }
   })
+}
+
+export function earnedValueThroughDate(points: EarnedValuePoint[], date: Date): EarnedValuePoint[] {
+  const cutoff = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  return points.filter((point) => addDays(parseISO(point.week_start), 7) <= cutoff)
 }
 
 export function calculateEarnedValueForecast(points: EarnedValuePoint[], latest?: EarnedValuePoint) {

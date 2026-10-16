@@ -20,13 +20,15 @@ Las tres alternativas pueden publicar directamente en Supabase.
 
 **Programación.** Dos workflows en `pitstop-app`: monitor y reporting cada 30 minutos (`*/30 * * * *` UTC), y cierre de negocio a la 1:00 argentina (`0 4 * * *` UTC). El primero sondea `/health` y `/health/db`, conserva muestras y envía o reintenta cierres preparados. El segundo invoca el endpoint protegido de PitStop y reúne los indicadores del día argentino anterior. Ambos permiten ejecución manual por fecha y se publican en la rama predeterminada.
 
-**Ventanas y cálculo.** Usar `America/Argentina/Buenos_Aires`: desde las 00:00 inclusive hasta las 00:00 del día siguiente exclusive. Los indicadores de 30 días terminan en ese corte. Incorporar `GET /internal/kpis/daily?date=YYYY-MM-DD`, con secreto de servicio independiente de Firebase, validación de fecha y consultas Prisma en repositories. Devolver agregados válidos y diagnósticos separados, sin datos personales. El runner no accede directamente a Neon. Registrar eventos HTTP mínimos y vincular tickets Linear con PRs de GitHub.
+**Ventanas y cálculo.** Usar `America/Argentina/Buenos_Aires`: desde las 00:00 inclusive hasta las 00:00 del día siguiente exclusive. Los indicadores de 30 días terminan en ese corte. Incorporar `GET /internal/kpis/daily?date=YYYY-MM-DD`, con secreto de servicio independiente de Firebase, validación de fecha y consultas Prisma en repositories. Devolver agregados válidos y diagnósticos separados, sin datos personales. El runner no accede directamente a Neon. Registrar eventos HTTP mínimos y consultar ejecuciones de ci.yml y PRs de GitHub; los KPIs no requieren integración con Linear.
 
 **Autenticación y catálogo.** Configurar URL y credenciales por ambiente; confirmar el destino productivo porque Swagger de `dev` y OpenAPI de `main` apuntan a servidores distintos. Enviar `apikey: SUPABASE_PUBLISHABLE_KEY` y `X-Project-Key: PROJECT_KEY`, con la clave privada en GitHub Secrets. Registrar por ambiente en `POST /rest/v1/kpi_catalog`: `id`, `kind`, `unit`, `description`; fuente y justificación opcionales. El servidor asigna equipo y frecuencia diaria. Retirar KPIs con `deprecated_at`, sin borrarlos ni renombrarlos.
 
 **Publicación.** Usar `POST /rest/v1/measurement?on_conflict=project_id,kpi_id,date,env`, JSON y `Prefer: resolution=ignore-duplicates`. El lote lleva de 1 a 10 objetos con `kpi_id`, `date`, `env`, `value` numérico finito y `run_id` UUID. No enviar `project_id`, `reported_at`, `status` ni `error_message`. El primer valor por equipo/KPI/fecha/ambiente es inmutable: cada 30 minutos se procesan cierres y reintentos, nunca valores parciales del día abierto.
 
 **Recuperación.** Conservar muestras, lotes definitivos y recibos en artifacts de Actions durante 14 días. Reenviar exactamente el mismo payload y UUID. Fallar visiblemente ante errores HTTP; validar el lote antes del POST, que es atómico, y verificar recepción por GET. `date` identifica el día medido, pero `reported_at` determina el día de cumplimiento: un envío histórico no repara retroactivamente un día incumplido.
+
+Revisión del 15 de octubre de 2026: `ci_success_rate` reemplaza el indicador de tiempo hasta abrir una PR; `mean_time_to_merge` se mantiene. La obtención de KPIs requiere GitHub, sin consultas a Linear. El catálogo conserva diez indicadores. Si el indicador retirado ya fue registrado, marcarlo con `deprecated_at` y registrar `ci_success_rate` por ambiente; no reutilizar su ID ni renombrar mediciones históricas.
 
 ## KPIs Selected
 
@@ -38,7 +40,7 @@ Todos se publican diariamente (frequency=daily). Se propone clasificar los indic
 | Alertas a tiempo `alert_resolution_rate` | business | Neon: alertas evaluables con servicio en plazo / evaluables × 100, al corte. | % | DP: objetivo ≥80%. |
 | Usuarios que registran servicios `service_users_30d` | business | Neon: usuarios distintos, por ownerId del vehículo, con al menos un servicio creado en los últimos 30 días, según createdAt. | {usuario} | Adopción del producto. |
 | Vehículos con actividad `active_vehicles_30d` | business | Neon: vehicleId distintos con servicios creados en los últimos 30 días, según createdAt. | {vehiculo} | Alcance del uso del producto. |
-| Mean Time to PR `mean_time_to_pr` | technical | Linear/GitHub: media de In Progress a primera PR abierta en los últimos 30 días. | h | Demora hasta revisión. |
+| Éxito de CI `ci_success_rate` | technical | API GitHub (ci.yml): success / (success + failure) × 100, 30 d; solo PRs a main, omite cancelled/skipped. | % | Mide fallos de CI en PRs a main. |
 | Mean Time to Merge `mean_time_to_merge` | technical | GitHub: media de apertura a merge de PRs mergeadas en los últimos 30 días. | h | Demora de integración. |
 | Errores 5xx `api_error_rate` | technical | Eventos NestJS: requests 5xx / requests registrados en el día × 100. | % | Fallos de la API. |
 | Latencia p95 `api_latency_p95` | technical | Eventos NestJS: percentil 95 de duraciones completas del día. | ms | Lentitud de operaciones. |
@@ -53,10 +55,10 @@ La disponibilidad mide sondeos observados; las muestras faltantes requieren cont
 
 ## Impact on Current Project
 
-- **Se agrega:** telemetría, integraciones Linear/GitHub/Supabase, monitor y reporter en GitHub Actions.
+- **Se agrega:** telemetría, integraciones GitHub/Supabase, monitor y reporter en GitHub Actions.
 - **Se modifica:** API, esquema Prisma, workflows de GitHub Actions y documentación. El cron de alertas de PIT-63 tiene alcance separado.
 - **Se descarta y rehace:** contrato Dataverse (`kpi_definition/kpi_report`), Entra ID, permisos y upsert; se reemplazan por PostgREST, catálogo por ambiente, claves y envío inmutable con respaldo en artifacts.
 - **Se elimina:** dos tickets de Fixes y carry del Sprint 2 (10 SP). Se acepta menor margen para defectos y arrastre para preservar los flujos principales del MVP.
 - **Fuera del MVP:** compartir vehículos (6 SP). Ya dependía de tiempo sobrante y no libera capacidad comprometida adicional.
-- **Lab2:** 16 h estimadas (instrumentación 3, monitor 2, Linear/GitHub 4, cálculos 3, publicación y cron 4), a revisar para la implementación en Actions.
+- **Lab2:** 16 h estimadas (instrumentación 3, monitor 2, GitHub (CI y merge) 4, cálculos 3, publicación y cron 4), a revisar para la implementación en Actions.
 - **Lab4:** 10 h (pruebas y documentación 4, ADR y coordinación 6).

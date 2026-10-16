@@ -7,7 +7,7 @@
 
 ## Contexto
 
-PitStop necesita conservar las corridas y los resultados de sus KPIs de negocio, tráfico HTTP, sondeos de API y base de datos, y tiempos de entrega. Esta tarea prepara una persistencia común para los diez indicadores, independientemente de su fuente, para que una tarea posterior implemente el cálculo y la generación de snapshots.
+PitStop necesita conservar las corridas y los resultados de sus KPIs de negocio, tráfico HTTP, sondeos de API y base de datos, éxito de CI y tiempo hasta merge. Esta tarea prepara una persistencia común para los diez indicadores, independientemente de su fuente, para que una tarea posterior implemente el cálculo y la generación de snapshots.
 
 ## Objetivo
 

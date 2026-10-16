@@ -3,12 +3,13 @@ import { Download, Save } from 'lucide-react'
 import { Chart } from '@tanstack/charts/react'
 import { d3Curve, defineChart, lineY, ruleX, text } from '@tanstack/charts'
 import { scaleLinear } from '@tanstack/charts/scales/linear'
-import { curveMonotoneX } from 'd3-shape'
+import { curveLinear } from 'd3-shape'
 import type { EarnedValueDocument, EarnedValueWeek } from '../types'
-import { calculateEarnedValue, calculateEarnedValueForecast } from '../lib/earnedValue'
-import { addDays, formatShort, parseISO } from '../lib/week'
+import { calculateEarnedValue, calculateEarnedValueForecast, earnedValueThroughDate } from '../lib/earnedValue'
+import { addDays, formatShort, parseISO, toISO } from '../lib/week'
 import { Button, Field, SectionTitle } from './ui'
 import { saveEarnedValue } from '../api'
+import { createEarnedValueExport } from '../lib/earnedValueExport'
 
 function number(value: number | null): string {
   return value == null ? '—' : value.toFixed(2)
@@ -16,6 +17,7 @@ function number(value: number | null): string {
 
 export function EarnedValueTab({ document: data }: { document: EarnedValueDocument }) {
   const [weeks, setWeeks] = useState<EarnedValueWeek[]>(data.weeks)
+  const [cutoffDate, setCutoffDate] = useState(() => toISO(new Date()))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
@@ -53,13 +55,17 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
     const svg = chartRef.current?.querySelector('svg')
     if (!svg) return
     await document.fonts.ready
-    const copy = svg.cloneNode(true) as SVGSVGElement
-    copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-    copy.style.fontFamily = getComputedStyle(svg).fontFamily
+    const chart = svg.cloneNode(true) as SVGSVGElement
+    const sourceLabels = svg.querySelectorAll('text')
+    chart.querySelectorAll('text').forEach((label, index) => {
+      const style = getComputedStyle(sourceLabels[index])
+      label.style.fill = style.fill
+      label.style.color = style.color
+    })
     const { width: sourceWidth, height: sourceHeight } = svg.viewBox.baseVal
     if (!sourceWidth || !sourceHeight) return
-    const exportDocument = createExportSvg({
-      chart: copy,
+    const exportDocument = createEarnedValueExport({
+      chart,
       sourceWidth,
       sourceHeight,
       metrics: [
@@ -77,8 +83,8 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
     const image = new Image()
     image.onload = () => {
       const canvas = document.createElement('canvas')
-      canvas.width = 1600
-      canvas.height = exportDocument.height
+      canvas.width = exportDocument.width * 2
+      canvas.height = exportDocument.height * 2
       const context = canvas.getContext('2d')
       if (!context) return
       context.drawImage(image, 0, 0, canvas.width, canvas.height)
@@ -91,23 +97,22 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
   }
 
   const height = 440
-  const today = new Date()
-  const todayAtMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const cutoff = useMemo(() => parseISO(cutoffDate), [cutoffDate])
   const chartDate = (week_start: string) => addDays(parseISO(week_start), 7)
   const chartStart = points[0] ? chartDate(points[0].week_start) : null
   const chartEnd = points.at(-1) ? chartDate(points.at(-1)!.week_start) : null
-  const visiblePoints = points.filter((point) => chartDate(point.week_start) <= todayAtMidnight)
+  const visiblePoints = earnedValueThroughDate(points, cutoff)
   const latest = visiblePoints.at(-1)
   const { bac, eac } = calculateEarnedValueForecast(points, latest)
   const max = Math.max(...points.flatMap((point) => [point.pvAccumulated, point.evAccumulated, point.acAccumulated]), bac, eac ?? 0, 1)
-  const todayIsWithinChart = Boolean(chartStart && chartEnd && chartStart < chartEnd && todayAtMidnight >= chartStart && todayAtMidnight <= chartEnd)
+  const cutoffIsWithinChart = Boolean(chartStart && chartEnd && chartStart < chartEnd && cutoff >= chartStart && cutoff <= chartEnd)
   const series = (key: 'pvAccumulated' | 'evAccumulated' | 'acAccumulated', data: typeof points) =>
     data.map((point) => ({ date: chartDate(point.week_start).getTime(), value: point[key] }))
   const chartDefinition = useMemo(() => defineChart({
     marks: [
-      lineY(series('pvAccumulated', points), { x: 'date', y: 'value', stroke: '#71717a', strokeWidth: 2, strokeDasharray: '6 6', curve: d3Curve(curveMonotoneX) }),
-      lineY(series('evAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#e10600', strokeWidth: 2, curve: d3Curve(curveMonotoneX) }),
-      lineY(series('acAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#f59e0b', strokeWidth: 2, curve: d3Curve(curveMonotoneX) }),
+      lineY(series('pvAccumulated', points), { x: 'date', y: 'value', stroke: '#71717a', strokeWidth: 2, strokeDasharray: '6 6', curve: d3Curve(curveLinear) }),
+      lineY(series('evAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#e10600', strokeWidth: 2, curve: d3Curve(curveLinear) }),
+      lineY(series('acAccumulated', visiblePoints), { x: 'date', y: 'value', stroke: '#f59e0b', strokeWidth: 2, curve: d3Curve(curveLinear) }),
       ...(chartStart && chartEnd ? [
         lineY([{ date: chartStart.getTime(), value: bac }, { date: chartEnd.getTime(), value: bac }], { x: 'date', y: 'value', stroke: '#2563eb', strokeWidth: 2, strokeDasharray: '3 5' }),
         text([{ date: chartStart.getTime(), value: bac, label: `BAC · ${number(bac)} h` }], { x: 'date', y: 'value', text: 'label', fill: '#2563eb', fontSize: 11, fontWeight: 700, anchor: 'start', dx: 8, dy: 14 }),
@@ -115,9 +120,9 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
       ...(latest && eac != null && chartEnd && chartDate(latest.week_start) < chartEnd ? [
         lineY([{ date: chartDate(latest.week_start).getTime(), value: latest.acAccumulated }, { date: chartEnd.getTime(), value: eac }], { x: 'date', y: 'value', stroke: '#f59e0b', strokeWidth: 2, strokeDasharray: '6 4' }),
       ] : []),
-      ...(todayIsWithinChart ? [
-        ruleX([todayAtMidnight.getTime()], { stroke: '#e10600', strokeWidth: 2 }),
-        text([{ date: todayAtMidnight.getTime(), value: max, label: 'Hoy' }], { x: 'date', y: 'value', text: 'label', fill: '#e10600', fontSize: 11, fontWeight: 700, anchor: 'end', dx: -8, dy: 14 }),
+      ...(cutoffIsWithinChart ? [
+        ruleX([cutoff.getTime()], { stroke: '#e10600', strokeWidth: 2 }),
+        text([{ date: cutoff.getTime(), value: max, label: 'Hoy' }], { x: 'date', y: 'value', text: 'label', fill: '#e10600', fontSize: 11, fontWeight: 700, anchor: 'end', dx: -8, dy: 14 }),
       ] : []),
     ],
     scales: {
@@ -126,7 +131,7 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
     },
     clip: true,
     theme: { grid: '#e5e5e7', foreground: '#71717a' },
-  }), [points, visiblePoints, chartStart, chartEnd, todayAtMidnight, todayIsWithinChart, max, bac, eac, latest])
+  }), [points, visiblePoints, chartStart, chartEnd, cutoff, cutoffIsWithinChart, max, bac, eac, latest])
 
   return (
     <div className="space-y-6">
@@ -142,6 +147,13 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
       </div>
 
       {error ? <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-semibold text-brand-700">{error}</p> : null}
+
+      <div className="flex flex-wrap items-end gap-3">
+        <Field label="Fecha de corte" hint="Controla las curvas, los indicadores y la exportación.">
+          <input className="field" type="date" required value={cutoffDate} onChange={(event) => { if (event.target.validity.valid && event.target.value) setCutoffDate(event.target.value) }} />
+        </Field>
+        <Button variant="secondary" onClick={() => setCutoffDate(toISO(new Date()))}>Hoy</Button>
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <Metric label="PV" value={`${number(latest?.pvAccumulated ?? 0)} h`} />
@@ -166,7 +178,7 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
           </div>
         </div>
         <div className="mt-4 flex flex-wrap gap-5 border-t border-border px-5 py-3 text-xs font-semibold"><Legend color="#71717a" label="PV" dashed /><Legend color="#e10600" label="EV" /><Legend color="#f59e0b" label="AC" /><Legend color="#2563eb" label="BAC" dashed /><Legend color="#f59e0b" label="EAC (proyección)" dashed /></div>
-        <p className="px-5 pb-4 text-xs text-muted-foreground">EAC supone que se mantiene el CPI de las semanas cerradas. La línea proyectada une el AC actual con la estimación al cierre; no representa una planificación semanal.</p>
+        <p className="px-5 pb-4 text-xs text-muted-foreground">EV y AC incluyen las semanas que cierran hasta la fecha de corte seleccionada, inclusive. EAC supone que se mantiene el CPI acumulado de esas semanas. La línea proyectada une el AC actual con la estimación al cierre; no representa una planificación semanal.</p>
       </section>
 
       <section className="card overflow-x-auto">
@@ -176,44 +188,6 @@ export function EarnedValueTab({ document: data }: { document: EarnedValueDocume
 
     </div>
   )
-}
-
-function createExportSvg({ chart, sourceWidth, sourceHeight, metrics }: { chart: SVGSVGElement; sourceWidth: number; sourceHeight: number; metrics: [string, string][] }) {
-  const width = 1600
-  const inset = 64
-  const gap = 20
-  const cardWidth = (width - inset * 2 - gap * 3) / 4
-  const cardHeight = 88
-  const cardsStartY = 48
-  const cardRows = Math.ceil(metrics.length / 4)
-  const cardsBottom = cardsStartY + cardRows * cardHeight + (cardRows - 1) * 16
-  const chartY = cardsBottom + 40
-  const chartWidth = width - inset * 2
-  const chartHeight = Math.round(chartWidth * (sourceHeight / sourceWidth))
-  const legendY = chartY + chartHeight + 46
-  const height = legendY + 46
-  const escape = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  const cards = metrics.map(([label, value], index) => {
-    const column = index % 4
-    const row = Math.floor(index / 4)
-    const x = inset + column * (cardWidth + gap)
-    const y = cardsStartY + row * (cardHeight + 16)
-    return `<g><rect x="${x}" y="${y}" width="${cardWidth}" height="${cardHeight}" rx="14" fill="none" stroke="#d4d4d8"/><text x="${x + 20}" y="${y + 31}" fill="#71717a" font-size="16" font-weight="600">${escape(label)}</text><text x="${x + 20}" y="${y + 64}" fill="#18181b" font-size="27" font-weight="700">${escape(value)}</text></g>`
-  }).join('')
-  const legend = [
-    ['#71717a', 'PV', '6 6'],
-    ['#e10600', 'EV', ''],
-    ['#f59e0b', 'AC', ''],
-    ['#2563eb', 'BAC', '3 5'],
-    ['#f59e0b', 'EAC', '6 4'],
-  ].map(([color, label, dash], index) => {
-    const x = inset + index * 130
-    return `<g><line x1="${x}" y1="${legendY}" x2="${x + 34}" y2="${legendY}" stroke="${color}" stroke-width="3" ${dash ? `stroke-dasharray="${dash}"` : ''}/><text x="${x + 48}" y="${legendY + 6}" fill="#3f3f46" font-size="17" font-weight="600">${label}</text></g>`
-  }).join('')
-  return {
-    height,
-    source: `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><style>text{font-family:Inter,system-ui,sans-serif}</style>${cards}<svg x="${inset}" y="${chartY}" width="${chartWidth}" height="${chartHeight}" viewBox="0 0 ${sourceWidth} ${sourceHeight}">${chart.innerHTML}</svg>${legend}</svg>`,
-  }
 }
 
 function Metric({ label, value, hint }: { label: string; value: string; hint?: string }) { return <div className="card p-3"><p className="text-[11px] font-semibold text-muted-foreground">{label}</p><p className="mt-1 font-display text-xl font-bold">{value}</p>{hint ? <p className="text-[10px] text-muted-foreground">{hint}</p> : null}</div> }

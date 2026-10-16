@@ -29,6 +29,7 @@ import { epicColors, type EpicColor } from "../lib/epicColor";
 import { epicStats } from "../lib/plan";
 import { isActiveRisk, riskScore } from "../lib/risks";
 import { Button, ProgressBar, cn } from "./ui";
+import { TimelineReport } from "./TimelineReport";
 
 const RAIL = 248;
 const ZOOMS = [8, 12, 18] as const;
@@ -83,6 +84,7 @@ export function TimelineTab({
   onSelectWeek: (weekStart: string | null) => void;
 }) {
   const [zoom, setZoom] = useState(1);
+  const [presentation, setPresentation] = useState(false);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const [allDeps, setAllDeps] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
@@ -227,6 +229,11 @@ export function TimelineTab({
 
   return (
     <div className="space-y-3">
+      <div className="flex gap-2" role="group" aria-label="Vista del cronograma">
+        <Button variant={presentation ? "secondary" : "primary"} onClick={() => setPresentation(false)}>Planificación</Button>
+        <Button variant={presentation ? "primary" : "secondary"} onClick={() => setPresentation(true)}>Para presentación</Button>
+      </div>
+      {presentation ? <TimelineReport plan={plan} update={update} /> : <>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <CalendarClock className="size-4" />
@@ -382,6 +389,7 @@ export function TimelineTab({
           </div>
         </Panner>
       </div>
+      </>}
     </div>
   );
 }
